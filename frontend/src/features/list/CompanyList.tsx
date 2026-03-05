@@ -1,8 +1,18 @@
-import type { CompanyInfoTypes } from "../register/companyInfoTypes";
+import type { CompanyInfoTypes } from "../register/types/companyInfoTypes";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function CompanyList() {
+    const navigate = useNavigate();
+
     const [companies, setCompanies] = useState<CompanyInfoTypes[]>([]);
+    const [keyword, setKeyword] = useState("");
+
+    const filteredCompanies = companies.filter((company) =>
+        company.companyName
+            .toLowerCase()
+            .includes(keyword.toLowerCase())
+    );
 
     useEffect(() => {
         const fetchCompanies = async () => {
@@ -15,27 +25,47 @@ export default function CompanyList() {
         fetchCompanies();
     }, []);
 
+    const handleEdit = async (id: number) => {
+        navigate(`/company/edit/${id}`);
+    };
+
     return(
         <div className="flex flex-col items-center justify-center mt-24">
-            <table className="w-fit border border-black">
+            <input
+                type="text"
+                placeholder="会社名で検索"
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                className="mb-4 p-2 border border-black rounded"
+            />
+            <table className="w-[650px] table-fixed border border-black">
                 <thead>
-                    <tr className="flex justify-between gap-12">
-                        <th>会社名</th>
-                        <th>都道府県</th>
-                        <th>郵便番号</th>
-                        <th>契約状態</th>
+                    <tr className="border border-black">
+                        <th className="px-2 py-2 text-left">会社名</th>
+                        <th className="px-2 py-2 text-left">都道府県</th>
+                        <th className="px-2 py-2 text-left">郵便番号</th>
+                        <th className="px-2 py-2 text-left">契約状態</th>
+                        <th className="px-2 py-2 text-left">操作</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {companies.map((company) => (
+                    {filteredCompanies.map((company) => (
                         <tr
                             key={company.id}
-                            className="flex justify-between gap-12"
+                            className="border border-black"
                         >
-                            <td>{company.companyName}</td>
-                            <td>{company.prefecture}</td>
-                            <td>{company.zipcode}</td>
-                            <td>{company.status}</td>
+                            <td className="px-2 py-2 text-left">{company.companyName}</td>
+                            <td className="px-2 py-2 text-left">{company.prefecture}</td>
+                            <td className="px-2 py-2 text-left">{company.zipcode}</td>
+                            <td className="px-2 py-2 text-left">{company.status}</td>
+                            <td>
+                                <button
+                                    onClick={() => handleEdit(company.id)}
+                                    className="px-4 py-2 bg-blue-500 text-white rounded"
+                                >
+                                    編集
+                                </button>
+                            </td>
                         </tr>
                     ))}
                 </tbody>
