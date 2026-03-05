@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import type { CompanyInfoTypes } from "../companyInfoTypes";
-import { PREFECTURES } from "../prefectures";
+import type { CompanyInfoTypes } from "../types/companyInfoTypes";
+import { PREFECTURES } from "../types/prefectures";
 
 export default function RegisterForm() {
     const [form, setForm] = useState<CompanyInfoTypes>({
