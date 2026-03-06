@@ -5,6 +5,9 @@ const fs = require("fs");
 
 const app = express();
 
+let companies = [];
+
+app.use(express.json());
 app.use(cors());
 
 app.get("/api/companies/:id", (req, res) => {
@@ -24,5 +27,19 @@ app.get("/api/companies", (req, res) => {
     );
     res.json(data);
 })
+
+app.put("/api/companies/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const updatedData = req.body;
+
+    const index = companies.findIndex((c) => c.id === id);
+    if (index === -1) {
+        return res.status(404).json({ message: "会社が見つかりません" });
+    }
+
+    companies[index] = { ...companies[index], ...updatedData };
+
+    res.json(companies[index]);
+});
 
 app.listen(3000);
