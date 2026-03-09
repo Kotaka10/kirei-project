@@ -11,7 +11,6 @@ function App() {
   return (
     <div className="my-2">
       <nav className="flex items-center justify-center gap-4">
-        <Link to="/">ホーム</Link>
         <Link to="/register">登録画面</Link>
         <Link to="/list">会社一覧</Link>
         <Link to="/user-register">商品登録ページ</Link>
