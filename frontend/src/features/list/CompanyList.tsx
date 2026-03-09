@@ -30,7 +30,7 @@ export default function CompanyList() {
     };
 
     return(
-        <div className="bg-sky-100 p-8 min-h-screen m-auto">
+        <div className="bg-sky-100 p-8 max-w-3xl m-auto my-16 rounded-xl">
             <h1 className="text-center text-3xl p-6">会社一覧</h1>
             <div className="bg-sky-100 pb-8 flex flex-col items-center justify-center">
                 <input
