@@ -43,6 +43,7 @@ export default function CompanyEdit() {
         e.preventDefault();
 
         try {
+            console.log("id", id);
             const res = await fetch(`http://localhost:3000/api/companies/${id}`, {
                 method: "PUT",
                 headers: {
@@ -50,6 +51,7 @@ export default function CompanyEdit() {
                 },
                 body: JSON.stringify(formData),
             });
+            console.log("res", res);
 
             if (!res.ok) {
                 alert("更新に失敗しました。");
@@ -72,18 +74,21 @@ export default function CompanyEdit() {
             <h1 className="text-2xl mb-4">会社情報編集</h1>
             <form onSubmit={handleSubmit} className="w-full max-w-md">
                 <input
+                    type="text"
                     name="companyName"
                     value={formData.companyName}
                     onChange={handleChange}
                     className="mb-4 p-2 border border-black rounded w-full"
                 />
                 <input
+                    type="text"
                     name="prefecture"
                     value={formData.prefecture}
                     onChange={handleChange}
                     className="mb-4 p-2 border border-black rounded w-full"
                 />
                 <input
+                    type="text"
                     name="zipcode"
                     value={formData.zipcode}
                     onChange={handleChange}
@@ -96,10 +101,10 @@ export default function CompanyEdit() {
                     className="mb-4 p-2 border border-black rounded w-full"
                 >
                     <option>契約状態を選択</option>
-                    <option value="active">契約中</option>
-                    <option value="negotiating">商談中
+                    <option value="契約中">契約中</option>
+                    <option value="商談中">商談中
                     </option>
-                    <option value="cancelled">解約</option>
+                    <option value="解約">解約</option>
                 </select>
                 <button
                     type="submit"
