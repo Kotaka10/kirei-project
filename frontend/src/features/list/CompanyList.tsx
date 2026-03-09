@@ -30,46 +30,48 @@ export default function CompanyList() {
     };
 
     return(
-        <div className="flex flex-col items-center justify-center mt-24">
-            <input
-                type="text"
-                placeholder="会社名で検索"
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-                className="mb-4 p-2 border border-black rounded"
-            />
-            <table className="w-[650px] table-fixed border border-black">
-                <thead>
-                    <tr className="border border-black">
-                        <th className="px-2 py-2 text-left">会社名</th>
-                        <th className="px-2 py-2 text-left">都道府県</th>
-                        <th className="px-2 py-2 text-left">郵便番号</th>
-                        <th className="px-2 py-2 text-left">契約状態</th>
-                        <th className="px-2 py-2 text-left">操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredCompanies.map((company) => (
-                        <tr
-                            key={company.id}
-                            className="border border-black"
-                        >
-                            <td className="px-2 py-2 text-left">{company.companyName}</td>
-                            <td className="px-2 py-2 text-left">{company.prefecture}</td>
-                            <td className="px-2 py-2 text-left">{company.zipcode}</td>
-                            <td className="px-2 py-2 text-left">{company.status}</td>
-                            <td>
-                                <button
-                                    onClick={() => handleEdit(company.id)}
-                                    className="px-4 py-2 bg-blue-500 text-white rounded"
-                                >
-                                    編集
-                                </button>
-                            </td>
+        <div className="bg-sky-100 p-8 min-h-screen m-auto">
+            <div className="bg-sky-100 pb-8 flex flex-col items-center justify-center mt-24">
+                <input
+                    type="text"
+                    placeholder="会社名で検索"
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)}
+                    className="mb-4 p-2 border border-black rounded"
+                />
+                <table className="w-[650px] table-fixed border border-black">
+                    <thead>
+                        <tr className="border border-black">
+                            <th className="px-2 py-2 text-left">会社名</th>
+                            <th className="px-2 py-2 text-left">都道府県</th>
+                            <th className="px-2 py-2 text-left">郵便番号</th>
+                            <th className="px-2 py-2 text-left">契約状態</th>
+                            <th className="px-2 py-2 text-left">操作</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {filteredCompanies.map((company) => (
+                            <tr
+                                key={company.id}
+                                className="border border-black"
+                            >
+                                <td className="px-2 py-2 text-left">{company.companyName}</td>
+                                <td className="px-2 py-2 text-left">{company.prefecture}</td>
+                                <td className="px-2 py-2 text-left">{company.zipcode}</td>
+                                <td className="px-2 py-2 text-left">{company.status}</td>
+                                <td>
+                                    <button
+                                        onClick={() => handleEdit(company.id)}
+                                        className="px-4 py-2 bg-blue-500 text-white rounded"
+                                    >
+                                        編集
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     )
 }
