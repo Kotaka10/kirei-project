@@ -70,7 +70,7 @@ export default function CompanyEdit() {
     if (!formData) return <div>Loading...</div>;
 
     return (
-        <div className="flex flex-col items-center justify-center mt-24">
+        <div className="bg-sky-100 min-h-screen flex flex-col items-center p-24">
             <h1 className="text-2xl mb-4">会社情報編集</h1>
             <form onSubmit={handleSubmit} className="w-full max-w-md">
                 <input
