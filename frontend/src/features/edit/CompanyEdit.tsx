@@ -70,8 +70,8 @@ export default function CompanyEdit() {
     if (!formData) return <div>Loading...</div>;
 
     return (
-        <div className="bg-sky-100 max-w-xl mx-auto flex flex-col items-center p-16 mt-16 rounded-xl">
-            <h1 className="text-2xl mb-4">会社情報編集</h1>
+        <div className="bg-sky-100 max-w-xl mx-auto flex flex-col items-center p-12 mt-16 rounded-xl">
+            <h1 className="text-3xl p-6">会社情報編集</h1>
             <form onSubmit={handleSubmit} className="w-full max-w-md">
                 <input
                     type="text"

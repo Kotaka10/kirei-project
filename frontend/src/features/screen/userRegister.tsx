@@ -6,8 +6,8 @@ export default function UserRegister() {
 
     return (
         <>
-            <h1 className="text-3xl text-center p-6">ユーザー登録</h1>
-            <form className="bg-green-100 p-8 m-auto max-w-lg rounded-xl">
+            <form className="bg-green-100 p-8 m-auto max-w-lg rounded-xl mt-12">
+            <h1 className="text-3xl text-center pb-6">ユーザー登録</h1>
                 <div className="bg-white p-4 rounded-xl flex flex-col items-center justify-center gap-8">
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
                         <p className="mb-2">名前</p>

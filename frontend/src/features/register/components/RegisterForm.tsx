@@ -87,8 +87,8 @@ export default function RegisterForm() {
 
     return (
         <div className="mb-8">
+            <div className="bg-sky-100 m-auto max-w-lg border rounded-2xl  mt-8">
             <h1 className="text-3xl text-center text-black p-6">登録フォーム</h1>
-            <div className="bg-sky-100 m-auto max-w-lg border rounded-2xl p-6">
                 <div className="bg-white m-auto max-w-md border rounded-2xl p-4">
                     <form className="flex flex-col items-center gap-4">
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
