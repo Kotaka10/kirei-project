@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 
 export default function UserRegister() {
@@ -5,56 +6,70 @@ export default function UserRegister() {
 
     return (
         <>
-            <form className="">
-                <div className="flex flex-col">
-                    <p className="">名前</p>
+            <h1 className="text-3xl text-center p-6">ユーザー登録</h1>
+            <form className="bg-green-100 p-10 m-auto max-w-md rounded-xl flex flex-col items-center justify-center gap-8">
+                <div className="flex flex-col w-64 sm:w-72 md:w-96">
+                    <p className="mb-2">名前</p>
                     <input
+                        type="text"
                         name="userName"
-                        className=""
+                        className="bg-white p-2 ring-1 ring-black rounded-md"
                     />
                 </div>
-                <div className="flex flex-col">
-                    <p className="">TEL</p>
+                <div className="flex flex-col w-64 sm:w-72 md:w-96">
+                    <p className="mb-2">TEL</p>
                     <input
+                        type="text"
                         name="phoneNumber"
-                        className=""
+                        className="bg-white p-2 ring-1 ring-black rounded-md"
                     />
                 </div>
-                <div className="flex flex-col">
-                    <p className="">住所</p>
+                <div className="flex flex-col w-64 sm:w-72 md:w-96">
+                    <p className="mb-2">住所</p>
                     <input
+                        type="text"
                         name="address"
-                        className=""
+                        className="bg-white p-2 ring-1 ring-black rounded-md"
                     />
                 </div>
-                <div className="flex flex-col">
-                    <p className="">発行日</p>
+                <div className="flex flex-col w-64 sm:w-72 md:w-96">
+                    <p className="mb-2">発行日</p>
                     <input
+                        type="text"
                         name="publicationDate"
-                        className=""
+                        className="bg-white p-2 ring-1 ring-black rounded-md"
                     />
                 </div>
-                <div className="flex flex-col">
-                    <p className="">有効期限</p>
+                <div className="flex flex-col w-64 sm:w-72 md:w-96">
+                    <p className="mb-2">有効期限</p>
                     <input
+                        type="text"
                         name="expirationDate"
-                        className=""
+                        className="bg-white p-2 ring-1 ring-black rounded-md"
                     />
                 </div>
-                <div className="flex flex-col">
-                    <p className="">備考欄</p>
+                <div className="flex flex-col w-64 sm:w-72 md:w-96">
+                    <p className="mb-2">備考欄</p>
                     <input
+                        type="text"
                         name="notes"
-                        className=""
+                        className="bg-white p-2 ring-1 ring-black rounded-md"
                     />
                 </div>
-                <div className="flex flex-col">
-                    <p className="">案件メモ</p>
+                <div className="flex flex-col w-64 sm:w-72 md:w-96">
+                    <p className="mb-2">案件メモ</p>
                     <input
+                        type="text"
                         name="memo"
-                        className=""
+                        className="bg-white p-2 ring-1 ring-black rounded-md"
                     />
                 </div>
+                <Link
+                    to="/item-register"
+                    className="text-blue-500 underline hover:text-blue-700"
+                >
+                    商品登録ページ
+                </Link>
             </form>
         </>
     )
