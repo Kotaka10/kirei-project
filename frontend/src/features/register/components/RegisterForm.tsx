@@ -8,8 +8,8 @@ export default function RegisterForm() {
         companyName: "",
         zipcode: "",
         prefecture: "",
-        shikutyouson: "",
-        streetAddress: "",
+        cities: "",
+        otherAddress: "",
         buildingName: "",
         phoneNumber: "",
         email: [""],
@@ -146,7 +146,7 @@ export default function RegisterForm() {
                             <input
                                 type="text"
                                 name="shikutyouson"
-                                value={form.shikutyouson}
+                                value={form.cities}
                                 onChange={handleChange}
                                 className="bg-white p-2 ring-1 ring-black rounded-md"
                             />
@@ -156,7 +156,7 @@ export default function RegisterForm() {
                             <input
                                 type="text"
                                 name="streetAddress"
-                                value={form.streetAddress}
+                                value={form.otherAddress}
                                 onChange={handleChange}
                                 className="bg-white p-2 ring-1 ring-black rounded-md"
                             />

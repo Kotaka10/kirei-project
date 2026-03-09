@@ -5,8 +5,8 @@ export type CompanyInfoTypes = {
     companyName: string;
     zipcode: string;
     prefecture: string;
-    shikutyouson: string;
-    streetAddress: string;
+    cities: string;
+    otherAddress: string;
     buildingName: string;
     phoneNumber: string;
     email: string[];
