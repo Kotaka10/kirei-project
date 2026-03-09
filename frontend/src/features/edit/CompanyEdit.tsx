@@ -106,12 +106,14 @@ export default function CompanyEdit() {
                     </option>
                     <option value="解約">解約</option>
                 </select>
-                <button
-                    type="submit"
-                    className="px-4 py-2 bg-green-500 text-white rounded"
-                >
-                    更新
-                </button>
+                <div className="flex justify-end">
+                    <button
+                        type="submit"
+                        className="px-4 py-2 bg-green-500 text-white rounded"
+                    >
+                        更新
+                    </button>
+                </div>
             </form>
         </div>
     );

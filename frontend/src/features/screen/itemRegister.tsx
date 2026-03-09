@@ -5,7 +5,7 @@ export default function ItemRegister() {
 
     return (
         <>
-            <div className="bg-yellow-100 p-6 mt-16 rounded-xl max-w-lg mx-auto">
+            <div className="bg-yellow-100 p-8 mt-16 mb-12 rounded-xl max-w-lg mx-auto">
             <h1 className="text-3xl text-center pb-6">商品登録</h1>
                 <form className="flex flex-col items-center justify-center gap-10 max-w-md mx-auto bg-white rounded-xl p-6">
                     <div className="flex flex-col w-64 sm:w-72 md:w-96 pt-4">
