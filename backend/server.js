@@ -1,43 +1,45 @@
-const users = require("./data/companies.json")
+const companies = require("./data/companies.json")
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
 
 const app = express();
 
-let companies = [];
-
 app.use(express.json());
 app.use(cors());
 
 app.get("/api/companies/:id", (req, res) => {
-    const id = Number(req.params.id);
-    const user = users.find((u) => u.id == id);
+    const id = req.params.id;
+    const company = companies.find((c) => c.id == id);
 
-    if (!user) {
+    if (!company) {
         return res.status(404).json({ message: "ページが見つかりません" });
     }
     
-    res.json(user);
+    res.json(company);
 });
 
 app.get("/api/companies", (req, res) => {
-    const data = JSON.parse(
-        fs.readFileSync("./data/companies.json", "utf-8")
-    );
-    res.json(data);
+    res.json(companies);
 })
 
 app.put("/api/companies/:id", (req, res) => {
     const id = Number(req.params.id);
     const updatedData = req.body;
+    const fs = require("fs");
 
-    const index = companies.findIndex((c) => c.id === id);
+    const index = companies.findIndex((c) => Number(c.id) === id);
+
     if (index === -1) {
         return res.status(404).json({ message: "会社が見つかりません" });
     }
 
     companies[index] = { ...companies[index], ...updatedData };
+
+fs.writeFileSync(
+    "./companies.json",
+    JSON.stringify(companies, null, 2)
+);
 
     res.json(companies[index]);
 });
