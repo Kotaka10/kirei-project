@@ -26,9 +26,7 @@ export default function RegisterForm() {
         { value: "cancelled", label: "解約" },
     ] as const;
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement>
-    ) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const name = e.target.name as keyof CompanyInfoTypes;
         const value = e.target.value;
 
@@ -88,14 +86,15 @@ export default function RegisterForm() {
 
 
     return (
-        <div className="min-h-screen p-8 bg-gradient-to-br from-cyan-100 via-sky-100 to-cyan-100">
+        <div className="mb-8">
             <h1 className="text-3xl text-center text-black p-6">登録フォーム</h1>
-            <div className="bg-amber-100 m-auto max-w-lg border rounded-2xl p-6">
+            <div className="bg-sky-100 m-auto max-w-lg border rounded-2xl p-6">
                 <div className="bg-white m-auto max-w-md border rounded-2xl p-4">
                     <form className="flex flex-col items-center gap-4">
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
                             <p className="text-left mb-2">会社名</p>
                             <input
+                                type="text"
                                 name="companyName"
                                 value={form.companyName}
                                 onChange={handleChange}
@@ -113,7 +112,8 @@ export default function RegisterForm() {
                                 className="bg-white p-2 ring-1 ring-black rounded-md"
                             />
                         </div>
-                        <button 
+                        <button
+                            type="button"
                             onClick={handleFetchAddress}
                             className="bg-gray-50 p-1 ring-1 ring-black"
                         >
@@ -121,7 +121,7 @@ export default function RegisterForm() {
                         </button>
                         { msg ?? <p className="text-red-500">{msg}</p>}
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <select 
+                            <select
                                 onChange={handleChangePref}
                                 className="max-w-24 bg-gray-100"
                             >
@@ -133,6 +133,7 @@ export default function RegisterForm() {
                             </select>
                             <p className="text-left my-2">都道府県</p>
                             <input
+                                type="text"
                                 name="prefecture"
                                 value={form.prefecture}
                                 onChange={handleChange}
@@ -143,6 +144,7 @@ export default function RegisterForm() {
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
                             <p className="text-left mb-2">市区町村</p>
                             <input
+                                type="text"
                                 name="shikutyouson"
                                 value={form.shikutyouson}
                                 onChange={handleChange}
@@ -152,6 +154,7 @@ export default function RegisterForm() {
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
                             <p className="text-left mb-2">その他の住所</p>
                             <input
+                                type="text"
                                 name="streetAddress"
                                 value={form.streetAddress}
                                 onChange={handleChange}
@@ -161,6 +164,7 @@ export default function RegisterForm() {
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
                             <p className="text-left mb-2">アパートマンション名</p>
                             <input
+                                type="text"
                                 name="buildingName"
                                 value={form.buildingName}
                                 onChange={handleChange}
@@ -170,6 +174,7 @@ export default function RegisterForm() {
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
                             <p className="text-left mb-2">電話番号</p>
                             <input
+                                type="text"
                                 name="phoneNumber"
                                 value={form.phoneNumber}
                                 onChange={handleChange}
@@ -209,6 +214,7 @@ export default function RegisterForm() {
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
                             <p className="text-left mb-2">契約日</p>
                             <input
+                                type="text"
                                 name="contractDate"
                                 value={form.contractDate}
                                 onChange={handleChange}
@@ -220,6 +226,7 @@ export default function RegisterForm() {
                             <div className="flex flex-col w-64 sm:w-72 md:w-96">
                                 <p className="text-left mb-2">解約日</p>
                                 <input
+                                    type="text"
                                     name="cancellationDate"
                                     value={form.cancellationDate}
                                     onChange={handleChange}
