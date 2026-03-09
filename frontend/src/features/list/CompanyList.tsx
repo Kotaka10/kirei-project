@@ -31,7 +31,8 @@ export default function CompanyList() {
 
     return(
         <div className="bg-sky-100 p-8 min-h-screen m-auto">
-            <div className="bg-sky-100 pb-8 flex flex-col items-center justify-center mt-24">
+            <h1 className="text-center text-3xl p-6">会社一覧</h1>
+            <div className="bg-sky-100 pb-8 flex flex-col items-center justify-center">
                 <input
                     type="text"
                     placeholder="会社名で検索"
