@@ -63,6 +63,18 @@ export default function RegisterForm() {
         }))
     }
 
+    const handleAddCompany = async () => {
+        const res = await fetch("http://localhost:3000/api/companies", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(form),
+        })
+
+        await res.json();
+    }
+
     useEffect(() => {
         const fetchCompany = async () => {
             const res = await fetch("http://localhost:3000/api/companies/1");
@@ -243,6 +255,12 @@ export default function RegisterForm() {
                                 </label>
                             ))}
                         </div>
+                        <button
+                            onClick={handleAddCompany}
+                            className="bg-blue-500 px-3 py-2 text-white rounded"
+                        >
+                            登録
+                        </button>
                     </form>
                 </div>
             </div>
