@@ -61,7 +61,7 @@ export default function UserRegister() {
                         <p className="mb-2">名前</p>
                         <input
                             type="text"
-                            name="userName"
+                            name="name"
                             value={form.name}
                             onChange={handleChange}
                             placeholder="お客様名"
@@ -101,7 +101,7 @@ export default function UserRegister() {
                         <p className="mb-2">都道府県</p>
                         <input
                             type="text"
-                            name="prefectures"
+                            name="prefecture"
                             value={form.prefecture}
                             onChange={handleChange}
                             className="bg-white p-2 ring-1 ring-gray-300 rounded"
@@ -121,7 +121,7 @@ export default function UserRegister() {
                         <p className="mb-2">その他の住所</p>
                         <input
                             type="text"
-                            name="address"
+                            name="otherAddress"
                             value={form.otherAddress}
                             onChange={handleChange}
                             className="bg-white p-2 ring-1 ring-gray-300 rounded"
