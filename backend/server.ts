@@ -1,10 +1,14 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const useRoutes = require("./../server.ts");
 
-app.use("/companies", useRoutes);
-app.use(express.json());
+const useRoutes = require("./controllers/companyCommunication.ts");
+
 app.use(cors());
+app.use(express.json());
 
-app.listen(3000);
+app.use("/api/companies", useRoutes);
+
+app.listen(3000, () => {
+    console.log("server running on port 3000");
+});
