@@ -2,8 +2,8 @@ export type userInfoTypes = {
     name: string;
     phoneNumber: string;
     zipcode: string;
-    prefetures: string;
-    cities: string;
+    prefecture: string;
+    city: string;
     otherAddress: string;
     buildingName: string;
     publicationDate: string;
