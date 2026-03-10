@@ -98,7 +98,7 @@ export default function RegisterForm() {
                                 name="companyName"
                                 value={form.companyName}
                                 onChange={handleChange}
-                                className="bg-white p-2 ring-1 ring-black rounded-md"
+                                className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
                             />
                         </div>
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
@@ -108,14 +108,14 @@ export default function RegisterForm() {
                                 type="text"
                                 value={form.zipcode}
                                 onChange={handleChange}
-                                placeholder="例）0123456"
-                                className="bg-white p-2 ring-1 ring-black rounded-md"
+                                placeholder="0123456"
+                                className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
                             />
                         </div>
                         <button
                             type="button"
                             onClick={handleFetchAddress}
-                            className="bg-gray-50 p-1 ring-1 ring-black"
+                            className="bg-gray-50 p-1 ring-1 ring-gray-300"
                         >
                             住所自動入力
                         </button>
@@ -137,7 +137,7 @@ export default function RegisterForm() {
                                 name="prefecture"
                                 value={form.prefecture}
                                 onChange={handleChange}
-                                className="bg-white p-2 ring-1 ring-black rounded-md"
+                                className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
                             />
                             
                         </div>
@@ -148,7 +148,7 @@ export default function RegisterForm() {
                                 name="shikutyouson"
                                 value={form.cities}
                                 onChange={handleChange}
-                                className="bg-white p-2 ring-1 ring-black rounded-md"
+                                className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
                             />
                         </div>
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
@@ -158,7 +158,7 @@ export default function RegisterForm() {
                                 name="streetAddress"
                                 value={form.otherAddress}
                                 onChange={handleChange}
-                                className="bg-white p-2 ring-1 ring-black rounded-md"
+                                className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
                             />
                         </div>
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
@@ -168,7 +168,7 @@ export default function RegisterForm() {
                                 name="buildingName"
                                 value={form.buildingName}
                                 onChange={handleChange}
-                                className="bg-white p-2 ring-1 ring-black rounded-md"
+                                className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
                             />
                         </div>
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
@@ -178,7 +178,7 @@ export default function RegisterForm() {
                                 name="phoneNumber"
                                 value={form.phoneNumber}
                                 onChange={handleChange}
-                                className="bg-white p-2 ring-1 ring-black rounded-md"
+                                className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
                             />
                         </div>
                         {form.email.map((email, index) => (
@@ -197,7 +197,7 @@ export default function RegisterForm() {
                                             email: newEmails,
                                         }));
                                     }}
-                                    className="bg-white p-2 ring-1 ring-black rounded-md"
+                                    className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
                                 />
                             </div>
                         ))}
@@ -207,7 +207,7 @@ export default function RegisterForm() {
                                 ...prev,
                                 email: [...prev.email, ""],
                             }))}
-                            className="bg-gray-50 p-1 ring-1 ring-black"
+                            className="bg-gray-50 p-1 ring-1 ring-gray-300"
                         >
                             ＋メールアドレスを追加
                         </button>
@@ -218,7 +218,7 @@ export default function RegisterForm() {
                                 name="contractDate"
                                 value={form.contractDate}
                                 onChange={handleChange}
-                                className="bg-white p-2 ring-1 ring-black rounded-md"
+                                className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
                             />
                         </div>
                         {form.status === "cancelled"
@@ -230,7 +230,7 @@ export default function RegisterForm() {
                                     name="cancellationDate"
                                     value={form.cancellationDate}
                                     onChange={handleChange}
-                                    className="bg-white p-2 ring-1 ring-black rounded-md"
+                                    className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
                                 />
                             </div>
                         ) : null}
