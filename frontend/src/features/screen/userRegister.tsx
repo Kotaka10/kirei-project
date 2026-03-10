@@ -1,12 +1,60 @@
 import { Link } from "react-router-dom";
-
+import type { userInfoTypes } from "./types/userInfoTypes";
+import { useState } from "react";
 
 export default function UserRegister() {
+    const [form, setForm] = useState<userInfoTypes>({
+        name: "",
+        phoneNumber: "",
+        zipcode: "",
+        prefecture: "",
+        city: "",
+        otherAddress: "",
+        buildingName: "",
+        publicationDate: "",
+        expirationDate: "",
+        notes: "",
+        memo: "",
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const name = e.target.name as keyof userInfoTypes;
+
+        setForm((prev: userInfoTypes) => ({
+            ...prev,
+            [name]: e.target.value,
+        }))
+    }
     
+    const handleFetchAddress = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        fetchAddress(form.zipcode);
+    }
+
+    const fetchAddress = async (zipcode: string) => {
+        if (!/^\d{7}$/.test(zipcode)) {
+            alert("有効な7桁の数字を入力してください。")
+            return;
+        }
+
+        try {
+            const res = await fetch(`https://zipcloud.ibsnet.co.jp/api/search?zipcode=${zipcode}`);
+            const data = await res.json();
+            if (data.results) {
+                setForm((prev) => ({
+                    ...prev,
+                    prefecture: data.results[0].address1,
+                    city: data.results[0].address2 + data.results[0].address3,
+                }))
+            }
+        } catch (error) {
+            alert("住所取得に失敗しました。")
+        }
+    }
 
     return (
         <>
-            <form className="bg-green-100 p-8 m-auto max-w-lg rounded-xl my-12">
+            <form className="bg-slate-100 p-8 m-auto max-w-lg rounded-xl my-12">
             <h1 className="text-3xl text-center pb-6">ユーザー登録</h1>
                 <div className="bg-white p-4 rounded-xl flex flex-col items-center justify-center gap-8">
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
@@ -14,7 +62,10 @@ export default function UserRegister() {
                         <input
                             type="text"
                             name="userName"
-                            className="bg-white p-2 ring-1 ring-black rounded-md"
+                            value={form.name}
+                            onChange={handleChange}
+                            placeholder="お客様名"
+                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
@@ -22,15 +73,68 @@ export default function UserRegister() {
                         <input
                             type="text"
                             name="phoneNumber"
-                            className="bg-white p-2 ring-1 ring-black rounded-md"
+                            value={form.phoneNumber}
+                            onChange={handleChange}
+                            placeholder="電話番号（例：0123456789)"
+                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2">住所</p>
+                        <p className="mb-2">郵便番号</p>
+                        <input
+                            type="text"
+                            name="zipcode"
+                            value={form.zipcode}
+                            onChange={handleChange}
+                            placeholder="0123456"
+                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
+                        />
+                    </div>
+                    <button
+                        type="button"
+                        onClick={handleFetchAddress}
+                        className="bg-gray-50 p-1 ring-1 ring-gray-300"
+                    >
+                        住所自動入力
+                    </button>
+                    <div className="flex flex-col w-64 sm:w-72 md:w-96">
+                        <p className="mb-2">都道府県</p>
+                        <input
+                            type="text"
+                            name="prefectures"
+                            value={form.prefecture}
+                            onChange={handleChange}
+                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
+                        />
+                    </div>
+                    <div className="flex flex-col w-64 sm:w-72 md:w-96">
+                        <p className="mb-2">市区町村</p>
+                        <input
+                            type="text"
+                            name="city"
+                            value={form.city}
+                            onChange={handleChange}
+                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
+                        />
+                    </div>
+                    <div className="flex flex-col w-64 sm:w-72 md:w-96">
+                        <p className="mb-2">その他の住所</p>
                         <input
                             type="text"
                             name="address"
-                            className="bg-white p-2 ring-1 ring-black rounded-md"
+                            value={form.otherAddress}
+                            onChange={handleChange}
+                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
+                        />
+                    </div>
+                    <div className="flex flex-col w-64 sm:w-72 md:w-96">
+                        <p className="mb-2">アパートマンション名</p>
+                        <input
+                            type="text"
+                            name="buildingName"
+                            value={form.buildingName}
+                            onChange={handleChange}
+                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
@@ -38,7 +142,9 @@ export default function UserRegister() {
                         <input
                             type="text"
                             name="publicationDate"
-                            className="bg-white p-2 ring-1 ring-black rounded-md"
+                            value={form.publicationDate}
+                            onChange={handleChange}
+                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
@@ -46,7 +152,9 @@ export default function UserRegister() {
                         <input
                             type="text"
                             name="expirationDate"
-                            className="bg-white p-2 ring-1 ring-black rounded-md"
+                            value={form.expirationDate}
+                            onChange={handleChange}
+                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
@@ -54,7 +162,9 @@ export default function UserRegister() {
                         <input
                             type="text"
                             name="notes"
-                            className="bg-white p-2 ring-1 ring-black rounded-md"
+                            value={form.notes}
+                            onChange={handleChange}
+                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
@@ -62,7 +172,9 @@ export default function UserRegister() {
                         <input
                             type="text"
                             name="memo"
-                            className="bg-white p-2 ring-1 ring-black rounded-md"
+                            value={form.memo}
+                            onChange={handleChange}
+                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
                         />
                     </div>
                     <Link
