@@ -11,6 +11,6 @@ export type CompanyInfoTypes = {
     phoneNumber: string;
     email: string[];
     contractDate: string;
-    status: ContractStatus | null;
+    status: ContractStatus;
     cancellationDate: string;
 }
