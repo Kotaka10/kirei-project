@@ -109,7 +109,7 @@ export default function CompanyEdit() {
                 <div className="flex justify-end">
                     <button
                         type="submit"
-                        className="px-4 py-2 bg-green-500 text-white rounded"
+                        className="w-full rounded-lg x-4 py-3 mt-4 bg-green-500 text-white"
                     >
                         更新
                     </button>

@@ -58,36 +58,36 @@ export default function UserRegister() {
             <h1 className="text-3xl text-center pb-6">ユーザー登録</h1>
                 <div className="bg-white p-4 rounded-xl flex flex-col items-center justify-center gap-8">
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2">名前</p>
+                        <p className="mb-2 text-gray-700">名前</p>
                         <input
                             type="text"
                             name="name"
                             value={form.name}
                             onChange={handleChange}
                             placeholder="お客様名"
-                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
+                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2">TEL</p>
+                        <p className="mb-2 text-gray-700">TEL</p>
                         <input
                             type="text"
                             name="phoneNumber"
                             value={form.phoneNumber}
                             onChange={handleChange}
                             placeholder="電話番号（例：0123456789)"
-                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
+                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2">郵便番号</p>
+                        <p className="mb-2 text-gray-700">郵便番号</p>
                         <input
                             type="text"
                             name="zipcode"
                             value={form.zipcode}
                             onChange={handleChange}
                             placeholder="0123456"
-                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
+                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
                         />
                     </div>
                     <button
@@ -98,83 +98,83 @@ export default function UserRegister() {
                         住所自動入力
                     </button>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2">都道府県</p>
+                        <p className="mb-2 text-gray-700">都道府県</p>
                         <input
                             type="text"
                             name="prefecture"
                             value={form.prefecture}
                             onChange={handleChange}
-                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
+                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2">市区町村</p>
+                        <p className="mb-2 text-gray-700">市区町村</p>
                         <input
                             type="text"
                             name="city"
                             value={form.city}
                             onChange={handleChange}
-                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
+                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2">その他の住所</p>
+                        <p className="mb-2 text-gray-700">その他の住所</p>
                         <input
                             type="text"
                             name="otherAddress"
                             value={form.otherAddress}
                             onChange={handleChange}
-                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
+                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2">アパートマンション名</p>
+                        <p className="mb-2 text-gray-700">アパートマンション名</p>
                         <input
                             type="text"
                             name="buildingName"
                             value={form.buildingName}
                             onChange={handleChange}
-                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
+                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2">発行日</p>
+                        <p className="mb-2 text-gray-700">発行日</p>
                         <input
                             type="text"
                             name="publicationDate"
                             value={form.publicationDate}
                             onChange={handleChange}
-                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
+                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2">有効期限</p>
+                        <p className="mb-2 text-gray-700">有効期限</p>
                         <input
                             type="text"
                             name="expirationDate"
                             value={form.expirationDate}
                             onChange={handleChange}
-                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
+                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2">備考欄</p>
+                        <p className="mb-2 text-gray-700">備考欄</p>
                         <input
                             type="text"
                             name="notes"
                             value={form.notes}
                             onChange={handleChange}
-                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
+                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2">案件メモ</p>
+                        <p className="mb-2 text-gray-700">案件メモ</p>
                         <input
                             type="text"
                             name="memo"
                             value={form.memo}
                             onChange={handleChange}
-                            className="bg-white p-2 ring-1 ring-gray-300 rounded"
+                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
                         />
                     </div>
                     <Link
