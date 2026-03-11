@@ -73,7 +73,7 @@ export default function ItemRegister() {
                         商品を登録する
                     </button>
                     <Link
-                        to="/item-lisst"
+                        to="/item-list"
                         className="text-sm font-medium text-slate-700 underline underline-offset-4 hover:text-slate-900"
                     >
                         商品一覧ページ
