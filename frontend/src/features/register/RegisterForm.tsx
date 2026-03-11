@@ -15,7 +15,7 @@ export default function RegisterForm() {
         phoneNumber: "",
         email: [""],
         contractDate: "",
-        status: null,
+        status: "",
         cancellationDate: "",
     });
 
