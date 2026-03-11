@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
 
-
 export default function ItemRegister() {
 
 
     return (
         <>
-            <div className="bg-slate-100 p-8 my-12 rounded-xl max-w-lg mx-auto">
+            <div className="bg-slate-100 p-8 rounded-xl mx-auto">
             <h1 className="text-3xl text-center pb-6">商品登録</h1>
                 <form className="flex flex-col items-center justify-center gap-10 max-w-md mx-auto w-full bg-white rounded-2xl p-6 sm:p-8">
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">

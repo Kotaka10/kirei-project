@@ -54,9 +54,9 @@ export default function UserRegister() {
 
     return (
         <>
-            <form className="bg-slate-100 p-8 m-auto max-w-lg rounded-xl my-12">
+            <form className="bg-slate-100 p-8 m-auto rounded-xl">
             <h1 className="text-3xl text-center pb-6">ユーザー登録</h1>
-                <div className="bg-white p-4 rounded-xl flex flex-col items-center justify-center gap-8">
+                <div className="bg-white p-4 rounded-xl max-w-md mx-auto flex flex-col items-center justify-center gap-8">
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
                         <p className="mb-2 text-gray-700">名前</p>
                         <input
