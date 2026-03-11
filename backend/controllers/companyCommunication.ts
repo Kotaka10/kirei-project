@@ -45,7 +45,14 @@ router.put("/id", (req: Request<Params>, res: Response) => {
 });
 
 router.post("/", (req: Request, res: Response) => {
-    const newCompany = req.body;
+    const maxId = companies.length
+        ? Math.max(...companies.map((c: { id: any; }) => c.id))
+        : 0;
+
+    const newCompany = {
+        ...req.body,
+        id: maxId + 1,
+    };
 
     companies.push(newCompany);
 
