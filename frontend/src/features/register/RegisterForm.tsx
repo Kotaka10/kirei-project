@@ -1,88 +1,22 @@
-import { useEffect, useState } from "react";
-import type { CompanyInfoTypes } from "./types/companyInfoTypes";
 import { PREFECTURES } from "./types/prefectures";
-import { useAddress } from "./components/useAddress";
+import { useRegisterForm } from "./hooks/useRegisterForm";
+
+const contractStatusOptions = [
+    { value: "active", label: "契約中" },
+    { value: "negotiating", label: "商談中" },
+    { value: "cancelled", label: "解約" },
+] as const;
 
 export default function RegisterForm() {
-    const [form, setForm] = useState<CompanyInfoTypes>({
-        id: 0,
-        companyName: "",
-        zipcode: "",
-        prefecture: "",
-        city: "",
-        otherAddress: "",
-        buildingName: "",
-        phoneNumber: "",
-        email: [""],
-        contractDate: "",
-        status: "",
-        cancellationDate: "",
-    });
-
-    const [msg, setMsg] = useState("");
-    const { fetchAddress } = useAddress();
-
-    const contractStatusOptions = [
-        { value: "active", label: "契約中" },
-        { value: "negotiating", label: "商談中" },
-        { value: "cancelled", label: "解約" },
-    ] as const;
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const {name, value} = e.target;
-
-        setForm((prev: CompanyInfoTypes) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
-
-    const handleFetchAddress = async (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-
-        try {
-            const result = await fetchAddress(form.zipcode);
-
-            setForm((prev) => ({
-                ...prev,
-                ...result,
-            }));
-
-            setMsg("");
-        } catch (err) {
-            setMsg((err as Error).message);
-        }
-    };
-
-    const handleChangePref = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setForm((prev) => ({
-            ...prev,
-            prefecture: e.target.value,
-        }))
-    }
-
-    const handleAddCompany = async () => {
-        const res = await fetch("http://localhost:3000/api/companies", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(form),
-        })
-
-        await res.json();
-    }
-
-    useEffect(() => {
-        const fetchCompany = async () => {
-            const res = await fetch("http://localhost:3000/api/companies/1");
-            const data = await res.json();
-
-            setForm(data);
-        }
-
-        fetchCompany();
-    }, []);
+    const {
+        form,
+        msg,
+        handleChange,
+        handleFetchAddress,
+        handleChangeEmail,
+        handleAddEmail,
+        handleAddCompany,
+    } = useRegisterForm();
 
     return (
         <div className="mb-8">
@@ -103,8 +37,8 @@ export default function RegisterForm() {
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
                             <p className="text-left mb-2">郵便番号</p>
                             <input
-                                name="zipcode"
                                 type="text"
+                                name="zipcode"
                                 value={form.zipcode}
                                 onChange={handleChange}
                                 placeholder="0123456"
@@ -118,10 +52,11 @@ export default function RegisterForm() {
                         >
                             住所自動入力
                         </button>
-                        { msg && <p className="text-red-500">{msg}</p>}
+                        {msg && <p className="text-red-500">{msg}</p>}
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
                             <select
-                                onChange={handleChangePref}
+                                name="prefecture"
+                                onChange={handleChange}
                                 className="max-w-24 bg-gray-100"
                             >
                                 {PREFECTURES.map((pref) => (
@@ -138,7 +73,6 @@ export default function RegisterForm() {
                                 onChange={handleChange}
                                 className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
                             />
-                            
                         </div>
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
                             <p className="text-left mb-2">市区町村</p>
@@ -188,24 +122,14 @@ export default function RegisterForm() {
                                 <p className="text-left mb-2">メールアドレス</p>
                                 <input
                                     value={email}
-                                    onChange={(e) => {
-                                        const newEmails = [...form.email];
-                                        newEmails[index] = e.target.value;
-                                        setForm((prev) => ({
-                                            ...prev,
-                                            email: newEmails,
-                                        }));
-                                    }}
+                                    onChange={(e) => handleChangeEmail(index, e.target.value)}
                                     className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
                                 />
                             </div>
                         ))}
                         <button
                             type="button"
-                            onClick={() => setForm((prev) => ({
-                                ...prev,
-                                email: [...prev.email, ""],
-                            }))}
+                            onClick={handleAddEmail}
                             className="bg-gray-50 p-1 ring-1 ring-gray-300"
                         >
                             ＋メールアドレスを追加
@@ -220,8 +144,7 @@ export default function RegisterForm() {
                                 className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
                             />
                         </div>
-                        {form.status === "cancelled"
-                        ? (
+                        {form.status === "cancelled" && (
                             <div className="flex flex-col w-64 sm:w-72 md:w-96">
                                 <p className="text-left mb-2">解約日</p>
                                 <input
@@ -232,13 +155,13 @@ export default function RegisterForm() {
                                     className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
                                 />
                             </div>
-                        ) : null}
+                        )}
                         <div className="text-left self-start mt-2">
                             <p className="ml-4">契約状態</p>
                         </div>
                         <div className="mb-4">
                             {contractStatusOptions.map((option) => (
-                                <label 
+                                <label
                                     key={option.value}
                                     className="text-black mx-2"
                                 >
@@ -249,7 +172,7 @@ export default function RegisterForm() {
                                         checked={form.status === option.value}
                                         onChange={handleChange}
                                     />
-                                        {option.label}
+                                    {option.label}
                                 </label>
                             ))}
                         </div>
@@ -263,5 +186,5 @@ export default function RegisterForm() {
                 </div>
             </div>
         </div>
-    )
+    );
 }
