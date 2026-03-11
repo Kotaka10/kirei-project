@@ -11,9 +11,15 @@ export function useAddress() {
       throw new Error(data.message);
     }
 
+    const result = data.results?.[0];
+
+    if (!result) {
+      throw new Error("住所取得失敗");
+    }
+
     return {
-      prefecture: data.results[0].address1,
-      city: data.results[0].address2 + data.results[0].address3,
+      prefecture: result.address1,
+      city: result.address2 + result.address3,
     };
   };
 
