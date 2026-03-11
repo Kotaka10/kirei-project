@@ -178,7 +178,7 @@ export default function RegisterForm() {
                         </div>
                         <button
                             onClick={handleAddCompany}
-                            className="bg-blue-500 px-3 py-2 text-white rounded"
+                            className="w-full rounded-lg text-white hover:bg-slate-800 bg-blue-500 px-4 py-3"
                         >
                             登録
                         </button>
