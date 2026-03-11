@@ -177,6 +177,12 @@ export default function UserRegister() {
                             className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
                         />
                     </div>
+                    <button
+                        type="submit"
+                        className="w-full rounded-lg bg-slate-900 px-4 py-3 text-white hover:bg-slate-800"
+                    >
+                        ユーザー登録をする
+                    </button>
                     <Link
                         to="/item-register"
                         className="text-blue-500 underline hover:text-blue-700"
