@@ -1,4 +1,4 @@
-import type { ContractStatus } from "./contractStatus";
+import type { ContractStatus } from "./contractStatusTypes";
 
 export type CompanyInfoTypes = {
     id: number;
