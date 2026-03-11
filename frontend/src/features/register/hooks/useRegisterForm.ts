@@ -59,11 +59,21 @@ export const useRegisterForm = () => {
         setForm((prev) => ({ ...prev, email: [...prev.email, ""] }));
     };
 
+    const statusLabelMap: Record<string, string> = {
+        active: "契約中",
+        negotiating: "商談中",
+        cancelled: "解約",
+    };
+
     const handleAddCompany = async () => {
+        const payload = {
+            ...form,
+            status: statusLabelMap[form.status] ?? form.status,
+        };
         const res = await fetch("http://localhost:3000/api/companies", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(form),
+            body: JSON.stringify(payload),
         });
         await res.json();
     };
