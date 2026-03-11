@@ -20,7 +20,6 @@ export default function RegisterForm() {
     });
 
     const [msg, setMsg] = useState("");
-
     const { fetchAddress } = useAddress();
 
     const contractStatusOptions = [
@@ -29,9 +28,8 @@ export default function RegisterForm() {
         { value: "cancelled", label: "解約" },
     ] as const;
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const name = e.target.name as keyof CompanyInfoTypes;
-        const value = e.target.value;
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        const {name, value} = e.target;
 
         setForm((prev: CompanyInfoTypes) => ({
             ...prev,
@@ -120,7 +118,7 @@ export default function RegisterForm() {
                         >
                             住所自動入力
                         </button>
-                        { msg ?? <p className="text-red-500">{msg}</p>}
+                        { msg && <p className="text-red-500">{msg}</p>}
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
                             <select
                                 onChange={handleChangePref}
