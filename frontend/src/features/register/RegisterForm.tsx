@@ -1,4 +1,4 @@
-import { PREFECTURES } from "./types/prefectures";
+import { PREFECTURES } from "./types/prefecturesTypes";
 import { useRegisterForm } from "./hooks/useRegisterForm";
 
 const contractStatusOptions = [
