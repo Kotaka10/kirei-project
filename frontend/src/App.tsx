@@ -5,6 +5,7 @@ import CompanyEdit from './features/edit/CompanyEdit';
 import { Routes, Route, Link } from 'react-router-dom';
 import UserRegister from './features/register/UserRegister';
 import ItemRegister from './features/register/ItemRegister';
+import ItemList from './features/register/components/ItemList';
 
 function App() {
   
@@ -22,6 +23,7 @@ function App() {
         <Route path="/company/edit/:id" element={<CompanyEdit />} />
         <Route path="/user-register" element={<UserRegister />} />
         <Route path="/item-register" element={<ItemRegister />} />
+        <Route path="/item-list" element={<ItemList />} />
       </Routes>
     </div>
   )
