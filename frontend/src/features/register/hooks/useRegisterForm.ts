@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { CompanyInfoTypes } from "../types/companyInfoTypes";
-import { useAddress } from "../components/useAddress";
+import { useAddress } from "./useAddress";
 
 export const useRegisterForm = () => {
     const [form, setForm] = useState<CompanyInfoTypes>({
