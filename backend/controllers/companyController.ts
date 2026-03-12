@@ -17,9 +17,13 @@ export const getCompany = (req: Request, res: Response) => {
 };
 
 export const updateCompany = (req: Request, res: Response) => {
-    const updateCompany = companyService.updateCompany(Number(req.params.id), req.body);
+    const updatedCompany = companyService.updateCompany(Number(req.params.id), req.body);
 
-    res.json(updateCompany);
+    if (!updatedCompany) {
+      return res.status(404).json({ message: "会社が見つかりません" });
+    }
+
+    res.json(updatedCompany);
 }
 
 export const createCompany = (req: Request, res: Response) => {
