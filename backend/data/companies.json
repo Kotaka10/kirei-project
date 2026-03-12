@@ -45,11 +45,11 @@
     "status": "商談中"
   },
   {
-    "id": 1,
-    "companyName": "株式会社KIREI",
-    "zipcode": "3340013",
+    "id": null,
+    "companyName": "株式会社Fabulous",
+    "zipcode": "3340012",
     "prefecture": "埼玉県",
-    "shikutyouson": "千代田区千代田",
+    "city": "川口市八幡木",
     "streetAddress": "392-1",
     "buildingName": "",
     "phoneNumber": "0120-011-011",
@@ -57,7 +57,36 @@
       "kirei100@kirei.com"
     ],
     "contractDate": "2026年3月2日",
-    "status": "契約中",
-    "city": "川口市南鳩ヶ谷"
+    "status": "negotiating"
+  },
+  {
+    "id": 4,
+    "companyName": "株式会社KIREI",
+    "zipcode": "3340012",
+    "prefecture": "埼玉県",
+    "city": "川口市八幡木",
+    "streetAddress": "392-1",
+    "buildingName": "",
+    "phoneNumber": "0120-011-011",
+    "email": [
+      "kirei100@kirei.com"
+    ],
+    "contractDate": "2026年3月2日",
+    "status": "active"
+  },
+  {
+    "id": 5,
+    "companyName": "株式会社KIREI",
+    "zipcode": "3340012",
+    "prefecture": "埼玉県",
+    "city": "川口市八幡木",
+    "streetAddress": "392-1",
+    "buildingName": "",
+    "phoneNumber": "0120-011-011",
+    "email": [
+      "kirei100@kirei.com"
+    ],
+    "contractDate": "2026年3月2日",
+    "status": "商談中"
   }
 ]
