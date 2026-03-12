@@ -31,11 +31,12 @@ export const useRegisterForm = () => {
         fetchCompany();
     }, []);
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-    ) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setForm((prev) => ({ ...prev, [name]: value }));
+        setForm((prev) => ({
+            ...prev,
+            [name]: value
+        }));
     };
 
     const handleFetchAddress = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -45,7 +46,9 @@ export const useRegisterForm = () => {
             setForm((prev) => ({ ...prev, ...result }));
             setMsg("");
         } catch (err) {
-            setMsg((err as Error).message);
+            if (err instanceof Error) {
+                setMsg(err.message);
+            }
         }
     };
 
