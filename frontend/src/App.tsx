@@ -6,26 +6,24 @@ import { Routes, Route, Link } from 'react-router-dom';
 import UserRegister from './features/register/UserRegister';
 import ItemRegister from './features/register/ItemRegister';
 import ItemList from './features/register/components/ItemList';
+import DefaultLayout from './features/layout/DefaultLayout';
+import ColoredLayout from './features/layout/ColoredLayout';
 
 function App() {
   
   return (
-    <div className="my-2">
-      <nav className="flex items-center justify-center gap-4">
-        <Link to="/register">会社登録ページ</Link>
-        <Link to="/list">会社一覧</Link>
-        <Link to="/user-register">ユーザー登録ページ</Link>
-        <Link to="/item-register">商品登録ページ</Link>
-      </nav>
-      <Routes>
+    <Routes>
+      <Route element={<DefaultLayout />}>
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/list" element={<CompanyList />} />
         <Route path="/company/edit/:id" element={<CompanyEdit />} />
+        <Route path="/item-list" element={<ItemList />} />
+      </Route>
+      <Route element={<ColoredLayout />}>
         <Route path="/user-register" element={<UserRegister />} />
         <Route path="/item-register" element={<ItemRegister />} />
-        <Route path="/item-list" element={<ItemList />} />
-      </Routes>
-    </div>
+      </Route>
+    </Routes>
   )
 }
 
