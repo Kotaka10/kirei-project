@@ -19,7 +19,7 @@ export const getCompanyById = (id: number) => {
 
 export const updateCompany = (id: number, company: any) => {
   const companies = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
-  const index = companies.find((c: { id: number }) => c.id === id);
+  const index = companies.findIndex((c: { id: number }) => c.id === id);
 
   if (index === -1) {
     return null;
