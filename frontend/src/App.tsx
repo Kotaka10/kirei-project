@@ -2,7 +2,7 @@ import './App.css'
 import RegisterForm from "./features/register/RegisterForm";
 import CompanyList from './features/list/CompanyList';
 import CompanyEdit from './features/edit/CompanyEdit';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import UserRegister from './features/register/UserRegister';
 import ItemRegister from './features/register/ItemRegister';
 import ItemList from './features/register/components/ItemList';
