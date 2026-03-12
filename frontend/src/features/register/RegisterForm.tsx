@@ -25,7 +25,7 @@ export default function RegisterForm() {
                 <div className="bg-white m-auto max-w-md border rounded-2xl p-4">
                     <form className="flex flex-col items-center gap-4">
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <p className="text-left mb-2">会社名</p>
+                            <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">会社名</label>
                             <input
                                 type="text"
                                 name="companyName"
@@ -35,7 +35,7 @@ export default function RegisterForm() {
                             />
                         </div>
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <p className="text-left mb-2">郵便番号</p>
+                            <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">郵便番号</label>
                             <input
                                 type="text"
                                 name="zipcode"
@@ -46,14 +46,15 @@ export default function RegisterForm() {
                             />
                         </div>
                         <button
-                            type="button"
+                            type="submit"
                             onClick={handleFetchAddress}
-                            className="bg-gray-50 p-1 ring-1 ring-gray-300"
+                            className="rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-sm text-sky-700 hover:bg-sky-100"
                         >
                             住所自動入力
                         </button>
                         {msg && <p className="text-red-500">{msg}</p>}
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
+                            <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">都道府県</label>
                             <select
                                 name="prefecture"
                                 onChange={handleChange}
@@ -65,37 +66,29 @@ export default function RegisterForm() {
                                     </option>
                                 ))}
                             </select>
-                            <p className="text-left my-2">都道府県</p>
-                            <input
-                                type="text"
-                                name="prefecture"
-                                value={form.prefecture}
-                                onChange={handleChange}
-                                className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
-                            />
                         </div>
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <p className="text-left mb-2">市区町村</p>
+                            <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">市区町村</label>
                             <input
                                 type="text"
-                                name="shikutyouson"
+                                name="city"
                                 value={form.city}
                                 onChange={handleChange}
                                 className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
                             />
                         </div>
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <p className="text-left mb-2">その他の住所</p>
+                            <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">その他の住所</label>
                             <input
                                 type="text"
-                                name="streetAddress"
+                                name="otherAddress"
                                 value={form.otherAddress}
                                 onChange={handleChange}
                                 className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
                             />
                         </div>
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <p className="text-left mb-2">アパートマンション名</p>
+                            <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">アパートマンション名</label>
                             <input
                                 type="text"
                                 name="buildingName"
@@ -105,7 +98,7 @@ export default function RegisterForm() {
                             />
                         </div>
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <p className="text-left mb-2">電話番号</p>
+                            <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">電話番号</label>
                             <input
                                 type="text"
                                 name="phoneNumber"
@@ -119,7 +112,7 @@ export default function RegisterForm() {
                                 key={index}
                                 className="flex flex-col w-64 sm:w-72 md:w-96"
                             >
-                                <p className="text-left mb-2">メールアドレス</p>
+                                <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">メールアドレス</label>
                                 <input
                                     value={email}
                                     onChange={(e) => handleChangeEmail(index, e.target.value)}
@@ -128,16 +121,16 @@ export default function RegisterForm() {
                             </div>
                         ))}
                         <button
-                            type="button"
+                            type="submit"
                             onClick={handleAddEmail}
-                            className="bg-gray-50 p-1 ring-1 ring-gray-300"
+                            className="rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-sm text-sky-700 hover:bg-sky-100"
                         >
                             ＋メールアドレスを追加
                         </button>
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <p className="text-left mb-2">契約日</p>
+                            <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">契約日</label>
                             <input
-                                type="text"
+                                type="date"
                                 name="contractDate"
                                 value={form.contractDate}
                                 onChange={handleChange}
@@ -146,9 +139,9 @@ export default function RegisterForm() {
                         </div>
                         {form.status === "cancelled" && (
                             <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                                <p className="text-left mb-2">解約日</p>
+                                <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">解約日</label>
                                 <input
-                                    type="text"
+                                    type="date"
                                     name="cancellationDate"
                                     value={form.cancellationDate}
                                     onChange={handleChange}
@@ -157,7 +150,7 @@ export default function RegisterForm() {
                             </div>
                         )}
                         <div className="text-left self-start mt-2">
-                            <p className="ml-4">契約状態</p>
+                            <label htmlFor="companyName" className="mb-2 ml-4 text-sm font-medium text-gray-700">契約状態</label>
                         </div>
                         <div className="mb-4">
                             {contractStatusOptions.map((option) => (

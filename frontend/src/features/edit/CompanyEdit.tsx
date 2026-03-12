@@ -71,32 +71,36 @@ export default function CompanyEdit() {
         <div className="bg-sky-100 max-w-xl mx-auto flex flex-col items-center p-12 mt-16 rounded-xl">
             <h1 className="text-3xl p-6">会社情報編集</h1>
             <form onSubmit={handleSubmit} className="w-full max-w-md">
+                <label htmlFor="companyName" className="text-sm font-medium text-gray-700">会社名</label>
                 <input
                     type="text"
                     name="companyName"
                     value={formData.companyName}
                     onChange={handleChange}
-                    className="mb-4 p-2 border border-black rounded w-full"
+                    className="my-2 p-2 border border-black rounded w-full"
                 />
+                <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">都道府県</label>
                 <input
                     type="text"
                     name="prefecture"
                     value={formData.prefecture}
                     onChange={handleChange}
-                    className="mb-4 p-2 border border-black rounded w-full"
+                    className="my-2 p-2 border border-black rounded w-full"
                 />
+                <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">郵便番号</label>
                 <input
                     type="text"
                     name="zipcode"
                     value={formData.zipcode}
                     onChange={handleChange}
-                    className="mb-4 p-2 border border-black rounded w-full"
+                    className="my-2 p-2 border border-black rounded w-full"
                 />
+                <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">契約状態</label>
                 <select
                     name="status"
                     value={formData.status || ""}
                     onChange={handleChange}
-                    className="mb-4 p-2 border border-black rounded w-full"
+                    className="my-2 p-2 border border-black rounded w-full"
                 >
                     <option>契約状態を選択</option>
                     <option value="契約中">契約中</option>

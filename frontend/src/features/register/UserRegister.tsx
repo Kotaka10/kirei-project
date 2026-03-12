@@ -58,7 +58,7 @@ export default function UserRegister() {
             <h1 className="text-3xl text-center pb-6">ユーザー登録</h1>
                 <div className="bg-white p-4 rounded-xl max-w-md mx-auto flex flex-col items-center justify-center gap-8">
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2 text-gray-700">名前</p>
+                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">名前</label>
                         <input
                             type="text"
                             name="name"
@@ -69,7 +69,7 @@ export default function UserRegister() {
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2 text-gray-700">TEL</p>
+                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">電話番号</label>
                         <input
                             type="text"
                             name="phoneNumber"
@@ -80,7 +80,7 @@ export default function UserRegister() {
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2 text-gray-700">郵便番号</p>
+                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">郵便番号</label>
                         <input
                             type="text"
                             name="zipcode"
@@ -98,7 +98,7 @@ export default function UserRegister() {
                         住所自動入力
                     </button>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2 text-gray-700">都道府県</p>
+                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">都道府県</label>
                         <input
                             type="text"
                             name="prefecture"
@@ -108,7 +108,7 @@ export default function UserRegister() {
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2 text-gray-700">市区町村</p>
+                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">市区町村</label>
                         <input
                             type="text"
                             name="city"
@@ -118,7 +118,7 @@ export default function UserRegister() {
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2 text-gray-700">その他の住所</p>
+                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700"></label>
                         <input
                             type="text"
                             name="otherAddress"
@@ -128,7 +128,7 @@ export default function UserRegister() {
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2 text-gray-700">アパートマンション名</p>
+                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">アパートマンション名</label>
                         <input
                             type="text"
                             name="buildingName"
@@ -138,7 +138,7 @@ export default function UserRegister() {
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2 text-gray-700">発行日</p>
+                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">発行日</label>
                         <input
                             type="text"
                             name="publicationDate"
@@ -148,7 +148,7 @@ export default function UserRegister() {
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2 text-gray-700">有効期限</p>
+                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">有効期限</label>
                         <input
                             type="text"
                             name="expirationDate"
@@ -158,7 +158,7 @@ export default function UserRegister() {
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2 text-gray-700">備考欄</p>
+                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">備考欄</label>
                         <input
                             type="text"
                             name="notes"
@@ -168,7 +168,7 @@ export default function UserRegister() {
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <p className="mb-2 text-gray-700">案件メモ</p>
+                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">メモ</label>
                         <input
                             type="text"
                             name="memo"
