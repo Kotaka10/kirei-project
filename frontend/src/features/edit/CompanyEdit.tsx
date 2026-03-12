@@ -43,7 +43,6 @@ export default function CompanyEdit() {
         e.preventDefault();
 
         try {
-            console.log("id", id);
             const res = await fetch(`http://localhost:3000/api/companies/${id}`, {
                 method: "PUT",
                 headers: {
@@ -51,7 +50,6 @@ export default function CompanyEdit() {
                 },
                 body: JSON.stringify(formData),
             });
-            console.log("res", res);
 
             if (!res.ok) {
                 alert("更新に失敗しました。");
@@ -62,7 +60,7 @@ export default function CompanyEdit() {
             alert("更新しました。");
             navigate("/list");
         } catch (error) {
-            console.error(error);
+            console.error("error", error);
             alert("通信の問題が発生しました。");
         }
     };
