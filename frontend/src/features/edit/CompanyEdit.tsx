@@ -52,8 +52,7 @@ export default function CompanyEdit() {
             });
 
             if (!res.ok) {
-                alert("更新に失敗しました。");
-                return;
+                throw new Error("更新に失敗しました。");
             }
 
             await res.json();
