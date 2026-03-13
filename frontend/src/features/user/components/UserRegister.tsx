@@ -6,11 +6,12 @@ export default function UserRegister() {
         form,
         handleChange,
         handleFetchAddress,
+        handleRegister
     } = useUserRegister();
 
     return (
         <>
-            <form className="bg-slate-100 p-8 m-auto rounded-xl">
+            <form onSubmit={handleRegister} className="bg-slate-100 p-8 m-auto rounded-xl">
             <h1 className="text-3xl text-center pb-6">ユーザー登録</h1>
                 <div className="bg-white p-4 rounded-xl max-w-md mx-auto flex flex-col items-center justify-center gap-8">
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
