@@ -1,0 +1,44 @@
+[
+    {
+        "id": 1,
+        "name": "山田太郎",
+        "phoneNumber": "070-111-222",
+        "zipcode": "3340011",
+        "prefeture": "埼玉県",
+        "city": "川口市三ツ和",
+        "otherAddress": "999-1",
+        "buildingName": "",
+        "publicationDate": "",
+        "expirationDate": "",
+        "notes": "",
+        "memo": ""
+    },
+    {
+        "id": 2,
+        "name": "山田花子",
+        "phoneNumber": "070-333-444",
+        "zipcode": "3340012",
+        "prefeture": "埼玉県",
+        "city": "川口市八幡木",
+        "otherAddress": "888-1",
+        "buildingName": "",
+        "publicationDate": "",
+        "expirationDate": "",
+        "notes": "",
+        "memo": ""
+    },
+    {
+        "id": 3,
+        "name": "山田次郎",
+        "phoneNumber": "070-555-666",
+        "zipcode": "3340013",
+        "prefeture": "埼玉県",
+        "city": "川口市鳩ヶ谷",
+        "otherAddress": "777-1",
+        "buildingName": "",
+        "publicationDate": "",
+        "expirationDate": "",
+        "notes": "",
+        "memo": ""
+    }
+]
