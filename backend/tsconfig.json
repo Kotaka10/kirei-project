@@ -43,7 +43,7 @@
 
     // Add new
     "moduleResolution": "NodeNext",
-    "rootDir": "./",
+    "rootDir": "../",
     "outDir": "./dist",
     "esModuleInterop": true,
   }
