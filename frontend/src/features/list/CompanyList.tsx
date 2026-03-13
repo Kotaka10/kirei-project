@@ -1,4 +1,4 @@
-import type { CompanyInfoTypes } from "../register/types/companyInfoTypes";
+import type { CompanyInfoTypes } from "../../../../shared/types/companyInfoTypes";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 

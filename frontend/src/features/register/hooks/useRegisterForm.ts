@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { CompanyInfoTypes } from "../types/companyInfoTypes";
+import type { CompanyInfoTypes } from "../../../../../shared/types/companyInfoTypes";
 import { useAddress } from "./useAddress";
 
 export const useRegisterForm = () => {
