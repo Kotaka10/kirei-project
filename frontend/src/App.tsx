@@ -1,11 +1,11 @@
 import './App.css'
-import RegisterForm from "./features/register/RegisterForm";
-import CompanyList from './features/list/CompanyList';
-import CompanyEdit from './features/edit/CompanyEdit';
+import RegisterForm from "./features/company/components/CompanyRegister";
+import CompanyList from './features/company/components/CompanyList';
+import CompanyEdit from './features/company/components/CompanyEdit';
 import { Routes, Route } from 'react-router-dom';
-import UserRegister from './features/register/UserRegister';
-import ItemRegister from './features/register/ItemRegister';
-import ItemList from './features/register/components/ItemList';
+import UserRegister from './features/user/components/UserRegister';
+import ItemRegister from './features/item/components/ItemRegister';
+import ItemList from './features/item/components/ItemList';
 import DefaultLayout from './features/layout/DefaultLayout';
 import ColoredLayout from './features/layout/ColoredLayout';
 
