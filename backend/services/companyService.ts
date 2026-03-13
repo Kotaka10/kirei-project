@@ -43,7 +43,7 @@ export const createCompany = (newCompany: CompanyInfoTypes) => {
   const companies = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
 
   const maxId = companies.length
-    ? Math.max(...companies.map((c: any) => c.id))
+    ? Math.max(...companies.map((c: CompanyInfoTypes) => c.id))
     : 0;
 
   const company = {
