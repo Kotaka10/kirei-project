@@ -2,8 +2,7 @@ import type { Request, Response } from "express";
 import * as companyService from "../services/companyService.js";
 
 export const getCompanies = (req: Request, res: Response) => {
-  const companies = companyService.getAllCompanies();
-  res.json(companies);
+  res.json(companyService.getAllCompanies());
 };
 
 export const getCompany = (req: Request, res: Response) => {
