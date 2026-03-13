@@ -1,8 +1,9 @@
-import type { userInfoTypes } from "../../types/userInfoTypes";
+import type { userInfoTypes } from "../../../../../../shared/types/userInfoTypes";
 import { useState } from "react";
 
 export default function useUserRegister() {
     const [form, setForm] = useState<userInfoTypes>({
+        id: 0,
         name: "",
         phoneNumber: "",
         zipcode: "",
@@ -51,9 +52,21 @@ export default function useUserRegister() {
         }
     }
 
+    const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const res = await fetch("http://localhost:3000/api/users", {
+            method : "POST",
+            headers : { "Content-Type": "application/json" },
+            body: JSON.stringify(form),
+        });
+        await res.json();
+    };
+
     return {
         form,
         handleChange,
         handleFetchAddress,
+        handleRegister
     };
 }
