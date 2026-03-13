@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import type { CompanyInfoTypes } from "../../shared/types/companyInfoTypes.js"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dataPath = path.join(__dirname, "../data/companies.json");
@@ -17,7 +18,7 @@ export const getCompanyById = (id: number) => {
   return company;
 };
 
-export const updateCompany = (id: number, company: any) => {
+export const updateCompany = (id: number, company: CompanyInfoTypes) => {
   const companies = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
   const index = companies.findIndex((c: { id: number }) => c.id === id);
 
@@ -38,7 +39,7 @@ export const updateCompany = (id: number, company: any) => {
   return companies[index];
 };
 
-export const createCompany = (newCompany: any) => {
+export const createCompany = (newCompany: CompanyInfoTypes) => {
   const companies = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
 
   const maxId = companies.length
