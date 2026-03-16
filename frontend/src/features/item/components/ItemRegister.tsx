@@ -1,18 +1,25 @@
 import { Link } from "react-router-dom";
+import useItemRegister from "./hooks/useItemRegister";
 
 export default function ItemRegister() {
-
+    const {
+        form,
+        handleChange,
+        handleRegister
+    } = useItemRegister();
 
     return (
         <>
             <div className="bg-slate-100 p-8 rounded-xl mx-auto">
             <h1 className="text-3xl text-center pb-6">商品登録</h1>
-                <form className="flex flex-col items-center justify-center gap-10 max-w-md mx-auto w-full bg-white rounded-2xl p-6 sm:p-8">
+                <form onSubmit={handleRegister} className="flex flex-col items-center justify-center gap-10 max-w-md mx-auto w-full bg-white rounded-2xl p-6 sm:p-8">
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
                         <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">商品名</label>
                         <input
                             type="text"
                             name="itemName"
+                            value={form.itemName}
+                            onChange={handleChange}
                             className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
                         />
                     </div>
@@ -20,6 +27,8 @@ export default function ItemRegister() {
                         <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">商品内容</label>
                         <textarea
                             name="content"
+                            value={form.content}
+                            onChange={handleChange}
                             className="h-32 w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
                         />
                     </div>
@@ -28,6 +37,8 @@ export default function ItemRegister() {
                         <input
                             type="text"
                             name="quantity"
+                            value={form.quantity}
+                            onChange={handleChange}
                             className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
                         />
                     </div>
@@ -36,6 +47,8 @@ export default function ItemRegister() {
                         <input
                             type="text"
                             name="unit"
+                            value={form.unit}
+                            onChange={handleChange}
                             placeholder="例）個、本、枚、g、ml など"
                             className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
                         />
@@ -46,6 +59,8 @@ export default function ItemRegister() {
                             <input
                                 type="text"
                                 name="unit-price"
+                                value={form.unitPrice}
+                                onChange={handleChange}
                                 className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
                             />
                             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
@@ -59,6 +74,8 @@ export default function ItemRegister() {
                             <input  
                                 type="text"
                                 name="price"
+                                value={form.price}
+                                onChange={handleChange}
                                 className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
                             />
                             <span className="absolute right-3 top-1/2ight-3 top-1/2 -translate-y-1/2 text-gray-500">
