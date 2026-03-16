@@ -7,7 +7,8 @@ export default function ItemList() {
         keyword,
         setKeyword,
         msg,
-        handleFindItem
+        handleFindItem,
+        handleEdit
     } = userItemList();
 
     return (
@@ -25,7 +26,7 @@ export default function ItemList() {
                         />
                         <button
                             type="submit"
-                            className="px-4 py-2 rounded-md bg-slate-900 text-white"
+                            className="px-4 py-2 ml-2 rounded-md bg-slate-900 text-white"
                         >
                             検索
                         </button>
@@ -49,8 +50,13 @@ export default function ItemList() {
                                 <td className="p-3">{i.unitPrice}</td>
                                 <td className="p-3">{i.price}</td>
                                 <td className="p-3 flex gap-3">
-                                    <button className="text-blue-600">編集</button>
-                                    <button className="text-red-600">削除</button>
+                                    <button
+                                        onClick={() => handleEdit(i.id)}
+                                        className="text-white ring bg-blue-500 p-1 ring-blue-600 rounded-md"
+                                    >
+                                        編集
+                                    </button>
+                                    <button className="text-white ring ring-red-700 bg-red-600 rounded-md p-1">削除</button>
                                 </td>
                             </tr>
                         ))}    
