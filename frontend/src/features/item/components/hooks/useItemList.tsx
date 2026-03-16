@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function userItemList() {
     const initialItems= [{
@@ -14,6 +15,7 @@ export default function userItemList() {
     const [msg, setMsg] = useState("");
     const [items, setItems] = useState(initialItems);
     const [keyword, setKeyword] = useState("");
+    const navigate = useNavigate();
 
     const handleFindItem = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -52,11 +54,16 @@ export default function userItemList() {
         handelFetchItems();
     }, []);
 
+    const handleEdit = async (id: number) => {
+        navigate(`/item-edit/${id}`);
+    }
+
     return {
         items,
         keyword,
         setKeyword,
         msg,
-        handleFindItem
+        handleFindItem,
+        handleEdit
     }
 }
