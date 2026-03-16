@@ -1,6 +1,12 @@
-
+import userItemList from "./hooks/useItemList";
+import type { itemInfoTypes } from "../../../../../shared/types/itemInfoTypes";
 
 export default function ItemList() {
+    const {
+        items,
+        msg,
+        handleFindItem
+    } = userItemList();
 
     return (
         <>
@@ -27,16 +33,18 @@ export default function ItemList() {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr className="border-b">
-                            <td className="p-3">りんご</td>
-                            <td className="p-3">10</td>
-                            <td className="p-3">100円</td>
-                            <td className="p-3">1000円</td>
-                            <td className="p-3 flex gap-3">
-                                <button className="text-blue-600">編集</button>
-                                <button className="text-red-600">削除</button>
-                            </td>
-                        </tr>
+                        {items.map((i: itemInfoTypes) => (
+                            <tr key={i.id} className="border-b">
+                                <td className="p-3">{i.itemName}</td>
+                                <td className="p-3">{i.quantity}</td>
+                                <td className="p-3">{i.unitPrice}</td>
+                                <td className="p-3">{i.price}</td>
+                                <td className="p-3 flex gap-3">
+                                    <button className="text-blue-600">編集</button>
+                                    <button className="text-red-600">削除</button>
+                                </td>
+                            </tr>
+                        ))}    
                     </tbody>
                 </table>
             </div>
