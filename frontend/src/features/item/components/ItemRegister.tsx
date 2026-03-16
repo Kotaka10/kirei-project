@@ -4,6 +4,8 @@ import useItemRegister from "./hooks/useItemRegister";
 export default function ItemRegister() {
     const {
         form,
+        msg,
+        isLoading,
         handleChange,
         handleRegister
     } = useItemRegister();
@@ -85,10 +87,14 @@ export default function ItemRegister() {
                     </div>
                     <button
                         type="submit"
+                        disabled={isLoading}
                         className="w-full rounded-lg bg-slate-900 px-4 py-3 text-white hover:bg-slate-800"
                     >
-                        商品を登録する
+                        {isLoading ? "商品を登録中..." : "商品を登録する"}
                     </button>
+                    {msg && (
+                        <p className="text-center text-sm text-blue-600">{msg}</p>
+                    )}
                     <Link
                         to="/item-list"
                         className="text-sm font-medium text-slate-700 underline underline-offset-4 hover:text-slate-900"
