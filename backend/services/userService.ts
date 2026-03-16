@@ -11,7 +11,8 @@ export const createUser = (user: userInfoTypes) => {
 
     const maxId = users.length
         ? Math.max(...users.map((u: userInfoTypes) => u.id))
-        : 0;
+        : 0
+    ;
 
     const newUser = {
         ...user,
