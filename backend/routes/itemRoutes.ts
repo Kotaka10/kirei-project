@@ -1,6 +1,8 @@
 import express from "express";
-import { addItem } from "../services/itemService.js";
+import { addItem } from "../controllers/itemController.js";
 
-export const router = express.Router();
+const router = express.Router();
 
 router.post("/", addItem);
+
+export default router;
