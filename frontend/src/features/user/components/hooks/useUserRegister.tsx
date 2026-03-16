@@ -2,7 +2,7 @@ import type { userInfoTypes } from "../../../../../../shared/types/userInfoTypes
 import { useState } from "react";
 
 export default function useUserRegister() {
-    const [form, setForm] = useState<userInfoTypes>({
+    const initialForm = {
         id: 0,
         name: "",
         phoneNumber: "",
@@ -15,7 +15,11 @@ export default function useUserRegister() {
         expirationDate: "",
         notes: "",
         memo: "",
-    });
+    }
+
+    const [form, setForm] = useState<userInfoTypes>(initialForm);
+    const [msg, setMsg] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const name = e.target.name as keyof userInfoTypes;
@@ -54,17 +58,38 @@ export default function useUserRegister() {
 
     const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setMsg("");
+        setIsLoading(true);
 
-        const res = await fetch("http://localhost:3000/api/users", {
-            method : "POST",
-            headers : { "Content-Type": "application/json" },
-            body: JSON.stringify(form),
-        });
-        await res.json();
+        try {
+            const res = await fetch("http://localhost:3000/api/users", {
+                method : "POST",
+                headers : { "Content-Type": "application/json" },
+                body: JSON.stringify(form),
+            });
+
+            if (!res.ok) {
+                setMsg("商品の登録に失敗しました。");
+            }
+
+            await res.json();
+
+            setMsg(`${form.name}さんを登録しました。`);
+        } catch (error) {
+            if (error instanceof Error) {
+                setMsg(error.message);
+            } else {
+                setMsg("予期しないエラーが発生しました。");
+            }
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return {
         form,
+        msg,
+        isLoading,
         handleChange,
         handleFetchAddress,
         handleRegister
