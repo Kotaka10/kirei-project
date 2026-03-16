@@ -7,3 +7,7 @@ export const addItem = (req: Request, res: Response) => {
 
     res.json(newItem);
 }
+
+export const getItems = (req: Request, res: Response) => {
+    res.json(itemService.getAllItems());
+}
