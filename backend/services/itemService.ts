@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import type { itemInfoTypes } from "../../shared/types/itemInfoTypes.js";
+import items from "../data/items.json" with {type: "json"};
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dataPath = path.join(__dirname, "../data/items.json");
@@ -31,4 +32,10 @@ export const addItem = (item: itemInfoTypes) => {
     );
 
     return newItem;
+}
+
+export const searchItem = (keyword: string) => {
+    return items.filter((item) => 
+        item.itemName.toLocaleLowerCase().includes(keyword)
+    );
 }
