@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { itemInfoTypes } from "../../../../../../shared/types/itemInfoTypes";
 
 export default function useItemRegister() {
-    const [form, setForm] = useState<itemInfoTypes>({
+    const initialForm: itemInfoTypes = {
         id: 0,
         itemName: "",
         content: "",
@@ -10,35 +10,54 @@ export default function useItemRegister() {
         unit: "",
         unitPrice: "",
         price: "",
-    });
+    }
+
+    const [form, setForm] = useState<itemInfoTypes>(initialForm);
+    const [msg, setMsg] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const name = e.target.name as keyof itemInfoTypes;
+        const {name, value} = e.target;
         
          setForm((prev) => ({
             ...prev,
-            [name]: e.target.value
+            [name]: value
         }));
     };
 
     const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        
-        const res = await fetch("http://localhost:3000/api/items", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(form)
-        });
+        setMsg("");
+        setIsLoading(true);
 
-        if (!res.ok) {
-            throw new Error("商品の登録に失敗しました。")
+        try {
+                const res = await fetch("http://localhost:3000/api/items", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(form)
+            });
+
+            if (!res.ok) {
+                throw new Error("商品の登録に失敗しました。")
+            }
+            
+            await res.json();
+            setMsg(`${form.itemName}を登録しました`);
+        } catch (error) {
+            if (error instanceof Error) {
+                setMsg(error.message);
+            } else {
+                setMsg("予期しないエラーが発生しました。");
+            }
+        } finally {
+            setIsLoading(false);
         }
-        
-        await res.json();
     }
 
     return {
         form,
+        msg,
+        isLoading,
         handleChange,
         handleRegister
     }
