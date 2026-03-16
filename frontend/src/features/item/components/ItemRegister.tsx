@@ -58,7 +58,7 @@ export default function ItemRegister() {
                         <div className="relative w-64 sm:w-72 md:w-96">
                             <input
                                 type="text"
-                                name="unit-price"
+                                name="unitPrice"
                                 value={form.unitPrice}
                                 onChange={handleChange}
                                 className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
@@ -78,7 +78,7 @@ export default function ItemRegister() {
                                 onChange={handleChange}
                                 className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
                             />
-                            <span className="absolute right-3 top-1/2ight-3 top-1/2 -translate-y-1/2 text-gray-500">
+                            <span className="absolute right-3 top-1/ -translate-y-1/2 text-gray-500">
                                 円
                             </span>
                         </div>
