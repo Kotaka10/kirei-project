@@ -4,6 +4,8 @@ import useUserRegister from "./hooks/useUserRegister"
 export default function UserRegister() {
     const {
         form,
+        msg,
+        isLoading,
         handleChange,
         handleFetchAddress,
         handleRegister
@@ -138,8 +140,9 @@ export default function UserRegister() {
                         type="submit"
                         className="w-full rounded-lg bg-slate-900 px-4 py-3 text-white hover:bg-slate-800"
                     >
-                        ユーザー登録をする
+                        {isLoading ? "ユーザーを登録中..." : "ユーザーを登録する"}
                     </button>
+                    {msg && <p className="text-center text-sm text-blue-600">{msg}</p>}
                     <Link
                         to="/item-register"
                         className="text-blue-500 underline hover:text-blue-700"
