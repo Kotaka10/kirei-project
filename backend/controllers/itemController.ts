@@ -9,5 +9,16 @@ export const addItem = (req: Request, res: Response) => {
 }
 
 export const getItems = (req: Request, res: Response) => {
-    res.json(itemService.getAllItems());
+    return res.json(itemService.getAllItems());
+}
+
+export const searchItem = (req: Request, res: Response) => {
+    const name = req.query.name as string;
+
+    if (!name) {
+        return res.status(400).json({ message: "名前のクエリが必要です。"});
+    }
+
+    const items = itemService.searchItem(name);
+    return res.json(items);
 }
