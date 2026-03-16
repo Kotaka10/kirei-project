@@ -1,29 +1,38 @@
 [
-    {
-        "id": 1,
-        "itemName": "りんご",
-        "content": "赤くてまんまるのりんご",
-        "quantity": "10",
-        "unit": "個",
-        "unit-price": "180円",
-        "price": "1800円"
-    },
-    {
-        "id": 2,
-        "itemName": "みかん",
-        "content": "甘さと酸っぱさが絶妙なみかん",
-        "quantity": "10",
-        "unit": "個",
-        "unit-price": "160円",
-        "price": "1600円"
-    },
-    {
-        "id": 3,
-        "itemName": "ぶどう",
-        "content": "一粒一粒が大きいぶどう",
-        "quantity": "10",
-        "unit": "個",
-        "unit-price": "200円",
-        "price": "2000円"
-    }
+  {
+    "id": 1,
+    "itemName": "りんご",
+    "content": "赤くてまんまるのりんご",
+    "quantity": "10",
+    "unit": "個",
+    "unit-price": "180円",
+    "price": "1800円"
+  },
+  {
+    "id": 2,
+    "itemName": "みかん",
+    "content": "甘さと酸っぱさが絶妙なみかん",
+    "quantity": "10",
+    "unit": "個",
+    "unit-price": "160円",
+    "price": "1600円"
+  },
+  {
+    "id": 3,
+    "itemName": "ぶどう",
+    "content": "一粒一粒が大きいぶどう",
+    "quantity": "10",
+    "unit": "房",
+    "unit-price": "200円",
+    "price": "2000円"
+  },
+  {
+    "id": 4,
+    "itemName": "いちご",
+    "content": "",
+    "quantity": "",
+    "unit": "",
+    "unitPrice": "",
+    "price": ""
+  }
 ]
