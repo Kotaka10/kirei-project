@@ -13,21 +13,20 @@ export default function userItemList() {
 
     const [msg, setMsg] = useState("");
     const [items, setItems] = useState(initialItems);
+    const [keyword, setKeyword] = useState("");
 
-    const handleFindItem = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const input = e.target.value;
+    const handleFindItem = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
-        if (!input) return [];
+        if (!keyword.trim()) {
+            return;
+        }
 
-        const res = await fetch("http://localhost:3000/api/items");
+        const res = await fetch(`http://localhost:3000/api/items/search?name=${encodeURIComponent(keyword)}`);
         const data = await res.json();
 
-        const results = data.filter((item: { itemName: string }) =>
-            item.itemName.toLocaleLowerCase().includes(input.toLocaleLowerCase())
-        );
-
-        return results;
-    }
+        setItems(data);
+    };
 
     useEffect(() => {
         const handelFetchItems = async () => {
@@ -55,6 +54,8 @@ export default function userItemList() {
 
     return {
         items,
+        keyword,
+        setKeyword,
         msg,
         handleFindItem
     }
