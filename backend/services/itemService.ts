@@ -6,6 +6,10 @@ import type { itemInfoTypes } from "../../shared/types/itemInfoTypes.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dataPath = path.join(__dirname, "../data/items.json");
 
+export const getAllItems = () => {
+    return JSON.parse(fs.readFileSync(dataPath, "utf-8"));
+}
+
 export const addItem = (item: itemInfoTypes) => {
     const items = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
 
