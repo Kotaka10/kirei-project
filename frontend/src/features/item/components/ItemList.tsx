@@ -1,4 +1,4 @@
-import userItemList from "./hooks/useItemList";
+import useItemList from "./hooks/useItemList";
 import type { itemInfoTypes } from "../../../../../shared/types/itemInfoTypes";
 
 export default function ItemList() {
@@ -8,7 +8,7 @@ export default function ItemList() {
         setKeyword,
         handleFindItem,
         handleEdit
-    } = userItemList();
+    } = useItemList();
 
     return (
         <>
@@ -36,8 +36,10 @@ export default function ItemList() {
                         <tr className="border-b bg-gray-50">
                             <th className="p-3 text-left">商品名</th>
                             <th className="p-3 text-left">数量</th>
+                            <th className="p-3 text-left">単位</th>
                             <th className="p-3 text-left">単価</th>
                             <th className="p-3 text-left">金額</th>
+                            <th className="p-3 text-left">内容</th>
                             <th className="p-3 text-left">操作</th>
                         </tr>
                     </thead>
@@ -46,8 +48,10 @@ export default function ItemList() {
                             <tr key={i.id} className="border-b">
                                 <td className="p-3">{i.itemName}</td>
                                 <td className="p-3">{i.quantity}</td>
+                                <td className="p-3">{i.unit}</td>
                                 <td className="p-3">{i.unitPrice}</td>
                                 <td className="p-3">{i.price}</td>
+                                <td className="p-3">{i.description}</td>
                                 <td className="p-3 flex gap-3">
                                     <button
                                         onClick={() => handleEdit(i.id)}
