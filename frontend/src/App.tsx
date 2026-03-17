@@ -19,7 +19,7 @@ function App() {
         <Route path="/list" element={<CompanyList />} />
         <Route path="/company/edit/:id" element={<CompanyEdit />} />
         <Route path="/item-list" element={<ItemList />} />
-        <Route path="/item-edit" element={<ItemEdit />} />
+        <Route path="/item-edit/:id" element={<ItemEdit />} />
       </Route>
       <Route element={<ColoredLayout />}>
         <Route path="/user-register" element={<UserRegister />} />
