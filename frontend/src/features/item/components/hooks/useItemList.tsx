@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function userItemList() {
+export default function useItemList() {
     const initialItems= [{
         id: 0,
         itemName: "",
-        content: "",
+        description: "",
         quantity: "",
         unit: "",
         unitPrice: "",
