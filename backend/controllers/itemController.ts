@@ -16,7 +16,7 @@ export const searchItem = (req: Request, res: Response) => {
     const name = req.query.name as string;
 
     if (!name) {
-        return res.status(400).json({ message: "名前のクエリが必要です。"});
+        return res.status(400).json({ message: "名前の情報が必要です。"});
     }
 
     const items = itemService.searchItem(name);
