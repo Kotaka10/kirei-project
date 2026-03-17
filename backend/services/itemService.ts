@@ -39,3 +39,24 @@ export const searchItem = (keyword: string) => {
         item.itemName.toLowerCase().includes(keyword.trim().toLowerCase())
     );
 }
+
+export const updateItem = (id: number, item: itemInfoTypes) => {
+    const items = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
+    const index = items.findIndex((i: {id: number}) => i.id === id);
+
+    if (index === -1) {
+        return null;
+    }
+
+    items[index] = {
+        ...items[index],
+        ...item
+    }
+
+    fs.writeFileSync(
+        dataPath,
+        JSON.stringify(items, null, 2)
+    )
+
+    return items[index];
+}

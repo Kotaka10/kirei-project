@@ -22,3 +22,15 @@ export const searchItem = (req: Request, res: Response) => {
     const items = itemService.searchItem(name);
     return res.json(items);
 }
+
+export const updateItem = (req: Request, res: Response) => {
+    const id = req.params.id;
+
+    const updatedItem = itemService.updateItem(Number(id), req.body);
+
+    if (!updatedItem) {
+        return res.status(404).json({ message: "商品が見つかりません"});
+    }
+
+    res.json(updatedItem);
+}
