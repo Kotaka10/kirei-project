@@ -8,6 +8,7 @@ import ItemRegister from './features/item/components/ItemRegister';
 import ItemList from './features/item/components/ItemList';
 import DefaultLayout from './features/layout/DefaultLayout';
 import ColoredLayout from './features/layout/ColoredLayout';
+import ItemEdit from './features/item/components/ItemEdit';
 
 function App() {
   
@@ -18,6 +19,7 @@ function App() {
         <Route path="/list" element={<CompanyList />} />
         <Route path="/company/edit/:id" element={<CompanyEdit />} />
         <Route path="/item-list" element={<ItemList />} />
+        <Route path="/item-edit" element={<ItemEdit />} />
       </Route>
       <Route element={<ColoredLayout />}>
         <Route path="/user-register" element={<UserRegister />} />
