@@ -5,7 +5,7 @@ export default function useItemRegister() {
     const initialForm: itemInfoTypes = {
         id: 0,
         itemName: "",
-        content: "",
+        description: "",
         quantity: "",
         unit: "",
         unitPrice: "",
