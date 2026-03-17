@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import type { itemInfoTypes } from "../../../../../../shared/types/itemInfoTypes";
 
 export default function useItemList() {
-    const initialItems= [{
+    
+    const [item, setItem] = useState<itemInfoTypes>({
         id: 0,
         itemName: "",
         description: "",
@@ -10,11 +13,11 @@ export default function useItemList() {
         unit: "",
         unitPrice: "",
         price: "",
-    }];
-
-    const [items, setItems] = useState(initialItems);
+    })
+    const [items, setItems] = useState<itemInfoTypes[]>([]);
     const [keyword, setKeyword] = useState("");
     const navigate = useNavigate();
+    const { id } = useParams<{ id: string }>();
 
     const handleFindItem = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -54,11 +57,49 @@ export default function useItemList() {
         navigate(`/item-edit/${id}`);
     }
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, id: number) => {
+        const { name, value } = e.target;
+
+        setItems((prev) => 
+            prev.map((item) =>
+            item.id === id
+                ? {...item, [name]: value}
+                : item
+            )
+        )
+    }
+
+    const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        try {
+            const res = await fetch(`http://localhost:3000/api/items/item-edit/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(item)
+            })
+
+            if (!res.ok) {
+                throw new Error("商品情報の更新に失敗しました")
+            }
+
+            const data = await res.json();
+            setItem(data);
+            alert("更新しました")
+            navigate("/item-list");
+        } catch(error) {
+            console.error("error", error);
+            alert("通信の問題が発生しました")
+        }
+    }
+
     return {
         items,
         keyword,
         setKeyword,
         handleFindItem,
-        handleEdit
+        handleEdit,
+        handleChange,
+        handleUpdate
     }
 }
