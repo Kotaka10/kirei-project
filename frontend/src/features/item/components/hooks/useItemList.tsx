@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 import type { itemInfoTypes } from "../../../../../../shared/types/itemInfoTypes";
 
 export default function useItemList() {
-    
     const [item, setItem] = useState<itemInfoTypes>({
         id: 0,
         itemName: "",
@@ -31,6 +30,16 @@ export default function useItemList() {
 
         setItems(data);
     };
+
+    useEffect(() => {
+        if (!id) return;
+
+        const found = items.find(i => i.id === Number(id));
+
+        if (found) {
+            setItem(found);
+        }
+    }, [id, items]);
 
     useEffect(() => {
         const handelFetchItems = async () => {
