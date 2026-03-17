@@ -1,7 +1,7 @@
 export type itemInfoTypes = {
     id: number;
     itemName: string;
-    content: string;
+    description: string;
     quantity: string;
     unit: string;
     unitPrice: string;
