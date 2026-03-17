@@ -12,7 +12,6 @@ export default function userItemList() {
         price: "",
     }];
 
-    const [msg, setMsg] = useState("");
     const [items, setItems] = useState(initialItems);
     const [keyword, setKeyword] = useState("");
     const navigate = useNavigate();
@@ -41,12 +40,9 @@ export default function userItemList() {
 
                 const data = await res.json();
                 setItems(data);
-                setMsg("商品情報の取得に成功しました。");
             } catch (error) {
                 if (error instanceof Error) {
-                    setMsg(error.message);
-                } else {
-                    setMsg("商品情報の取得に失敗しました。");
+                    console.error("商品情報の取得に失敗しました。");
                 }
             }
         }
@@ -62,7 +58,6 @@ export default function userItemList() {
         items,
         keyword,
         setKeyword,
-        msg,
         handleFindItem,
         handleEdit
     }
