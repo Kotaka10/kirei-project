@@ -6,7 +6,6 @@ export default function ItemList() {
         items,
         keyword,
         setKeyword,
-        msg,
         handleFindItem,
         handleEdit
     } = userItemList();
