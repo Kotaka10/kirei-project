@@ -36,6 +36,6 @@ export const addItem = (item: itemInfoTypes) => {
 
 export const searchItem = (keyword: string) => {
     return items.filter((item) => 
-        item.itemName.toLocaleLowerCase().includes(keyword.toLowerCase())
+        item.itemName.toLowerCase().includes(keyword.trim().toLowerCase())
     );
 }
