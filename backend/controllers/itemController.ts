@@ -34,3 +34,19 @@ export const updateItem = (req: Request, res: Response) => {
 
     res.json(updatedItem);
 }
+
+export const deleteItem = (req: Request, res: Response) => {
+    const id = req.params.id;
+
+    if (!id) {
+        return res.status(400).json({ message: "IDが必要です"});
+    }
+
+    const result = itemService.deleteItem(Number(id));
+    
+    if (!result) {
+        return res.status(404).json({ message: "商品が見つかりまん"})
+    }
+
+    return res.json({ message: "削除しました", result });
+}
