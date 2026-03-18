@@ -51,7 +51,7 @@ export default function ItemList() {
                                 <td className="p-3">{i.quantity}</td>
                                 <td className="p-3">{i.unit}</td>
                                 <td className="p-3">{i.unitPrice}</td>
-                                <td className="p-3">{i.price}</td>
+                                <td className="p-3">{((Number(i.quantity) || 0) * (Number(i.unitPrice) || 0)).toLocaleString()}</td>
                                 <td className="p-3">{i.description}</td>
                                 <td className="p-3 flex gap-3">
                                     <button
