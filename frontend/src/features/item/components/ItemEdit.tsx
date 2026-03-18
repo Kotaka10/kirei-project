@@ -13,7 +13,7 @@ export default function ItemEdit() {
     
     return (
         <div className="">
-            <div className="flex flex-col items-center justify-center gap-8 my-8 py-8 bg-sky-100 max-w-md mx-auto rounded-xl">
+            <div className="flex flex-col items-center justify-center gap-8 mt-20 py-8 bg-sky-100 max-w-md mx-auto rounded-xl">
                 <h1 className="text-3xl text-center my-4">商品情報の編集</h1>
                 <form
                     key={item.id}
