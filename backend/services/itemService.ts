@@ -60,3 +60,20 @@ export const updateItem = (id: number, item: itemInfoTypes) => {
 
     return items[index];
 }
+
+export const deleteItem = (id: number) => {
+    const items = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
+    const index = items.findIndex((i: itemInfoTypes) => i.id === id);
+
+    if (index === -1) {
+        return false;
+    }
+
+    items.splice(index, 1);
+
+    fs.writeFileSync(
+        dataPath,
+        JSON.stringify(items, null, 2)
+    )
+    return true;
+}
