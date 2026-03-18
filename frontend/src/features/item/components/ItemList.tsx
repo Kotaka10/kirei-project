@@ -7,7 +7,8 @@ export default function ItemList() {
         keyword,
         setKeyword,
         handleFindItem,
-        handleEdit
+        handleEdit,
+        handleDelete
     } = useItemList();
 
     return (
@@ -59,7 +60,13 @@ export default function ItemList() {
                                     >
                                         編集
                                     </button>
-                                    <button className="text-white ring ring-red-700 bg-red-600 rounded-md p-1">削除</button>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleDelete(i.id)}
+                                        className="text-white ring ring-red-700 bg-red-600 rounded-md p-1"
+                                    >
+                                        削除
+                                    </button>
                                 </td>
                             </tr>
                         ))}    
