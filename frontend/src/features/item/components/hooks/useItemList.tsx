@@ -8,10 +8,9 @@ export default function useItemList() {
         id: 0,
         itemName: "",
         description: "",
-        quantity: "",
+        quantity: 0,
         unit: "",
-        unitPrice: "",
-        price: "",
+        unitPrice: 0,
     })
     const [items, setItems] = useState<itemInfoTypes[]>([]);
     const [keyword, setKeyword] = useState("");

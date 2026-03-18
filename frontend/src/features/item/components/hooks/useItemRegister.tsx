@@ -6,10 +6,9 @@ export default function useItemRegister() {
         id: 0,
         itemName: "",
         description: "",
-        quantity: "",
+        quantity: 0,
         unit: "",
-        unitPrice: "",
-        price: "",
+        unitPrice: 0,
     }
 
     const [form, setForm] = useState<itemInfoTypes>(initialForm);
