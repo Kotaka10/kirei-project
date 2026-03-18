@@ -61,16 +61,6 @@ export default function ItemEdit() {
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <label className="">金額</label>
-                        <input
-                            name="price"
-                            type="text"
-                            value={item.price}
-                            onChange={(e) => handleChange(e, item.id)}
-                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
-                        />
-                    </div>
-                    <div className="flex flex-col w-64 sm:w-72 md:w-96">
                         <label className="">説明</label>
                         <textarea
                             name="description"
