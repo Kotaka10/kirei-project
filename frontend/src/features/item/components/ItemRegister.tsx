@@ -10,6 +10,10 @@ export default function ItemRegister() {
         handleRegister
     } = useItemRegister();
 
+    const subtotal = Number(form.quantity) * Number(form.unitPrice)
+    const tax = subtotal / 10;
+    const totalPrice = tax + subtotal;
+
     return (
         <>
             <div className="bg-slate-100 p-8 rounded-xl mx-auto">
@@ -71,16 +75,28 @@ export default function ItemRegister() {
                         </div>
                     </div>
                     <div className="flex flex-col pb-4">
-                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">金額</label>
-                        <div className="relative w-64 sm:w-72 md:w-96">
-                            <input  
-                                type="text"
-                                name="price"
-                                value={form.price}
-                                onChange={handleChange}
-                                className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
-                            />
-                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
+                        <label htmlFor="companyName" className="text-sm font-medium text-gray-700">小計</label>
+                        <div className="w-64 sm:w-72 md:w-96 flex justify-end items-center gap-1">
+                            <span>{subtotal}</span>
+                            <span className="text-gray-500">
+                                円
+                            </span>
+                        </div>
+                    </div>
+                    <div className="flex flex-col pb-4">
+                        <label htmlFor="companyName" className="text-sm font-medium text-gray-700">消費税</label>
+                        <div className="w-64 sm:w-72 md:w-96 flex justify-end items-center gap-1">
+                            <span>{tax}</span>
+                            <span className="text-gray-500">
+                                円
+                            </span>
+                        </div>
+                    </div>
+                    <div className="flex flex-col pb-4">
+                        <label htmlFor="companyName" className="text-sm font-medium text-gray-700">合計</label>
+                        <div className="w-64 sm:w-72 md:w-96 flex justify-end items-center gap-1">
+                            <span >{totalPrice}</span>
+                            <span className="text-gray-500">
                                 円
                             </span>
                         </div>
