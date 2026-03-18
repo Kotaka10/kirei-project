@@ -102,6 +102,26 @@ export default function useItemList() {
         }
     }
 
+    const handleDelete = async (deleteId: number) => {
+        if (!window.confirm("本当に削除しますか？")) return;
+
+        try {
+            const res = await fetch(`http://localhost:3000/api/items/delete/${deleteId}`, {
+                method: "DELETE",
+            });
+
+            if (!res.ok) {
+                throw new Error("削除に失敗しました")
+            }
+
+            await res.json();
+            
+            setItems((prev) => prev.filter((i) => i.id !== Number(deleteId)));
+        } catch (error) {
+            console.error("error", error);
+        }
+    }
+
     return {
         items,
         keyword,
@@ -109,6 +129,7 @@ export default function useItemList() {
         handleFindItem,
         handleEdit,
         handleChange,
-        handleUpdate
+        handleUpdate,
+        handleDelete
     }
 }
