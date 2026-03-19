@@ -46,13 +46,15 @@ export default function useItemList() {
                 const res = await fetch('http://localhost:3000/api/items');
 
                 if (!res.ok) {
-                    console.error("商品情報の読み込みに失敗しました。")
+                    throw new Error("商品情報の読み込みに失敗しました。")
                 }
 
                 const data = await res.json();
                 setItems(data);
             } catch (error) {
                 if (error instanceof Error) {
+                    console.error("error", error);
+                } else {
                     console.error("商品情報の取得に失敗しました。");
                 }
             }
@@ -97,7 +99,7 @@ export default function useItemList() {
             navigate("/item-list");
         } catch(error) {
             console.error("error", error);
-            alert("通信の問題が発生しました")
+            alert("通信の問題が発生しました。");
         }
     }
 
@@ -118,6 +120,7 @@ export default function useItemList() {
             setItems((prev) => prev.filter((i) => i.id !== Number(deleteId)));
         } catch (error) {
             console.error("error", error);
+            alert("通信の問題が発生しました。");
         }
     }
 
