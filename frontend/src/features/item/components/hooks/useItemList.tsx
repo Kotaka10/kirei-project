@@ -24,7 +24,12 @@ export default function useItemList() {
             return;
         }
 
-        const res = await fetch(`http://localhost:3000/api/items/search?name=${encodeURIComponent(keyword)}`);
+        const res = await fetch(`http://localhost:3001/api/items/search?name=${encodeURIComponent(keyword)}`);
+
+        if (!res.ok) {
+            throw new Error("検索に失敗しました。");
+        }
+
         const data = await res.json();
 
         setItems(data);
@@ -41,9 +46,9 @@ export default function useItemList() {
     }, [id, items]);
 
     useEffect(() => {
-        const handelFetchItems = async () => {
+        const handleFetchItems = async () => {
             try {
-                const res = await fetch('http://localhost:3000/api/items');
+                const res = await fetch('http://localhost:3001/api/items');
 
                 if (!res.ok) {
                     throw new Error("商品情報の読み込みに失敗しました。")
@@ -52,15 +57,11 @@ export default function useItemList() {
                 const data = await res.json();
                 setItems(data);
             } catch (error) {
-                if (error instanceof Error) {
-                    console.error("error", error);
-                } else {
-                    console.error("商品情報の取得に失敗しました。");
-                }
+                console.error("error", error);
             }
         }
 
-        handelFetchItems();
+        handleFetchItems();
     }, []);
 
     const handleEdit = async (id: number) => {
@@ -83,7 +84,7 @@ export default function useItemList() {
         e.preventDefault();
 
         try {
-            const res = await fetch(`http://localhost:3000/api/items/item-edit/${id}`, {
+            const res = await fetch(`http://localhost:3001/api/items/item-edit/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(item)
@@ -107,7 +108,7 @@ export default function useItemList() {
         if (!window.confirm("本当に削除しますか？")) return;
 
         try {
-            const res = await fetch(`http://localhost:3000/api/items/delete/${deleteId}`, {
+            const res = await fetch(`http://localhost:3001/api/items/delete/${deleteId}`, {
                 method: "DELETE",
             });
 
