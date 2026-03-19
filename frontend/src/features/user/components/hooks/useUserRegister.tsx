@@ -43,6 +43,11 @@ export default function useUserRegister() {
 
         try {
             const res = await fetch(`https://zipcloud.ibsnet.co.jp/api/search?zipcode=${zipcode}`);
+
+            if (!res.ok) {
+                throw new Error("住所取得に失敗しました。");
+            }
+
             const data = await res.json();
             if (data.results) {
                 setForm((prev) => ({
@@ -52,7 +57,8 @@ export default function useUserRegister() {
                 }))
             }
         } catch (error) {
-            alert("住所取得に失敗しました。")
+            console.error("error", error);
+            alert("住所取得に失敗しました。");
         }
     }
 
