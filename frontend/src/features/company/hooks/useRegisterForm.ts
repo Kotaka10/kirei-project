@@ -48,6 +48,8 @@ export const useRegisterForm = () => {
         } catch (err) {
             if (err instanceof Error) {
                 setMsg(err.message);
+            } else {
+                setMsg("住所情報の取得に失敗しました。");
             }
         }
     };
