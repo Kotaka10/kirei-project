@@ -8,8 +8,14 @@ export const addItem = (req: Request, res: Response) => {
     res.json(newItem);
 }
 
-export const getItems = (req: Request, res: Response) => {
-    return res.json(itemService.getAllItems());
+export const getItems = async (req: Request, res: Response) => {
+    try {
+        const items = await itemService.getItems();
+        res.json(items);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "商品の取得に失敗しました。"});
+    }
 }
 
 export const searchItem = (req: Request, res: Response) => {
