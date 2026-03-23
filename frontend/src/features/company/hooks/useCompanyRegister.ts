@@ -12,7 +12,7 @@ export const useRegisterForm = () => {
         otherAddress: "",
         buildingName: "",
         phoneNumber: "",
-        email: [""],
+        emails: [""],
         contractDate: "",
         status: "",
         cancellationDate: "",
@@ -23,7 +23,7 @@ export const useRegisterForm = () => {
 
     useEffect(() => {
         const fetchCompany = async () => {
-            const res = await fetch("http://localhost:3000/api/companies/1");
+            const res = await fetch("http://localhost:3001/api/companies/1");
             const data = await res.json();
             setForm(data);
         };
@@ -55,13 +55,13 @@ export const useRegisterForm = () => {
     };
 
     const handleChangeEmail = (index: number, value: string) => {
-        const newEmails = [...form.email];
+        const newEmails = [...form.emails];
         newEmails[index] = value;
         setForm((prev) => ({ ...prev, email: newEmails }));
     };
 
     const handleAddEmail = () => {
-        setForm((prev) => ({ ...prev, email: [...prev.email, ""] }));
+        setForm((prev) => ({ ...prev, email: [...prev.emails, ""] }));
     };
 
     const statusLabelMap: Record<string, string> = {
@@ -75,7 +75,7 @@ export const useRegisterForm = () => {
             ...form,
             status: statusLabelMap[form.status] ?? form.status,
         };
-        const res = await fetch("http://localhost:3000/api/companies", {
+        const res = await fetch("http://localhost:3001/api/companies", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
