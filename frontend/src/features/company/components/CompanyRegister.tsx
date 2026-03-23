@@ -1,5 +1,5 @@
 import { PREFECTURES } from "../types/prefecturesTypes";
-import { useRegisterForm } from "../hooks/useRegisterForm";
+import { useRegisterForm } from "../hooks/useCompanyRegister";
 
 const contractStatusOptions = [
     { value: "active", label: "契約中" },
