@@ -8,11 +8,22 @@ export default function CompanyList() {
     const [companies, setCompanies] = useState<CompanyInfoTypes[]>([]);
     const [keyword, setKeyword] = useState("");
 
+    const statusLabelMap: Record<string, string> = {
+        active: "契約中",
+        negotiating: "商談中",
+        cancelled: "解約",
+    };
+
     const filteredCompanies = Array.isArray(companies)
         ? companies.filter((company) => 
             company.companyName.toLowerCase().includes(keyword.toLowerCase())
         )
         : [];
+
+    const displayCompaies = filteredCompanies.map((company) => ({
+        ...company,
+        status: statusLabelMap[company.status] ?? company.status,
+    }))
 
     useEffect(() => {
         const fetchCompanies = async () => {
@@ -61,7 +72,7 @@ export default function CompanyList() {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredCompanies.map((company) => (
+                        {displayCompaies.map((company) => (
                             <tr
                                 key={company.id}
                                 className="border border-black"
