@@ -9,7 +9,7 @@ export type CompanyInfoTypes = {
     otherAddress: string;
     buildingName: string;
     phoneNumber: string;
-    email: string[];
+    emails: string[];
     contractDate: string;
     status: ContractStatus;
     cancellationDate: string;
