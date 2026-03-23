@@ -15,7 +15,7 @@ export const getItems = async () => {
     const [rows] = await pool.query<RowDataPacket[]>(`
         SELECT id, item_name, quantity, unit_price, description, unit
         FROM items
-        ORDER BY id DESC
+        ORDER BY id
     `);
 
     const items = rows.map((row: any) => ({
@@ -67,13 +67,13 @@ export const searchItem = async (keyword: string) => {
             FROM items
             WHERE item_name LIKE ?
         `,
-        [`%${keyword}`]
+        [`%${keyword}%`]
     );
 
     return rows.map((row) => ({
         id: row.id,
         itemName: row.item_name,
-        quanity: row.quantity,
+        quantity: row.quantity,
         unitPrice: row.unit_price,
         description: row.description,
         unit: row.unit,
