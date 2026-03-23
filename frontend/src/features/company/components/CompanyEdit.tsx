@@ -12,7 +12,7 @@ export default function CompanyEdit() {
     useEffect(() => {
         const fetchCompany = async () => {
             try {
-                const res = await fetch(`http://localhost:3000/api/companies/${id}`);
+                const res = await fetch(`http://localhost:3001/api/companies/${id}`);
                 
                 if (!res.ok) {
                     alert("会社情報の取得に失敗しました。");
@@ -43,7 +43,7 @@ export default function CompanyEdit() {
         e.preventDefault();
 
         try {
-            const res = await fetch(`http://localhost:3000/api/companies/${id}`, {
+            const res = await fetch(`http://localhost:3001/api/companies/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
