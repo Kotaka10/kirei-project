@@ -7,7 +7,7 @@ const contractStatusOptions = [
     { value: "cancelled", label: "解約" },
 ] as const;
 
-export default function RegisterForm() {
+export default function CompanyRegister() {
     const {
         form,
         msg,
@@ -107,7 +107,7 @@ export default function RegisterForm() {
                                 className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
                             />
                         </div>
-                        {form.email.map((email, index) => (
+                        {form.emails.map((email, index) => (
                             <div
                                 key={index}
                                 className="flex flex-col w-64 sm:w-72 md:w-96"
