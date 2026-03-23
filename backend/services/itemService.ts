@@ -50,8 +50,6 @@ export const addItem = async (item: itemInfoTypes) => {
         ]
     );
 
-
-
     const newItem = {
         ...item,
         id: result.insertId,
