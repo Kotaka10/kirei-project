@@ -8,19 +8,29 @@ export default function CompanyList() {
     const [companies, setCompanies] = useState<CompanyInfoTypes[]>([]);
     const [keyword, setKeyword] = useState("");
 
-    const filteredCompanies = companies.filter((company) =>
-        company.companyName
-            .toLowerCase()
-            .includes(keyword.toLowerCase())
-    );
+    const filteredCompanies = Array.isArray(companies)
+        ? companies.filter((company) => 
+            company.companyName.toLowerCase().includes(keyword.toLowerCase())
+        )
+        : [];
 
     useEffect(() => {
         const fetchCompanies = async () => {
-            const res = await fetch("http://localhost:3000/api/companies");
-            const data = await res.json();
+            try {
+                const res = await fetch("http://localhost:3001/api/companies");
 
-            setCompanies(data);
-        }
+                if (!res.ok) {
+                    throw new Error(`HTTP error: ${res.status}`);
+                }
+
+                const data = await res.json();
+
+                setCompanies(Array.isArray(data) ? data : []);
+            } catch (error) {
+                console.error("fetchCompanies error", error);
+                setCompanies([]);
+            }
+        };
 
         fetchCompanies();
     }, []);
