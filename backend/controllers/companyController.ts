@@ -1,12 +1,12 @@
 import type { Request, Response } from "express";
 import * as companyService from "../services/companyService.js";
 
-export const getCompanies = (req: Request, res: Response) => {
-  res.json(companyService.getAllCompanies());
+export const getCompanies = async (req: Request, res: Response) => {
+  res.json(await companyService.getAllCompanies());
 };
 
-export const getCompany = (req: Request, res: Response) => {
-  const company = companyService.getCompanyById(Number(req.params.id));
+export const getCompany = async (req: Request, res: Response) => {
+  const company = await companyService.getCompanyById(Number(req.params.id));
 
   if (!company) {
     return res.status(404).json({ message: "会社が見つかりません" });
@@ -15,8 +15,8 @@ export const getCompany = (req: Request, res: Response) => {
   res.json(company);
 };
 
-export const updateCompany = (req: Request, res: Response) => {
-    const updatedCompany = companyService.updateCompany(Number(req.params.id), req.body);
+export const updateCompany = async (req: Request, res: Response) => {
+    const updatedCompany = await companyService.updateCompany(Number(req.params.id), req.body);
 
     if (!updatedCompany) {
       return res.status(404).json({ message: "会社が見つかりません" });
@@ -25,9 +25,9 @@ export const updateCompany = (req: Request, res: Response) => {
     res.json(updatedCompany);
 }
 
-export const createCompany = (req: Request, res: Response) => {
+export const createCompany = async (req: Request, res: Response) => {
   const newData = req.body;
-  const newCompany = companyService.createCompany(newData);
+  const newCompany = await companyService.createCompany(newData);
 
   res.json(newCompany);
 }
