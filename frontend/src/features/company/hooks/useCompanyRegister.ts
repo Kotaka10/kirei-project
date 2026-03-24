@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { CompanyInfoTypes } from "../../../../../shared/types/companyInfoTypes";
+import type { CompanyInfoTypes } from "../../../../../shared/types/CompanyInfoTypes";
 import { useAddress } from "./useAddress";
 
 export const useRegisterForm = () => {
@@ -57,7 +57,7 @@ export const useRegisterForm = () => {
     const handleChangeEmail = (index: number, value: string) => {
         const newEmails = [...form.emails];
         newEmails[index] = value;
-        setForm((prev) => ({ ...prev, email: newEmails }));
+        setForm((prev) => ({ ...prev, emails: newEmails }));
     };
 
     const handleAddEmail = () => {
@@ -81,6 +81,7 @@ export const useRegisterForm = () => {
             body: JSON.stringify(payload),
         });
         await res.json();
+        alert(`${form.companyName}を登録しました`)
     };
 
     return {
