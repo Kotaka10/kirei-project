@@ -1,4 +1,4 @@
-import type { CompanyInfoTypes } from "../../../../../shared/types/companyInfoTypes";
+import type { CompanyInfoTypes } from "../../../../../shared/types/CompanyInfoTypes";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -16,6 +16,7 @@ export default function CompanyList() {
 
     const filteredCompanies = Array.isArray(companies)
         ? companies.filter((company) => 
+            typeof company?.companyName === "string" &&
             company.companyName.toLowerCase().includes(keyword.toLowerCase())
         )
         : [];
