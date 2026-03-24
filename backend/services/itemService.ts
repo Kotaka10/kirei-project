@@ -1,4 +1,4 @@
-import type { itemInfoTypes } from "../../shared/types/itemInfoTypes.js";
+import type { ItemInfoTypes } from "../../shared/types/ItemInfoTypes.js";
 import mysql from "mysql2/promise";
 import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 
@@ -30,7 +30,7 @@ export const getItems = async () => {
     return items;
 }
 
-export const addItem = async (item: itemInfoTypes) => {
+export const addItem = async (item: ItemInfoTypes) => {
     const [result] = await pool.query<ResultSetHeader>(
         `
             INSERT INTO items (
@@ -78,7 +78,7 @@ export const searchItem = async (keyword: string) => {
     }));
 }
 
-export const updateItem = async (id: number, item: itemInfoTypes) => {
+export const updateItem = async (id: number, item: ItemInfoTypes) => {
     const [result] = await pool.query<ResultSetHeader>(
         `
             UPDATE items
