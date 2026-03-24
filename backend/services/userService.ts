@@ -1,30 +1,51 @@
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-import type { userInfoTypes } from "../../shared/types/userInfoTypes.js";
+import type { UserInfoTypes } from "../../shared/types/UserInfoTypes.js";
+import mysql from "mysql2/promise";
+import type { ResultSetHeader } from "mysql2/promise";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dataPath = path.join(__dirname, "../data/users.json");
+const pool = mysql.createPool({
+    host: "localhost",
+    user: "user",
+    password: "password",
+    database: "kirei_db",
+    waitForConnections: true,
+    connectionLimit: 10,
+})
 
-export const createUser = (user: userInfoTypes) => {
-    const users = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
-
-    const maxId = users.length
-        ? Math.max(...users.map((u: userInfoTypes) => u.id))
-        : 0
-    ;
+export const createUser = async (user: UserInfoTypes) => {
+    const [result] = await pool.query<ResultSetHeader>(
+        `
+            INSERT INTO users (
+                name,
+                phone_number,
+                zipcode,
+                prefecture,
+                city,
+                other_address,
+                building_name,
+                publication_date,
+                expiration_date,
+                notes,
+                memo
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [
+            user.name,
+            user.phoneNumber,
+            user.zipcode,
+            user.prefecture,
+            user.city,
+            user.otherAddress,
+            user.buildingName,
+            user.publicationDate || null,
+            user.expirationDate || null,
+            user.notes,
+            user.memo
+        ]
+    );
 
     const newUser = {
         ...user,
-        id: maxId + 1,
+        id: result.insertId
     };
-
-    users.push(newUser);
-
-    fs.writeFileSync(
-        dataPath,
-        JSON.stringify(users, null, 2)
-    );
 
     return newUser;
 }
