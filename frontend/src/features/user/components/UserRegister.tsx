@@ -77,7 +77,7 @@ export default function UserRegister() {
                         />
                     </div>
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700"></label>
+                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">その他のアドレス</label>
                         <input
                             type="text"
                             name="otherAddress"
@@ -99,7 +99,7 @@ export default function UserRegister() {
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
                         <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">発行日</label>
                         <input
-                            type="text"
+                            type="date"
                             name="publicationDate"
                             value={form.publicationDate}
                             onChange={handleChange}
@@ -109,7 +109,7 @@ export default function UserRegister() {
                     <div className="flex flex-col w-64 sm:w-72 md:w-96">
                         <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">有効期限</label>
                         <input
-                            type="text"
+                            type="date"
                             name="expirationDate"
                             value={form.expirationDate}
                             onChange={handleChange}
