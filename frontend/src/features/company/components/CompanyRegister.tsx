@@ -35,7 +35,7 @@ export default function CompanyRegister() {
                             />
                         </div>
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">郵便番号</label>
+                            <label htmlFor="zipcode" className="mb-2 text-sm font-medium text-gray-700">郵便番号</label>
                             <input
                                 type="text"
                                 name="zipcode"
@@ -54,7 +54,7 @@ export default function CompanyRegister() {
                         </button>
                         {msg && <p className="text-red-500">{msg}</p>}
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">都道府県</label>
+                            <label htmlFor="prefecture" className="mb-2 text-sm font-medium text-gray-700">都道府県</label>
                             <select
                                 name="prefecture"
                                 onChange={handleChange}
@@ -68,7 +68,7 @@ export default function CompanyRegister() {
                             </select>
                         </div>
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">市区町村</label>
+                            <label htmlFor="city" className="mb-2 text-sm font-medium text-gray-700">市区町村</label>
                             <input
                                 type="text"
                                 name="city"
@@ -78,7 +78,7 @@ export default function CompanyRegister() {
                             />
                         </div>
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">その他の住所</label>
+                            <label htmlFor="otherAddress" className="mb-2 text-sm font-medium text-gray-700">その他の住所</label>
                             <input
                                 type="text"
                                 name="otherAddress"
@@ -88,7 +88,7 @@ export default function CompanyRegister() {
                             />
                         </div>
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">アパートマンション名</label>
+                            <label htmlFor="buildingName" className="mb-2 text-sm font-medium text-gray-700">アパートマンション名</label>
                             <input
                                 type="text"
                                 name="buildingName"
@@ -98,7 +98,7 @@ export default function CompanyRegister() {
                             />
                         </div>
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">電話番号</label>
+                            <label htmlFor="phoneNumber" className="mb-2 text-sm font-medium text-gray-700">電話番号</label>
                             <input
                                 type="text"
                                 name="phoneNumber"
@@ -112,8 +112,10 @@ export default function CompanyRegister() {
                                 key={index}
                                 className="flex flex-col w-64 sm:w-72 md:w-96"
                             >
-                                <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">メールアドレス</label>
+                                <label htmlFor="email" className="mb-2 text-sm font-medium text-gray-700">メールアドレス</label>
                                 <input
+                                    type="text"
+                                    name="email"
                                     value={email}
                                     onChange={(e) => handleChangeEmail(index, e.target.value)}
                                     className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
@@ -128,7 +130,7 @@ export default function CompanyRegister() {
                             ＋メールアドレスを追加
                         </button>
                         <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">契約日</label>
+                            <label htmlFor="contractDate" className="mb-2 text-sm font-medium text-gray-700">契約日</label>
                             <input
                                 type="date"
                                 name="contractDate"
@@ -139,7 +141,7 @@ export default function CompanyRegister() {
                         </div>
                         {form.status === "cancelled" && (
                             <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                                <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">解約日</label>
+                                <label htmlFor="cancellationDate" className="mb-2 text-sm font-medium text-gray-700">解約日</label>
                                 <input
                                     type="date"
                                     name="cancellationDate"
@@ -150,7 +152,7 @@ export default function CompanyRegister() {
                             </div>
                         )}
                         <div className="text-left self-start mt-2">
-                            <label htmlFor="companyName" className="mb-2 ml-4 text-sm font-medium text-gray-700">契約状態</label>
+                            <label htmlFor="status" className="mb-2 ml-4 text-sm font-medium text-gray-700">契約状態</label>
                         </div>
                         <div className="mb-4">
                             {contractStatusOptions.map((option) => (
