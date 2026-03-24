@@ -32,7 +32,7 @@ export default function ItemRegister() {
                     <div className="flex flex-col w-64 sm:w-72 md:w-96 pt-4">
                         <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">商品内容</label>
                         <textarea
-                            name="content"
+                            name="description"
                             value={form.description}
                             onChange={handleChange}
                             className="h-32 w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
