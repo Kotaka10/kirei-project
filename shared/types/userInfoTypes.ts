@@ -1,4 +1,4 @@
-export type userInfoTypes = {
+export type UserInfoTypes = {
     id: number;
     name: string;
     phoneNumber: string;

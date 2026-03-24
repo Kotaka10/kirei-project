@@ -1,4 +1,4 @@
-import type { ContractStatus } from "./contractStatusTypes.ts";
+import type { ContractStatus } from "./ContractStatusTypes.js";
 
 export type CompanyInfoTypes = {
     id: number;

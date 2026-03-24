@@ -1,4 +1,4 @@
-export type itemInfoTypes = {
+export type ItemInfoTypes = {
     id: number;
     itemName: string;
     description: string;
