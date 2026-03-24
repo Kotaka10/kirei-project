@@ -1,4 +1,4 @@
-import type { userInfoTypes } from "../../../../../../shared/types/userInfoTypes";
+import type { UserInfoTypes } from "../../../../../../shared/types/UserInfoTypes";
 import { useState } from "react";
 
 export default function useUserRegister() {
@@ -17,14 +17,14 @@ export default function useUserRegister() {
         memo: "",
     }
 
-    const [form, setForm] = useState<userInfoTypes>(initialForm);
+    const [form, setForm] = useState<UserInfoTypes>(initialForm);
     const [msg, setMsg] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const name = e.target.name as keyof userInfoTypes;
+        const name = e.target.name as keyof UserInfoTypes;
 
-        setForm((prev: userInfoTypes) => ({
+        setForm((prev: UserInfoTypes) => ({
             ...prev,
             [name]: e.target.value,
         }))
