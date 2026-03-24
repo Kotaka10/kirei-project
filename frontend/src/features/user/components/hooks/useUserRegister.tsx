@@ -80,7 +80,7 @@ export default function useUserRegister() {
 
             await res.json();
 
-            setMsg(`${form.name}さんを登録しました。`);
+            alert(`${form.name}さんを登録しました`);
         } catch (error) {
             if (error instanceof Error) {
                 setMsg(error.message);
