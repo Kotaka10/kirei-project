@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import type { itemInfoTypes } from "../../../../../../shared/types/itemInfoTypes";
+import type { ItemInfoTypes } from "../../../../../../shared/types/ItemInfoTypes";
 
 export default function useItemList() {
-    const [item, setItem] = useState<itemInfoTypes>({
+    const [item, setItem] = useState<ItemInfoTypes>({
         id: 0,
         itemName: "",
         description: "",
@@ -12,7 +12,7 @@ export default function useItemList() {
         unit: "",
         unitPrice: 0,
     })
-    const [items, setItems] = useState<itemInfoTypes[]>([]);
+    const [items, setItems] = useState<ItemInfoTypes[]>([]);
     const [keyword, setKeyword] = useState("");
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();

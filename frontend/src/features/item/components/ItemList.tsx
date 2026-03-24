@@ -1,5 +1,5 @@
 import useItemList from "./hooks/useItemList";
-import type { itemInfoTypes } from "../../../../../shared/types/itemInfoTypes";
+import type { ItemInfoTypes } from "../../../../../shared/types/ItemInfoTypes";
 
 export default function ItemList() {
     const {
@@ -45,7 +45,7 @@ export default function ItemList() {
                         </tr>
                     </thead>
                     <tbody>
-                        {items.map((i: itemInfoTypes) => (
+                        {items.map((i: ItemInfoTypes) => (
                             <tr key={i.id} className="border-b">
                                 <td className="p-3">{i.itemName}</td>
                                 <td className="p-3">{i.quantity}</td>

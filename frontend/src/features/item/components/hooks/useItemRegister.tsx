@@ -1,8 +1,8 @@
 import { useState } from "react";
-import type { itemInfoTypes } from "../../../../../../shared/types/itemInfoTypes";
+import type { ItemInfoTypes } from "../../../../../../shared/types/ItemInfoTypes";
 
 export default function useItemRegister() {
-    const initialForm: itemInfoTypes = {
+    const initialForm: ItemInfoTypes = {
         id: 0,
         itemName: "",
         description: "",
@@ -11,14 +11,14 @@ export default function useItemRegister() {
         unitPrice: 0,
     }
 
-    const [form, setForm] = useState<itemInfoTypes>(initialForm);
+    const [form, setForm] = useState<ItemInfoTypes>(initialForm);
     const [msg, setMsg] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const {name, value} = e.target;
         
-         setForm((prev) => ({
+         setForm((prev: ItemInfoTypes) => ({
             ...prev,
             [name]: value
         }));
@@ -41,7 +41,7 @@ export default function useItemRegister() {
             }
             
             await res.json();
-            setMsg(`${form.itemName}を登録しました`);
+            alert(`${form.itemName}を登録しました`);
         } catch (error) {
             if (error instanceof Error) {
                 setMsg(error.message);
