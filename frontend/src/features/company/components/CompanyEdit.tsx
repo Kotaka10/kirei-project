@@ -35,6 +35,8 @@ export default function CompanyEdit() {
 
         setFormData({
             ...formData,
+            contractDate: formData.contractDate ? formData.contractDate.slice(0, 10) : "",
+            emails: Array.isArray(formData.emails) ? formData.emails : [""],
             [e.target.name]: e.target.value,
         });
     };
