@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import type { CompanyInfoTypes } from "../../../../../shared/types/companyInfoTypes";
+import type { CompanyInfoTypes } from "../../../../../shared/types/CompanyInfoTypes";
 import { useNavigate } from "react-router-dom";
 
 export default function CompanyEdit() {
