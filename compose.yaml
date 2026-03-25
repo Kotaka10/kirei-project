@@ -1,0 +1,38 @@
+services:
+  frontend:
+    build: ./frontend #このパスのDockerfileからコンテナ作る
+    ports:
+      - "5173:5173" #localhost:5173 → コンテナ:5173
+    volumes:
+      - ./frontend:/app #ローカルのfrontendフォルダ → コンテナの /app に同期
+    command: npm run dev #↑つまりコード変更がリアルタイムで反映される
+  
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend:/app
+    depends_on: #DBコンテナが先に起動する※完全に接続可能になる保証ではない
+      - db
+    command: npx tsx server.ts
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: kirei_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image:  phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+    ports:
+      - "8080:80"
+
+volumes:
+  db_data:
