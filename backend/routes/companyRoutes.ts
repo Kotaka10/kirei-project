@@ -1,7 +1,7 @@
 import express from "express";
 import { getCompanies, getCompany, createCompany, updateCompany } from "../controllers/companyController.js";
 
-const router = express.Router();
+const router = express.Router(); //ルーティング専用のオブジェクトを作っている
 
 router.get("/", getCompanies);
 router.get("/:id", getCompany);
