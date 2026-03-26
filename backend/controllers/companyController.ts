@@ -26,12 +26,13 @@ export const updateCompany = async (req: Request, res: Response) => {
 }
 
 export const createCompany = async (req: Request, res: Response) => {
-  const newData = req.body;
-  const newCompany = await companyService.createCompany(newData);
+  try {
+    const newData = req.body;
+    const newCompany = await companyService.createCompany(newData);
 
-  if (!newCompany) {
-    return res.status(404).json({ message: "新しい会社が見つかりませんでした"})
+    res.status(201).json(newCompany);
+  } catch(err) {
+    console.error("createCompanyのエラー", err);
+    res.status(500).json({ message: "会社登録に失敗しました"});
   }
-
-  res.json(newCompany);
 }
