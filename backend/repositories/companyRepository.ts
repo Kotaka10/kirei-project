@@ -1,6 +1,7 @@
 import type { RowDataPacket, ResultSetHeader } from "mysql2";
 import mysql from "mysql2/promise";
 import type { CompanyInfoTypes } from "../../shared/types/CompanyInfoTypes.js";
+import type { CompanyDetailedRow, CompanyRow } from "../types/CompanyRowTypes.js";
 
 const pool = mysql.createPool({
   host: "localhost",
@@ -12,7 +13,7 @@ const pool = mysql.createPool({
 });
 
 export const getAllCompanies = async () => {
-    const [rows] = await pool.query<RowDataPacket[]>( //rowsという実際のデータを分割代入している
+    const [rows] = await pool.query<CompanyRow[]>( //rowsという実際のデータを分割代入している
     `
       SELECT 
         id, 
@@ -30,7 +31,7 @@ export const getAllCompanies = async () => {
     `
   );
 
-  const companies = rows.map((row: any) => ({
+  const companies = rows.map((row) => ({
     id: row.id,
     companyName: row.company_name,
     zipcode: row.zipcode,
@@ -47,7 +48,7 @@ export const getAllCompanies = async () => {
 }
 
 export const getCompanyById = async (id: number) => {
-    const [rows] = await pool.query<RowDataPacket[]>(
+    const [rows] = await pool.query<CompanyDetailedRow[]>(
         `
           SELECT 
             c.id,
