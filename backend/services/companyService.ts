@@ -24,13 +24,15 @@ export const updateCompany = async (id: number, company: CompanyInfoTypes) => {
 };
 
 export const createCompany = async (company: CompanyInfoTypes) => {
-  const id = await companyRepository.createCompany(company);
-
-  const newCompany = {
+  const formattedCompany = {
     ...company,
     contractDate: normalizeDate(company.contractDate),
-    id: id,
   }
 
-  return newCompany;
+  const id = await companyRepository.createCompany(formattedCompany);
+
+  return {
+    ...formattedCompany,
+    id,
+  };
 };
