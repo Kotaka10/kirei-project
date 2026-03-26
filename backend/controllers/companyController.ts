@@ -29,5 +29,9 @@ export const createCompany = async (req: Request, res: Response) => {
   const newData = req.body;
   const newCompany = await companyService.createCompany(newData);
 
+  if (!newCompany) {
+    return res.status(404).json({ message: "新しい会社が見つかりませんでした"})
+  }
+
   res.json(newCompany);
 }
