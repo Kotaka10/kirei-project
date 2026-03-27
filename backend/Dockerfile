@@ -12,8 +12,8 @@ RUN npm install
 #プロジェクトの全ファイルをコピー
 COPY . .
 
-#3001番ポートを使いますよ
-EXPOSE 3001
+#3000番ポートを使いますよ
+EXPOSE 3000
 
 #COPY package*.json ./ & RUN npm installを先にやる理由
 #→依存が変わらない限り再インストールしなくていい = ビルドが早くなる（キャッシュ）
