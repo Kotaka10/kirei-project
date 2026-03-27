@@ -3,9 +3,9 @@ import mysql from "mysql2/promise";
 import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 
 const pool = mysql.createPool({
-    host: "localhost",
-    user: "user",
-    password: "password",
+    host: "db",
+    user: "root",
+    password: process.env.DB_PASSWORD || "",
     database: "kirei_db",
     waitForConnections: true,
     connectionLimit: 10,
