@@ -42,5 +42,10 @@ services:
     ports:
       - "8080:80"
 
+  file-server:
+    image: nginx
+    volumes:
+      - ./uploads:/usr/share/nginx/html/uploads
+
 volumes:
   db_data:
