@@ -78,9 +78,7 @@ export default function useUserRegister() {
                 setMsg("商品の登録に失敗しました。");
             }
 
-            const data = await res.json();
-
-            console.log("data", data);
+            await res.json();
 
             alert(`${form.name}さんを登録しました`);
         } catch (error) {
