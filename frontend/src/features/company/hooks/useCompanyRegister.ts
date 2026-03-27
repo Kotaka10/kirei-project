@@ -75,7 +75,7 @@ export const useRegisterForm = () => {
             ...form,
             status: statusLabelMap[form.status] ?? form.status,
         };
-        const res = await fetch("http://localhost:3001/api/companies", {
+        const res = await fetch("http://localhost:3000/api/companies", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
