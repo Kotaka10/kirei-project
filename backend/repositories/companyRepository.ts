@@ -4,16 +4,16 @@ import type { CompanyInfoTypes } from "../../shared/types/CompanyInfoTypes.js";
 import type { CompanyDetailedRow, CompanyRow } from "../types/CompanyRowTypes.js";
 
 const pool = mysql.createPool({
-  host: "localhost",
-  user: "user",
-  password: "password",
+  host: "db",
+  user: "root",
+  password: process.env.DB_PASSWORD || "",
   database: "kirei_db",
   waitForConnections: true,
   connectionLimit: 10,
 });
 
 export const getAllCompanies = async () => {
-    const [rows] = await pool.query<CompanyRow[]>( //rowsという実際のデータを分割代入している
+    const [rows] = await pool.query<CompanyRow[]>(
     `
       SELECT 
         id, 
