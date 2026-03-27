@@ -23,7 +23,7 @@ export const useRegisterForm = () => {
 
     useEffect(() => {
         const fetchCompany = async () => {
-            const res = await fetch("http://localhost:3001/api/companies/1");
+            const res = await fetch("http://localhost:3000/api/companies/1");
             const data = await res.json();
             setForm(data);
         };

@@ -29,7 +29,7 @@ export default function CompanyList() {
     useEffect(() => {
         const fetchCompanies = async () => {
             try {
-                const res = await fetch("http://localhost:3001/api/companies");
+                const res = await fetch("http://localhost:3000/api/companies");
 
                 if (!res.ok) {
                     throw new Error(`HTTP error: ${res.status}`);

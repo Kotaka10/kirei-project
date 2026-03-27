@@ -68,7 +68,7 @@ export default function useUserRegister() {
         setIsLoading(true);
 
         try {
-            const res = await fetch("http://localhost:3001/api/users", {
+            const res = await fetch("http://localhost:3000/api/users", {
                 method : "POST",
                 headers : { "Content-Type": "application/json" },
                 body: JSON.stringify(form),
@@ -78,7 +78,9 @@ export default function useUserRegister() {
                 setMsg("商品の登録に失敗しました。");
             }
 
-            await res.json();
+            const data = await res.json();
+
+            console.log("data", data);
 
             alert(`${form.name}さんを登録しました`);
         } catch (error) {
