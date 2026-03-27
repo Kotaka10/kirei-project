@@ -7,11 +7,11 @@ const normalizeDate = (value?: string | null) => {
 }
 
 export const getAllCompanies = async () => {
-  return companyRepository.getAllCompanies();
+  return await companyRepository.getAllCompanies();
 };
 
 export const getCompanyById = async (id: number) => {
-  return companyRepository.getCompanyById(id);
+  return await companyRepository.getCompanyById(id);
 };
 
 export const updateCompany = async (id: number, company: CompanyInfoTypes) => {
