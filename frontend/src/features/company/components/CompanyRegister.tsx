@@ -134,7 +134,7 @@ export default function CompanyRegister() {
                             <input
                                 type="date"
                                 name="contractDate"
-                                value={form.contractDate}
+                                value={form.contractDate ?? ""}
                                 onChange={handleChange}
                                 className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
                             />
