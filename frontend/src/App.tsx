@@ -9,6 +9,7 @@ import ItemList from './features/item/components/ItemList';
 import DefaultLayout from './features/layout/DefaultLayout';
 import ColoredLayout from './features/layout/ColoredLayout';
 import ItemEdit from './features/item/components/ItemEdit';
+import FileUploadPage from './features/files/components/FileUploadPage';
 
 function App() {
   
@@ -20,6 +21,7 @@ function App() {
         <Route path="/company/edit/:id" element={<CompanyEdit />} />
         <Route path="/item-list" element={<ItemList />} />
         <Route path="/item-edit/:id" element={<ItemEdit />} />
+        <Route path="files" element={<FileUploadPage />} />
       </Route>
       <Route element={<ColoredLayout />}>
         <Route path="/user-register" element={<UserRegister />} />
