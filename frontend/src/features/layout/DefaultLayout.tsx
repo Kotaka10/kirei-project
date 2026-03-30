@@ -8,6 +8,7 @@ export default function DefaultLayout() {
         <Link to="/list">会社一覧</Link>
         <Link to="/user-register">ユーザー登録ページ</Link>
         <Link to="/item-register">商品登録ページ</Link>
+        <Link to="/files">ファイルアップロード</Link>
       </nav>
       <main>
         <Outlet />
