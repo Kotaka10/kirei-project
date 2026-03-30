@@ -1,15 +1,7 @@
 import type { ResultSetHeader } from "mysql2";
 import mysql from "mysql2/promise";
 import type { UserInfoTypes } from "../../shared/types/UserInfoTypes.js";
-
-const pool = mysql.createPool({
-    host: "db",
-    user: "root",
-    password: process.env.DB_PASSWORD || "",
-    database: "kirei_db",
-    waitForConnections: true,
-    connectionLimit: 10,
-})
+import pool from "../config/db.js";
 
 export const createUser = async (user: UserInfoTypes) => {
     const [result] = await pool.query<ResultSetHeader>(
