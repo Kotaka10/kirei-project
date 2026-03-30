@@ -1,16 +1,8 @@
-import type { RowDataPacket, ResultSetHeader } from "mysql2";
-import mysql from "mysql2/promise";
+import type { ResultSetHeader } from "mysql2";
 import type { CompanyInfoTypes } from "../../shared/types/CompanyInfoTypes.js";
 import type { CompanyDetailedRow, CompanyRow } from "../types/CompanyRowTypes.js";
 
-const pool = mysql.createPool({
-  host: "db",
-  user: "root",
-  password: process.env.DB_PASSWORD || "",
-  database: "kirei_db",
-  waitForConnections: true,
-  connectionLimit: 10,
-});
+import pool from '../config/db.js';
 
 export const getAllCompanies = async () => {
     const [rows] = await pool.query<CompanyRow[]>(
