@@ -9,7 +9,7 @@ export type CompanyRow = RowDataPacket & {
     other_address: string,
     building_name: string,
     phone_number: string,
-    contract_date: string,
+    contract_date: "active" | "negotiating" | "cancelled" | "",
     status: string,
 }
 
@@ -23,6 +23,6 @@ export type CompanyDetailedRow = RowDataPacket & {
     building_name: string,
     phone_number: string,
     contract_date: string,
-    status: string,
+    status: "active" | "negotiating" | "cancelled" | "",
     email: string | null,
 }
