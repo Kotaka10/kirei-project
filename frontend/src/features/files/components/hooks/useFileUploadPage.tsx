@@ -17,7 +17,7 @@ export default function useFileUploadPage() {
 
     const fetchFiles = async () => {
         try {
-            const res = await fetch("http://localhost/api/files");
+            const res = await fetch("http://localhost:3000/api/uploads");
             if (!res.ok) {
                 throw new Error("ファイルの取得に失敗しました");
             }
@@ -47,7 +47,7 @@ export default function useFileUploadPage() {
             setIsLoading(true);
             setMessage("");
 
-            const res = await fetch("http://localhost:3000/api/files/upload", {
+            const res = await fetch("http://localhost:3000/api/uploads", {
                 method: "POST", 
                 body: formData,
             });
