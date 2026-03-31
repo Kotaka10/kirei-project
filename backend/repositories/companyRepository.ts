@@ -62,7 +62,7 @@ export const getCompanyById = async (id: number) => {
         [id]
       );
     
-      const companyMap = new Map<number, any>();
+      const companyMap = new Map<number, CompanyInfoTypes>();
     
       rows.forEach((row) => {
         if (!companyMap.has(row.id)) {
@@ -76,6 +76,7 @@ export const getCompanyById = async (id: number) => {
             buildingName: row.building_name,
             phoneNumber: row.phone_number,
             contractDate: row.contract_date,
+            cancellationDate: "",
             status: row.status,
             emails: [],
           });
@@ -162,18 +163,18 @@ export const createCompany = async (company: CompanyInfoTypes) => {
         const companyId = result.insertId;
 
         if (company.emails && company.emails.length > 0) {
-        const emailValues = company.emails.map((email) => [
-            companyId,
-            email
-        ]);
+          const emailValues = company.emails.map((email) => [
+              companyId,
+              email
+          ]);
         
-        await connection.query(
+          await connection.query(
             `
             INSERT INTO company_emails (company_id, email)
             VALUES ?
             `,
             [emailValues]
-        );
+          );
         }
 
         await connection.commit();
