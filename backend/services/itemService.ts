@@ -1,22 +1,8 @@
 import type { ItemInfoTypes } from "../../shared/types/ItemInfoTypes.js";
-import mysql from "mysql2/promise";
-import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
-
-const pool = mysql.createPool({
-    host: "db",
-    user: "root",
-    password: process.env.DB_PASSWORD || "",
-    database: "kirei_db",
-    waitForConnections: true,
-    connectionLimit: 10,
-});
+import * as itemRepository from "../repositories/itemRepository.js";
 
 export const getItems = async () => {
-    const [rows] = await pool.query<RowDataPacket[]>(`
-        SELECT id, item_name, quantity, unit_price, description, unit
-        FROM items
-        ORDER BY id
-    `);
+    const [rows] = await itemRepository.getItems();
 
     const items = rows.map((row: any) => ({
         id: row.id,
@@ -31,42 +17,16 @@ export const getItems = async () => {
 }
 
 export const addItem = async (item: ItemInfoTypes) => {
-    const [result] = await pool.query<ResultSetHeader>(
-        `
-            INSERT INTO items (
-                item_name,
-                quantity,
-                unit_price,
-                description,
-                unit
-            ) VALUES (?, ?, ?, ?, ?)
-        `,
-        [
-            item.itemName,
-            item.quantity,
-            item.unitPrice,
-            item.description,
-            item.unit
-        ]
-    );
+    const id = await itemRepository.addItem(item);
 
-    const newItem = {
+    return {
         ...item,
-        id: result.insertId,
-    }
-
-    return newItem;
+        id,
+    };
 }
 
 export const searchItem = async (keyword: string) => {
-    const [rows] = await pool.query<RowDataPacket[]>(
-        `
-            SELECT id, item_name, quantity, unit_price, description, unit
-            FROM items
-            WHERE item_name LIKE ?
-        `,
-        [`%${keyword}%`]
-    );
+    const [rows] = await itemRepository.searchItem(keyword);
 
     return rows.map((row) => ({
         id: row.id,
@@ -79,42 +39,11 @@ export const searchItem = async (keyword: string) => {
 }
 
 export const updateItem = async (id: number, item: ItemInfoTypes) => {
-    const [result] = await pool.query<ResultSetHeader>(
-        `
-            UPDATE items
-            SET
-                item_name = ?,
-                quantity = ?,
-                unit_price = ?,
-                description = ?,
-                unit = ?
-            WHERE id = ? 
-        `,
-        [
-            item.itemName,
-            item.quantity,
-            item.unitPrice,
-            item.description,
-            item.unit,
-            id,
-        ]
-    );
-
-    if (result.affectedRows === 0) {
-        return null;
-    }
-
-    return { ...item, id };
+    return await itemRepository.updateItem(id, item);
 }
 
 export const deleteItem = async (id: number) => {
-    const [result] = await pool.query<ResultSetHeader>(
-        `
-            DELETE FROM items
-             WHERE id = ?
-        `,
-        [id]
-    );
+    const [result] = await itemRepository.deleteItem(id);
 
     if (result.affectedRows === 0) {
         return false;
