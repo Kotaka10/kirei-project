@@ -21,7 +21,7 @@ function App() {
         <Route path="/company/edit/:id" element={<CompanyEdit />} />
         <Route path="/item-list" element={<ItemList />} />
         <Route path="/item-edit/:id" element={<ItemEdit />} />
-        <Route path="uploads" element={<FileUploadPage />} />
+        <Route path="/uploads" element={<FileUploadPage />} />
       </Route>
       <Route element={<ColoredLayout />}>
         <Route path="/user-register" element={<UserRegister />} />
