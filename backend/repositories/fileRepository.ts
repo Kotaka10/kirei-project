@@ -3,7 +3,7 @@ import type { FileInfoTypes } from "../../shared/types/FileInfoTypes.js";
 import type { ResultSetHeader, RowDataPacket } from "mysql2";
 
 export const fileRepository = { // fileRepositoryはオブジェクト　キー：insert（メソッド名） + 値：関数という形
-    async insert(file: Omit<FileInfoTypes, 'id' | 'url'>) { // ↓この行から下記はキー：値の省略した形 insertという関数名がキー、関数自体が値に相当
+    async insert(file: Omit<FileInfoTypes, 'id' | 'url'>) { // ↓この行から下記は「キー：値の省略した形」 insertという関数名がキー、関数自体が値に相当
         const sql = 
         `
         INSERT INTO files (
