@@ -87,7 +87,7 @@ export const getCompanyById = async (id: number) => {
         }
       })
     
-      return companyMap.values().next().value ?? null;
+      return companyMap.values().next().value ?? null; // companyMap.values() → 値一覧を取り出す .next → 一つ取り出す
 }
 
 export const updateCompany = async (id: number, company: CompanyInfoTypes) => {
