@@ -16,7 +16,7 @@ export default function FileUploadPage() {
             <div className="mb-4">
                 <input type="file" onChange={handleFileChange} />
                 <button onClick={handleUpload} disabled={isLoading}>
-                    {isLoading ? "アップロード中" : "アップロード"}
+                    {isLoading ? "アップロード中" : "アップロードする"}
                 </button>
             </div>
 
