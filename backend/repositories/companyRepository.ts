@@ -128,10 +128,10 @@ export const updateCompany = async (id: number, company: CompanyInfoTypes) => {
 }
 
 export const createCompany = async (company: CompanyInfoTypes) => {
-    const connection = await pool.getConnection();
+    const connection = await pool.getConnection(); // 専用のDB接続を一つ取得
 
     try {
-        await connection.beginTransaction();
+        await connection.beginTransaction(); // トランザクション開始
 
         const [result] = await connection.query<ResultSetHeader>(
         `
@@ -177,13 +177,13 @@ export const createCompany = async (company: CompanyInfoTypes) => {
           );
         }
 
-        await connection.commit();
+        await connection.commit(); // 全部成功したら確定
 
         return companyId;
     } catch (err) {
-        await connection.rollback();
+        await connection.rollback(); // エラー時に全部取り消す
         throw err;
     } finally {
-        connection.release();
+        connection.release(); // 接続をプールに返す
     }
 }
