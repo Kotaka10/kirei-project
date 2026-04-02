@@ -6,6 +6,7 @@ const pool = mysql.createPool({ // プール：DBの接続管理をする箱
     password: process.env.DB_PASSWORD || "",
     database: "kirei_db",
     waitForConnections: true,
+    charset: "utf8mb4",
 });
 
 export default pool;
