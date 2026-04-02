@@ -22,7 +22,7 @@ export default function useFileUploadPage() {
                 throw new Error("ファイルの取得に失敗しました");
             }
             const data = await res.json();
-            setFiles(data);
+            setFiles(data.files);
         } catch (error) {
             if (error instanceof Error) {
                 console.error(error);
