@@ -11,11 +11,15 @@ export default function FileUploadPage() {
     } = useFileUploadPage();
 
     return (
-        <>
-            <h1 className="text-3xl text-center">ファイルアップロード</h1>
+        <div className="flex flex-col items-center justify-center">
+            <h1 className="text-3xl text-center py-4">ファイルアップロード</h1>
             <div className="mb-4">
                 <input type="file" onChange={handleFileChange} />
-                <button onClick={handleUpload} disabled={isLoading}>
+                <button
+                    onClick={handleUpload}
+                    disabled={isLoading}
+                    className="ring-2 ring-blue-500 rounded ml-4"
+                >
                     {isLoading ? "アップロード中" : "アップロードする"}
                 </button>
             </div>
@@ -27,7 +31,7 @@ export default function FileUploadPage() {
                 <p>{message}</p>
             )}
             
-            <h2>保存済みファイル一覧</h2>
+            <h2 className="text-2xl py-4">保存済みファイル一覧</h2>
             {files.length === 0 ? (
                 <p>ファイルはまだありません</p>
             ) : (
@@ -45,6 +49,6 @@ export default function FileUploadPage() {
                     ))}
                 </ul>
             )}
-        </>
+        </div>
     )
 }
