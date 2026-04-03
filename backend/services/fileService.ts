@@ -1,12 +1,17 @@
 import type { FileInfoTypes } from "../../shared/types/FileInfoTypes.js";
 import { fileRepository } from "../repositories/fileRepository.js";
 
-export const fileService = {
-    async upload(file?: Express.Multer.File) {
+export const fileService = { // ←関数をプロパティとして持つオブジェクト fileService.uploadの形で他のファイルでimportすれば使える
+    async upload(file?: Express.Multer.File, originalFileName?: string) {
         if (!file) throw new Error('ファイルなし');
+        
+        const safeOriginalName =
+            typeof originalFileName === "string" && originalFileName.trim() !== ""
+                ? originalFileName.trim()
+                : file.originalname;
 
         const fileInfo = {
-            fileName: file.originalname,
+            fileName: safeOriginalName,
             storedFileName: file.filename,
             storedPath: `uploads/${file.filename}`,
             mimeType: file.mimetype,
@@ -18,7 +23,7 @@ export const fileService = {
         return {
             id: insertId,
             ...fileInfo,
-            url: `http://localhost:3000/${fileInfo.storedPath}`
+            url: `http://localhost:3000/uploads/${encodeURIComponent(file.filename)}`
         };
     },
 
@@ -27,7 +32,11 @@ export const fileService = {
 
         return (files as FileInfoTypes[]).map((file) => ({
             ...file,
-            url: `http://localhost:3000/${file.storedPath}`
+            fileName: file.fileName?.trim(),
+            storedFileName: file.storedFileName?.trim(),
+            storedPath: file.storedPath?.trim(),
+            mimeType: file.mimeType?.trim(),
+            url: `http://localhost:3000/uploads/${encodeURIComponent(file.storedFileName.trim())}`
         }));
     }
 };
