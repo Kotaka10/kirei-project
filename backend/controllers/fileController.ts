@@ -3,9 +3,16 @@ import { fileService } from "../services/fileService.js";
 
 export const upload = async (req: Request, res: Response) => {
     try {
-        const result = await fileService.upload(req.file);
+        const encodedOriginalFileName = req.header("X-Original-File-Name");
+        const originalFileName = encodedOriginalFileName
+            ? decodeURIComponent(encodedOriginalFileName)
+            : undefined;
+
+        const result = await fileService.upload(req.file, originalFileName);
+
         res.status(201).json(result);
     } catch (e) {
+        console.error("uploadエラー", e);
         const message = e instanceof Error ? e.message : "アップロードに失敗しました";
 
         res.status(500).json({ message });
