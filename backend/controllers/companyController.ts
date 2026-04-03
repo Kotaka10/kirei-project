@@ -19,13 +19,18 @@ export const getCompany = async (req: Request, res: Response) => {
 };
 
 export const updateCompany = async (req: Request, res: Response) => {
-    const updatedCompany = await companyService.updateCompany(Number(req.params.id), req.body);
+    try {
+      const updatedCompany = await companyService.updateCompany(Number(req.params.id), req.body);
 
-    if (!updatedCompany) {
-      return res.status(404).json({ message: "会社が見つかりません" });
+      if (!updatedCompany) {
+        return res.status(404).json({ message: "会社が見つかりません" });
+      }
+
+      res.json(updatedCompany);
+    } catch (err) {
+      console.error("updateCompanyのエラー", err);
+      res.status(500).json({ message: "会社情報の更新に失敗しました"});
     }
-
-    res.json(updatedCompany);
 }
 
 export const createCompany = async (req: Request, res: Response) => {
