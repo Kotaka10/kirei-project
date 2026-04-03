@@ -50,11 +50,15 @@ export default function useFileUploadPage() {
             const res = await fetch("http://localhost:3000/api/uploads", {
                 method: "POST", 
                 body: formData,
+                headers: {
+                    "X-Original-File-Name": encodeURIComponent(selectedFile.name),
+                }
             });
 
             if (!res.ok) {
-                const errorData = await res.json();
-                throw new Error(errorData.message || "アップロードに失敗しました");
+                const errorText = await res.text();
+                console.error("upload error response", errorText);
+                throw new Error("アップロードに失敗しました");
             }
 
             const data = await res.json();
