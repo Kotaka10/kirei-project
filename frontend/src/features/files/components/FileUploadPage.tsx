@@ -37,14 +37,22 @@ export default function FileUploadPage() {
             ) : (
                 <ul>
                     {files.map((file) => (
-                        <li key={file.id}>
+                        <li 
+                            key={file.id}
+                            className="my-3"
+                        >
                             <a
                                 href={file.url}
                                 target="_blank"
                                 rel="noreferrer"
                             >
                                 {file.fileName}    
-                            </a>                                
+                            </a>     
+                            <img
+                                src={file.url}
+                                alt={file.fileName}
+                                width={300}
+                            />                           
                         </li>
                     ))}
                 </ul>
