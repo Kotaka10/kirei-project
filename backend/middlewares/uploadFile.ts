@@ -55,3 +55,10 @@ export const uploader = multer({ // multer本体設定
 ファイル形式制限（セキュリティ）
 ファイルサイズ制限
 */
+
+export const uploadConfig = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 5 * 1024 * 1024,
+    },
+});
