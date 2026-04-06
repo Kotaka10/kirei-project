@@ -32,10 +32,12 @@ export default function useFileUploadByBlob() {
             const parsed = JSON.parse(jsonText);
 
             const formattedJson = JSON.stringify(parsed, null, 2);
+            // blobの生成
             const jsonBlob = new Blob([formattedJson], {
                 type: "application/json",
             });
 
+            // multipart/form-dataを作る
             const formData = new FormData();
             formData.append("file", jsonBlob, "payload.json");
             formData.append("note", "textarea json upload practice");
@@ -43,6 +45,7 @@ export default function useFileUploadByBlob() {
             const res = await fetch("http://localhost:3000/upload-blob", {
                 method: "POST",
                 body: formData,
+                // Content-Typeをを固定すると壊れやすいから記述しない
             });
 
             const data: UploadResponse = await res.json();
@@ -77,43 +80,4 @@ export default function useFileUploadByBlob() {
         handleUpload,
         handleFormat,
     }
-
-    /*
-    const payload = { // 実データ　payload = 積み荷
-        userId: 123,
-        name: "Takahhiro",
-        tags: ["react", "typescript", "blob"],
-        settings: {
-            darkMode: true,
-            notifications: false,
-        },
-        createdAt: new Date().toISOString(),
-    };
-
-    const jsonString = JSON.stringify(payload, null, 2);
-    // Blobの生成
-    const jsonBlob = new Blob([jsonString], {
-        type: "application/json",
-    })
-
-    // multipart/form-dataを作る
-    const formData = new FormData();
-
-    formData.append("file", jsonBlob, "data.json");
-    formData.append("note", "json blob practice");
-
-    try {
-        const res = await fetch("http://localhost:3000/upload-blob", {
-            method: "POST",
-            body: formData,
-            // Content-Typeをを固定すると壊れやすいから記述しない
-        });
-
-        const data: UploadResponse = await res.json();
-        setResult(JSON.stringify(data, null, 2));
-    } catch (error) {
-        console.error(error);
-        setResult("アップロードに失敗しました");
-    }
-    */
 }
