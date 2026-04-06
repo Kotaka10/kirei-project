@@ -16,9 +16,10 @@ export default function useFileUploadByBlob() {
             formData.append("file", blob, "sample.txt");
             formData.append("note", "blob practice");
 
-            const res = await fetch("http://localhost:3000/upload", {
+            const res = await fetch("http://localhost:3000/upload-blob", {
                 method: "POST",
                 body: formData,
+                // Content-Typeをを固定すると壊れやすいから記述しない
             });
 
             const data = await res.json();
