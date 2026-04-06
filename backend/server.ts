@@ -4,7 +4,8 @@ import path from "path";
 import companyRoutes from "./routes/companyRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import itemRoutes from "./routes/itemRoutes.js";
-import fileRoutes from "./routes/fileRoutes.js"
+import fileRoutes from "./routes/fileRoutes.js";
+import uploadRoutes from "./routes/uploadByBlobRoutes.js";
 
 const app = express(); //サーバーを作っている
 const PORT = 3000;
@@ -17,6 +18,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/items", itemRoutes);
 app.use("/api/uploads", fileRoutes);
 app.use("/uploads", express.static(path.resolve("uploads")));
+app.use("/upload-blob", uploadRoutes);
 
 app.listen(PORT, () => { //app.listen(PORT)　指定したポート番号でHTTPリクエストを受け付ける
     console.log(`server running on http://localhost:${PORT}`);
