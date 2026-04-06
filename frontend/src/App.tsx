@@ -10,6 +10,7 @@ import DefaultLayout from './features/layout/DefaultLayout';
 import ColoredLayout from './features/layout/ColoredLayout';
 import ItemEdit from './features/item/components/ItemEdit';
 import FileUploadPage from './features/files/components/FileUploadPage';
+import FileUploadByBlob from './features/files/components/FileUploadByBlob';
 
 function App() {
   
@@ -26,6 +27,7 @@ function App() {
       <Route element={<ColoredLayout />}>
         <Route path="/user-register" element={<UserRegister />} />
         <Route path="/item-register" element={<ItemRegister />} />
+        <Route path="upload-blob" element={<FileUploadByBlob />} />
       </Route>
     </Routes>
   )
