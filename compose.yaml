@@ -2,7 +2,7 @@ services:
   frontend:
     build: ./frontend #このパスのDockerfileからコンテナ作る
     ports:
-      - "5173:5173" #localhost:5173 → コンテナ:5173
+      - "5173:5173" #localhost:5173 → コンテナ:5173　ブラウザで　localhost:5173 にアクセスすると、その通信がコンテナの5173に転送されて、コンテナ内のサーバーに届く
     volumes:
       - ./frontend:/app #ローカルのfrontendフォルダ → コンテナの /app に同期 ←つまりコード変更がリアルタイムで反映される
       - /app/node_modules
@@ -15,7 +15,7 @@ services:
     volumes:
       - ./backend:/app
       - /app/node_modules
-    depends_on: #DBコンテナが先に起動する※完全に接続可能になる保証ではない
+    depends_on: #DBコンテナが先に起動する　※完全に接続可能になる保証ではない
       - db
     environment:
       DB_HOST: db
