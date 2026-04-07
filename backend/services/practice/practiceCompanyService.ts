@@ -1,38 +1,38 @@
 import type { CompanyInfoTypes } from "../../../shared/types/CompanyInfoTypes.js";
 import * as companyRepository from "../../repositories/companyRepository.js";
 
-const normalizeDate = (date:string | null) => {
-    if (!date) return null;
-    return date?.slice(0, 10);
+const normalizeDate = (value: string | null) => {
+    if (!value) return null;
+    return value?.slice(0, 10);
 }
 
-export const getCompany = async () => {
+export const getAllCompanies = async () => {
     return await companyRepository.getAllCompanies();
 }
 
-export const getCompanyById = async (id: number) => {
-    return companyRepository.getCompanyById(id);
+export const getCompanyId = async (id: number) => {
+    return await companyRepository.getCompanyById(id);
 }
 
 export const updateCompany = async (id: number, company: CompanyInfoTypes) => {
-    const formattedCompany = {
+    const formattedComapany = {
         ...company,
         contractDate: normalizeDate(company.contractDate),
-    }
+    };
 
-    return await companyRepository.updateCompany(id, formattedCompany);
+    return await companyRepository.updateCompany(id, formattedComapany);
 }
 
-export const createCompany = async (newCompany: CompanyInfoTypes) => {
-    const formattedCompany = {
-        ...newCompany,
-        contractDate: normalizeDate(newCompany.contractDate),
-    }
+export const createCompany = async (company: CompanyInfoTypes) => {
+    const formattedComapany = {
+        ...company,
+        contractDate: normalizeDate(company.contractDate),
+    };
 
-    const id = await companyRepository.createCompany(formattedCompany);
+    const id = await companyRepository.createCompany(formattedComapany);
 
     return {
-        ...formattedCompany,
-        id: id,
+        ...formattedComapany,
+        id,
     }
 }

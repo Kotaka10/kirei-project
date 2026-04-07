@@ -1,13 +1,14 @@
-import type { CompanyRow, CompanyDetailedRow } from "../../types/CompanyRowTypes.js";
-import pool from "../../config/db.js";
-import type { CompanyInfoTypes } from "../../../shared/types/CompanyInfoTypes.js";
 import type { ResultSetHeader } from "mysql2";
+import type { CompanyInfoTypes } from "../../../shared/types/CompanyInfoTypes.js";
+import pool from "../../config/db.js"
+import type { CompanyDetailedRow, CompanyRow } from "../../types/CompanyRowTypes.js"
+
 
 export const getAllCompanies = async () => {
     const [rows] = await pool.query<CompanyRow[]>(
         `
-        SELECT 
-            id,
+        SELECT
+            id, 
             company_name,
             zipcode,
             prefecture,
@@ -18,11 +19,11 @@ export const getAllCompanies = async () => {
             contract_date,
             status
         FROM companies
-        ORDER BY id;
+        ORDER BY id
         `
-    );
+    )
 
-    return rows.map((row) => ({
+    const companies = rows.map((row) => ({
         id: row.id,
         companyName: row.company_name,
         zipcode: row.zipcode,
@@ -32,12 +33,14 @@ export const getAllCompanies = async () => {
         buildingName: row.building_name,
         phoneNumber: row.phone_number,
         contractDate: row.contract_date,
-        status: row.status,
-    }))
+        status: row.status
+    }));
+
+    return companies;
 }
 
 export const getCompanyById = async (id: number) => {
-    const [rows]  = await pool.query<CompanyDetailedRow[]>(
+    const [rows] = await pool.query<CompanyDetailedRow[]>(
         `
         SELECT
             c.id,
@@ -49,13 +52,12 @@ export const getCompanyById = async (id: number) => {
             c.building_name,
             c.phone_number,
             c.contract_date,
-            c.cancellationDate,
-            c.status,
+            c.status
             ce.email
-        FROM companies as c
-        LEFT JOIN company_emails as ce
-          ON c.id = ce.company_id
-        WHERE c.id = ?;
+        FROM companies AS c
+        LEFT JOIN company_emails ce
+        ON c.id = ce.company_id
+        WHERE c.id = ?
         `,
         [id]
     );
@@ -76,8 +78,8 @@ export const getCompanyById = async (id: number) => {
                 contractDate: row.contract_date,
                 cancellationDate: "",
                 status: row.status,
-                emails: [],
-            });
+                emails: []
+            })
         }
 
         if (row.email) {
@@ -92,17 +94,18 @@ export const updateCompany = async (id: number, company: CompanyInfoTypes) => {
     const [result] = await pool.query<ResultSetHeader>(
         `
         UPDATE companies
-           SET 
-               company_name = ?,
-               zipcode = ?,
-               prefecture = ?,
-               city = ?,
-               other_address = ?,
-               building_name = ?,
-               phone_number = ?,
-               contract_date = ?,
-               status = ?
-         WHERE id = ?
+           SET
+            company_name = ?,
+            zipcode = ?,
+            prefecture = ?,
+            city = ?,
+            other_address = ?,
+            building_name = ?,
+            phone_number = ?,
+            contract_date = ?,
+            cancellation_date = ?,
+            status = ?,
+        WHERE id = ?
         `,
         [
             company.companyName,
@@ -113,8 +116,9 @@ export const updateCompany = async (id: number, company: CompanyInfoTypes) => {
             company.buildingName,
             company.phoneNumber,
             company.contractDate,
+            company.cancellationDate,
             company.status,
-            id,
+            id
         ]
     );
 
@@ -122,7 +126,7 @@ export const updateCompany = async (id: number, company: CompanyInfoTypes) => {
         return null;
     }
 
-    return {...company, id};
+    return { ...result, id };
 }
 
 export const createCompany = async (company: CompanyInfoTypes) => {
@@ -131,9 +135,9 @@ export const createCompany = async (company: CompanyInfoTypes) => {
     try {
         await connection.beginTransaction();
 
-        const [result] = await pool.query<ResultSetHeader>(
+        const [result] = await connection.query<ResultSetHeader>(
             `
-            INSERT INTO companies(
+            INSERT INTO companies (
                 company_name,
                 zipcode,
                 prefecture,
@@ -142,8 +146,9 @@ export const createCompany = async (company: CompanyInfoTypes) => {
                 building_name,
                 phone_number,
                 contract_date,
+                cancellation_date,
                 status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `,
             [
                 company.companyName,
@@ -154,9 +159,10 @@ export const createCompany = async (company: CompanyInfoTypes) => {
                 company.buildingName,
                 company.phoneNumber,
                 company.contractDate,
+                company.cancellationDate,
                 company.status
             ]
-        );
+        )
 
         const companyId = result.insertId;
 
@@ -168,7 +174,7 @@ export const createCompany = async (company: CompanyInfoTypes) => {
 
             await connection.query(
                 `
-                INSERT INTO companies_eamils (company_id, email)
+                INSERT INTO company_emails (company_id, email)
                 VALUES ?
                 `,
                 [emailValues]
@@ -178,11 +184,10 @@ export const createCompany = async (company: CompanyInfoTypes) => {
         await connection.commit();
 
         return companyId;
-    } catch (error) {
+    } catch (err) {
         await connection.rollback();
-        throw error;
+        throw err;
     } finally {
         connection.release();
     }
-    
 }
