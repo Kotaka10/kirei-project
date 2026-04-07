@@ -78,7 +78,7 @@ export const deleteItem = async (id: number) => {
     return await pool.query<ResultSetHeader>(
         `
             DELETE FROM items
-             WHERE id = ?
+            WHERE id = ?
         `,
         [id]
     );
