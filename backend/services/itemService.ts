@@ -45,11 +45,5 @@ export const updateItem = async (id: number, item: ItemInfoTypes) => {
 }
 
 export const deleteItem = async (id: number) => {
-    const [result] = await itemRepository.deleteItem(id);
-
-    if (result.affectedRows === 0) {
-        return false;
-    }
-
-    return true;
+    return await itemRepository.deleteItem(id);
 }
