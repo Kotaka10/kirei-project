@@ -75,11 +75,13 @@ export const updateItem = async (id: number, item: ItemInfoTypes) => {
 };
 
 export const deleteItem = async (id: number) => {
-    return await pool.query<ResultSetHeader>(
+    const [result] = await pool.query<ResultSetHeader>(
         `
             DELETE FROM items
             WHERE id = ?
         `,
         [id]
     );
+
+    return result.affectedRows > 0;
 }
