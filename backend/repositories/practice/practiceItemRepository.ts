@@ -3,23 +3,23 @@ import type { ItemInfoTypes } from "../../../shared/types/ItemInfoTypes.js";
 import pool from "../../config/db.js";
 
 
-export const addItem = async (item: ItemInfoTypes) => {
+export const addItems = async (item: ItemInfoTypes) => {
     const [result] = await pool.query<ResultSetHeader>(
         `
-        INSERT INTO items(
+        INSERT INTO items (
             item_name,
             quantity,
+            unit,
             unit_price,
-            description,
-            unit
+            description
         ) VALUES (?, ?, ?, ?, ?)
         `,
         [
             item.itemName,
             item.quantity,
+            item.unit,
             item.unitPrice,
-            item.description,
-            item.unit
+            item.description
         ]
     );
 
@@ -27,47 +27,48 @@ export const addItem = async (item: ItemInfoTypes) => {
 }
 
 export const getItems = async () => {
-    const [rows] = await pool.query<RowDataPacket[]>(
+    return await pool.query<RowDataPacket[]>(
         `
         SELECT
+            id
             item_name,
             quantity,
             unit,
             unit_price,
             description
         FROM items
+        ORDER BY id
         `
     );
-
-    return rows;
 }
 
 export const searchItem = async (keyword: string) => {
     return await pool.query<RowDataPacket[]>(
         `
         SELECT
+            id,
             item_name,
             quantity,
             unit,
             unit_price,
             description
         FROM items
-        WHERE item_name LIKE ?
+        WHERE LIKE ?
         `,
         [`%${keyword}%`]
     );
 }
 
-export const updateCompany = async (id: number, item: ItemInfoTypes) => {
+export const updateItem = async (id: number, item: ItemInfoTypes) => {
     const [result] = await pool.query<ResultSetHeader>(
         `
         UPDATE items
-            item_nane = ?,
-            quantity = ?,
-            unit = ?,
-            unit_price = ?,
-            description = ?
-        WHERE id = ?
+           SET item_name = ?
+               quantity = ?
+               unit = ?
+               unit_price = ?
+               description = ?
+         WHERE id = ?
         `,
         [
             item.itemName,
@@ -83,18 +84,21 @@ export const updateCompany = async (id: number, item: ItemInfoTypes) => {
         return null;
     }
 
-    return {
-        ...item,
-        id
-    };
+    return result;
 }
 
 export const deleteItem = async (id: number) => {
-    return await pool.query<ResultSetHeader>(
+    const [result] = await pool.query<ResultSetHeader>(
         `
         DELETE FROM items
-        WHERE id = ?
+         WHERE id = ?
         `,
         [id]
     );
+
+    if (result.affectedRows === 0) {
+        return false;
+    }
+
+    return true;
 }
