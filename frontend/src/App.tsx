@@ -11,7 +11,7 @@ import ColoredLayout from './features/layout/ColoredLayout';
 import ItemEdit from './features/item/components/ItemEdit';
 import FileUploadPage from './features/files/components/FileUploadPage';
 import FileUploadByBlob from './features/files/components/FileUploadByBlob';
-import PictureBlob from './features/practice/pictureBlob';
+import PictureBlob from './features/practice/PictureBlob';
 
 function App() {
   
