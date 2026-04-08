@@ -10,6 +10,7 @@ export default function DefaultLayout() {
         <Link to="/item-register">商品登録ページ</Link>
         <Link to="/uploads">ファイルアップロード</Link>
         <Link to="/upload-blob">ファイルアップロード(Blob)</Link>
+        <Link to="/picture-blob">画像 Blob</Link>
       </nav>
       <main>
         <Outlet />
