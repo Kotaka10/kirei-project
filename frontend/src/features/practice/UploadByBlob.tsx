@@ -1,6 +1,6 @@
 import usePictureBlob from "./hooks/useUploadByBlob";
 
-export default function PictureBlob() {
+export default function UploadByBlob() {
     const {
         originalUrl,
         processedUrl,

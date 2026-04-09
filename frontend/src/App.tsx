@@ -11,7 +11,7 @@ import ColoredLayout from './features/layout/ColoredLayout';
 import ItemEdit from './features/item/components/ItemEdit';
 import FileUploadPage from './features/files/components/FileUploadPage';
 import FileUploadByBlob from './features/files/components/FileUploadByBlob';
-import PictureBlob from './features/practice/PictureBlob';
+import UploadByBlob from './features/practice/UploadByBlob';
 
 function App() {
   
@@ -29,7 +29,7 @@ function App() {
         <Route path="/user-register" element={<UserRegister />} />
         <Route path="/item-register" element={<ItemRegister />} />
         <Route path="/upload-blob" element={<FileUploadByBlob />} />
-        <Route path="/picture-blob" element={<PictureBlob />} />
+        <Route path="/picture-blob" element={<UploadByBlob />} />
       </Route>
     </Routes>
   )
