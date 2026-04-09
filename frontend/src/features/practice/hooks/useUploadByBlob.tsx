@@ -9,14 +9,14 @@ export default function usePictureBlob() {
     const [uploadedId, setUploadedId] = useState(0);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
+        const file = e.target.files?.[0]; // input[type="file"]からファイルを一つ取得
         if (!file) return;
 
-        const originalObjectUrl = URL.createObjectURL(file);
+        const originalObjectUrl = URL.createObjectURL(file); // ファイルをブラウザで表示できるURLに変換
         setOriginalUrl(originalObjectUrl);
 
         const img = new Image();
-        img.src = originalObjectUrl;
+        img.src = originalObjectUrl; // JSで画像を扱うためにImageに読み込み
 
         img.onload = async () => {
             const canvas = document.createElement("canvas");
@@ -25,25 +25,21 @@ export default function usePictureBlob() {
 
             const width = 300;
             const scale = width / img.width;
-            const height = img.height * scale;
+            const height = img.height * scale; // 幅を300pxに固定して縦横比を維持
 
             canvas.width = width;
             canvas.height = height;
 
-            ctx.drawImage(img, 0, 0, width, height);
+            ctx.drawImage(img, 0, 0, width, height); // 元画像 → リサイズしてcanvasに描く
 
-            const blob = await new Promise<Blob | null>((resolve) => {
-                canvas.toBlob(resolve, "image/jpeg", 0.9);
+            const blob = await new Promise<Blob | null>((resolve) => { // blobに変換
+                canvas.toBlob(resolve, "image/jpeg", 0.9); // JPEG形式　品質90％
             });
 
             if (!blob) return;
 
             const processedObjectUrl = URL.createObjectURL(blob);
             setProcessedUrl(processedObjectUrl);
-
-            console.log("processed blob", blob);
-            console.log("type", blob.type);
-            console.log("size", blob.size);
         }
     };
 
