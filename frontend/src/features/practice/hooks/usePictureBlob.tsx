@@ -1,14 +1,12 @@
 import { useState } from "react";
 import type { UploadByBlobResponse } from "../../types/UploadResponse";
-import { useParams } from "react-router-dom";
 
 export default function usePictureBlob() {
     const [originalUrl, setOriginalUrl] = useState("");
     const [processedUrl, setProcessedUrl] = useState("");
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [result, setResult] = useState("");
-
-    const { id } = useParams();
+    const [uploadedId, setUploadedId] = useState(0);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -65,24 +63,11 @@ export default function usePictureBlob() {
             });
 
             const data: UploadByBlobResponse = await res.json();
+            setUploadedId(Number(data.file?.id));
             setResult(JSON.stringify(data, null, 2));
         } catch (err) {
             console.error(err);
             setResult("アップロードアップロードに失敗しました");
-        }
-    }
-
-    const fetchFileById = async () => {
-        try {
-            const res = await fetch(`http://localhost:3000/upload-blob/${id}`);
-            if (!res.ok) {
-                throw new Error("ファイルが見つかりませんでした");
-            }
-
-            await res.json();
-        } catch (err) {
-            console.error(err);
-            setResult("ファイルの取得に失敗しました");
         }
     }
 
@@ -93,6 +78,6 @@ export default function usePictureBlob() {
         handleUpload,
         result,
         setSelectedFile,
-        id
+        uploadedId
     }
 }
