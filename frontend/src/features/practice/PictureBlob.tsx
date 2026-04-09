@@ -7,7 +7,8 @@ export default function PictureBlob() {
         handleChange,
         handleUpload,
         result,
-        setSelectedFile
+        setSelectedFile,
+        uploadedId
     } = usePictureBlob();
 
     return (
@@ -51,11 +52,13 @@ export default function PictureBlob() {
                 <pre className="mt-6 overflow-auto rounded-xl bg-slate-100 p-4 text-sm">
                     {result}
                 </pre>
-                <img
-                    src="http://localhost:3000/upload-blob/2"
-                    alt="uploaded"
-                    className="rounded-xl border mt-4 w-full h-full"
-                />
+                {uploadedId ? (
+                        <img
+                        src={`http://localhost:3000/upload-blob/${uploadedId}`}
+                        alt="uploaded"
+                        className="rounded-xl border mt-4 w-full h-full"
+                    />
+                ) : null}
             </div>
         </div>
     )
