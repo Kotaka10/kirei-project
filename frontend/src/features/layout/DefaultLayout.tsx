@@ -11,6 +11,7 @@ export default function DefaultLayout() {
         <Link to="/uploads">ファイルアップロード</Link>
         <Link to="/upload-blob">テキスト Blob</Link>
         <Link to="/picture-blob">画像 Blob</Link>
+        <Link to="/messages">チャット</Link>
       </nav>
       <main>
         <Outlet />
