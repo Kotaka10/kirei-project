@@ -17,12 +17,12 @@ const app = express(); //サーバーを作っている
 const PORT = 3000;
 const httpServer = createServer(app);
 
-app.use(
+app.use( //フロントとバックエンドの連携
     cors({
         origin: "http://localhost:5173",
         credentials: true,
     })
-); //フロントとバックエンドの連携
+);
 app.use(express.json()); //リクエストのJSONを読み取れるようにする（ここではapp.use("/api/companies, companyRoutes)などでPOSTなどを使うから必要")
 
 app.use("/api/companies", companyRoutes);
