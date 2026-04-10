@@ -12,6 +12,7 @@ import ItemEdit from './features/item/components/ItemEdit';
 import FileUploadPage from './features/files/components/FileUploadPage';
 import FileUploadByBlob from './features/files/components/FileUploadByBlob';
 import UploadByBlob from './features/practice/UploadByBlob';
+import Chat from './features/chat/Chat';
 
 function App() {
   
@@ -24,6 +25,7 @@ function App() {
         <Route path="/item-list" element={<ItemList />} />
         <Route path="/item-edit/:id" element={<ItemEdit />} />
         <Route path="/uploads" element={<FileUploadPage />} />
+        <Route path="/messages" element={<Chat />} />
       </Route>
       <Route element={<ColoredLayout />}>
         <Route path="/user-register" element={<UserRegister />} />
