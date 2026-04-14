@@ -2,7 +2,18 @@ import type { Request, Response } from "express";
 import * as companyService from "../services/companyService.js";
 
 export const getCompanies = async (req: Request, res: Response) => {
-  res.json(await companyService.getAllCompanies());
+  try {
+    const companies = await companyService.getAllCompanies();
+
+    if (!companies) {
+      return res.status(404).json({ message: "会社が見つかりませんでした" });
+    }
+
+    return res.status(200).json(companies);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "会社情報の取得に失敗しました" });
+  }
 };
 
 export const getCompany = async (req: Request, res: Response) => {
@@ -12,9 +23,11 @@ export const getCompany = async (req: Request, res: Response) => {
     if (!company) {
       return res.status(404).json({ message: "会社が見つかりませんでした"});
     }
+
+    return res.status(200).json(company);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "会社情報の取得に失敗しました"});
+    return res.status(500).json({ message: "会社情報の取得に失敗しました"});
   }
 };
 
@@ -26,10 +39,10 @@ export const updateCompany = async (req: Request, res: Response) => {
         return res.status(404).json({ message: "会社が見つかりません" });
       }
 
-      res.json(updatedCompany);
+      return res.json(updatedCompany);
     } catch (err) {
       console.error("updateCompanyのエラー", err);
-      res.status(500).json({ message: "会社情報の更新に失敗しました"});
+      return res.status(500).json({ message: "会社情報の更新に失敗しました"});
     }
 }
 
@@ -38,9 +51,9 @@ export const createCompany = async (req: Request, res: Response) => {
     const newData = req.body;
     const newCompany = await companyService.createCompany(newData);
 
-    res.status(201).json(newCompany);
+    return res.status(201).json(newCompany);
   } catch(err) {
     console.error("createCompanyのエラー", err);
-    res.status(500).json({ message: "会社登録に失敗しました"});
+    return res.status(500).json({ message: "会社登録に失敗しました"});
   }
 }
