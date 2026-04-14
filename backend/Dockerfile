@@ -17,3 +17,6 @@ EXPOSE 3000
 
 #COPY package*.json ./ & RUN npm installを先にやる理由
 #→依存が変わらない限り再インストールしなくていい = ビルドが早くなる（キャッシュ）
+
+#サーバーを起動する
+CMD ["npx", "tsx", "server.ts"]
