@@ -6,7 +6,7 @@ export const upload = async (req: Request, res: Response) => {
         // HTTPリクエストヘッダーから元のファイル名を取り出している　multipart/form-dataならファイル名は取れるけどBlobやBase64で送る場合はファイル名が消えるから記述している
         const encodedOriginalFileName = req.header("X-Original-File-Name");
         const originalFileName = encodedOriginalFileName
-            ? decodeURIComponent(encodedOriginalFileName)
+            ? decodeURIComponent(encodedOriginalFileName) //decodeURIComponent → JavaScript標準のデコード関数（import不要）
             : undefined;
 
         const result = await fileService.upload(req.file, originalFileName);
