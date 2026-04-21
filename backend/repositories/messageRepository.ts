@@ -7,7 +7,7 @@ export const messageRepository = {
 
     create(userName: string, text: string): Message {
         const newMessage: Message = {
-            id: crypto.randomUUID(),
+            id: crypto.randomUUID(), //一意（ユニーク）なIDを自動生成している
             userName,
             text,
             createdAt: new Date().toISOString(),

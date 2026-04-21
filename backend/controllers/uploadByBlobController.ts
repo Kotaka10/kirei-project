@@ -45,8 +45,8 @@ export const display = async (req: Request, res: Response) => {
         const id = Number(req.params.id);
         const file = await uploadByBlobService.getFile(id);
 
-        res.setHeader("Contet-Type", file.mimetype);
-        res.setHeader("Content-Disposition", `inline; filename="${file.filename}"`);
+        res.setHeader("Content-Type", file.mimetype); //res.setHeaderは「このデータは何で、どう表示してほしいか」をブラウザに伝えている、Content-Type → ファイルの種類を伝える
+        res.setHeader("Content-Disposition", `inline; filename="${file.filename}"`); //Content-Disposition → 表示 or ダウンロードを決める、inline → ブラウザ内で表示する
 
         return res.send(file.data);
     } catch (err) {
