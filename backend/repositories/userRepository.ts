@@ -4,7 +4,7 @@ import type { UserInfoTypes } from "../../shared/types/UserInfoTypes.js";
 import pool from "../config/db.js";
 
 export const createUser = async (user: UserInfoTypes) => {
-    const [result] = await pool.query<ResultSetHeader>(
+    const [result] = await pool.execute<ResultSetHeader>(
         `
             INSERT INTO users (
                 name,

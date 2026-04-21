@@ -5,7 +5,7 @@ import type { CompanyDetailedRow, CompanyRow } from "../types/CompanyRowTypes.js
 import pool from '../config/db.js';
 
 export const getAllCompanies = async () => {
-    const [rows] = await pool.query<CompanyRow[]>(
+    const [rows] = await pool.execute<CompanyRow[]>(
     `
       SELECT 
         id, 
@@ -40,7 +40,7 @@ export const getAllCompanies = async () => {
 }
 
 export const getCompanyById = async (id: number) => {
-    const [rows] = await pool.query<CompanyDetailedRow[]>(
+    const [rows] = await pool.execute<CompanyDetailedRow[]>(
         `
           SELECT 
             c.id,
@@ -91,7 +91,7 @@ export const getCompanyById = async (id: number) => {
 }
 
 export const updateCompany = async (id: number, company: CompanyInfoTypes) => {
-    const [result] = await pool.query<ResultSetHeader>(
+    const [result] = await pool.execute<ResultSetHeader>(
     `
     UPDATE companies
       SET
@@ -133,7 +133,7 @@ export const createCompany = async (company: CompanyInfoTypes) => {
     try {
         await connection.beginTransaction(); // トランザクション開始
 
-        const [result] = await connection.query<ResultSetHeader>(
+        const [result] = await connection.execute<ResultSetHeader>(
         `
         INSERT INTO companies (
             company_name,
@@ -168,7 +168,7 @@ export const createCompany = async (company: CompanyInfoTypes) => {
               email
           ]);
         
-          await connection.query(
+          await connection.execute(
             `
             INSERT INTO company_emails (company_id, email)
             VALUES ?

@@ -4,7 +4,7 @@ import type { ItemInfoTypes } from "../../shared/types/ItemInfoTypes.js";
 
 
 export const getItems = async () => {
-    return await pool.query<RowDataPacket[]>(`
+    return await pool.execute<RowDataPacket[]>(`
         SELECT id, item_name, quantity, unit_price, description, unit
         FROM items
         ORDER BY id
@@ -12,7 +12,7 @@ export const getItems = async () => {
 }
 
 export const addItem = async (item: ItemInfoTypes) => {
-    const [result] = await pool.query<ResultSetHeader>(
+    const [result] = await pool.execute<ResultSetHeader>(
             `
                 INSERT INTO items (
                     item_name,
@@ -35,7 +35,7 @@ export const addItem = async (item: ItemInfoTypes) => {
 }
 
 export const searchItem = async (keyword: string) => {
-    return await pool.query<RowDataPacket[]>(
+    return await pool.execute<RowDataPacket[]>(
         `
             SELECT id, item_name, quantity, unit_price, description, unit
             FROM items
@@ -46,7 +46,7 @@ export const searchItem = async (keyword: string) => {
 }
 
 export const updateItem = async (id: number, item: ItemInfoTypes) => {
-    const [result] = await pool.query<ResultSetHeader>(
+    const [result] = await pool.execute<ResultSetHeader>(
         `
             UPDATE items
             SET
@@ -75,7 +75,7 @@ export const updateItem = async (id: number, item: ItemInfoTypes) => {
 };
 
 export const deleteItem = async (id: number) => {
-    const [result] = await pool.query<ResultSetHeader>(
+    const [result] = await pool.execute<ResultSetHeader>(
         `
             DELETE FROM items
             WHERE id = ?
