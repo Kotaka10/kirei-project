@@ -7,7 +7,7 @@ export default function useChat() {
     const [chatRelations, setChatRelations] = useState<Message>({
         id: 0,
         userName: "",
-        text: [""],
+        text: "",
         createdAt: ""
     })
     const [messageInfo, setMessageInfo] = useState<Message[]>([]);
@@ -55,7 +55,7 @@ export default function useChat() {
             chatRelations
         });
 
-        setChatRelations((prev) => ({ ...prev, text: [""]}));
+        setChatRelations((prev) => ({ ...prev, text: "" }));
     };
 
     return {
