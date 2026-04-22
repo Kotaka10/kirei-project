@@ -1,3 +1,4 @@
+import type { Message } from "../../shared/types/MessageTypes.js";
 import { messageRepository } from "../repositories/messageRepository.js";
 
 export const messageService = {
@@ -5,11 +6,18 @@ export const messageService = {
         return messageRepository.findAll();
     },
 
-    createMessage: (userName: string, text: string) => {
-        if (!userName?.trim()) throw new Error("userNameが必要です");
-        if (!text?.trim()) throw new Error("textが必要です");
+    createMessage: async (chats: Message) => {
+        if (!chats) {
+            throw new Error("メッセージ情報が見つかりませんでした");
+        }
 
-        return messageRepository.create(userName, text);
+        const result = await messageRepository.create(chats);
+
+        if (result.affectedRows === 0) {
+            throw new Error("正しくメッセージを登録できませんでした");
+        }
+
+        return result;
     }
 }
 
