@@ -3,9 +3,9 @@ import { messageService } from "../services/messageService.js";
 
 export const registerChatSocket = (io: Server) => {
     io.on("connection", (socket) => {// クライアントが接続したときに実行される socket = 「そのクライアント専用の通信口」
-        socket.on("send_message", ({ userName, text }) => {// クライアントからこれが来る想定 → socket.emit("send_message", { userName, text }); socket.emit → その人だけに送信
+        socket.on("send_message", ({ chatRelation }) => {// クライアントからこれが来る想定 → socket.emit("send_message", { chats }); socket.emit → その人だけに送信
             try {
-                const saved = messageService.createMessage(userName, text);
+                const saved = messageService.createMessage(chatRelation);
 
                 io.emit("receive_message", saved); // 接続している全クライアントに送信
             } catch (e) {
