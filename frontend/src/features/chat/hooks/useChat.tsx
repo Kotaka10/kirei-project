@@ -4,16 +4,20 @@ import type { Message } from "../../../../../shared/types/MessageTypes";
 import { fetchMessages } from "../../services/messageApi";
 
 export default function useChat() {
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [userName, setUserName] = useState("");
-    const [text, setText] = useState("");
+    const [chatRelations, setChatRelations] = useState<Message>({
+        id: 0,
+        userName: "",
+        text: [""],
+        createdAt: ""
+    })
+    const [messageInfo, setMessageInfo] = useState<Message[]>([]);
     const socketRef = useRef<Socket | null>(null);
 
     useEffect(() => {
         const init = async () => {
             try {
                 const data = await fetchMessages();
-                setMessages(data);
+                setMessageInfo(data);
             } catch (err) {
                 console.error(err);
             }
@@ -27,7 +31,7 @@ export default function useChat() {
         socketRef.current = socket; //他の場所でも使えるように保持（再レンダリングでも消えない）
 
         const handleReceiveMessage = (message: Message) => { //メッセージが来たら配列に追加
-            setMessages((prev) => [...prev, message]);
+            setMessageInfo((prev) => [...prev, message]);
         };
 
         const handleChatError = (error: { message: string }) => {//　サーバーのこれに対応 → socket.emit("chat_error", { message: "error" });
@@ -48,19 +52,16 @@ export default function useChat() {
         e.preventDefault();
 
         socketRef.current?.emit("send_message", {
-            userName,
-            text,
+            chatRelations
         });
 
-        setText("");
+        setChatRelations((prev) => ({ ...prev, text: [""]}));
     };
 
     return {
-        messages,
-        handleSubmit,
-        userName,
-        text,
-        setUserName,
-        setText,
+        chatRelations,
+        setChatRelations,
+        messageInfo,
+        handleSubmit
     };
 }
