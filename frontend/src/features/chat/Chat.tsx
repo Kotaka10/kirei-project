@@ -2,12 +2,10 @@ import useChat from "./hooks/useChat";
 
 export default function Chat() {
     const {
-        messages,
+        chatRelations,
+        setChatRelations,
+        messageInfo,
         handleSubmit,
-        userName,
-        text,
-        setUserName,
-        setText,
     } = useChat();
 
     return (
@@ -15,16 +13,16 @@ export default function Chat() {
             <h1 className="mb-4 text-2xl font-bold">チャット</h1>
 
             <div className="mb-4 h-96 overflow-auto rounded-lg border p-4">
-                {messages.length === 0 ? (
+                {chatRelations.text.length === 0 ? (
                     <p className="text-sm text-gray-500">まだメッセージはありません</p>
                 ) : (
                     <ul className="space-y-3">
-                        {messages.map((message) => (
-                            <li key={message.id} className="rounded-lg bg-gray-100 p-3">
-                                <p className="text-sm font-semibold">{message.userName}</p>
-                                <p>{message.text}</p>
+                        {messageInfo.map((m) => (
+                            <li key={m.id} className="rounded-lg bg-gray-100 p-3">
+                                <p className="text-sm font-semibold">{m.userName}</p>
+                                <p>{m.text}</p>
                                 <p className="text-xs text-gray-500">
-                                    {new Date(message.createdAt).toLocaleString()}
+                                    {new Date(m.createdAt).toLocaleString()}
                                 </p>
                             </li>
                         ))}
@@ -36,15 +34,15 @@ export default function Chat() {
                 <input
                     type="text"
                     placeholder="名前"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
+                    value={chatRelations.userName}
+                    onChange={(e) => setChatRelations((prev) => ({ ...prev, userName: e.target.value}))}
                     className="w-full rounded-lg border px-3 py-2"
                 />
                 <input
                     type="text"
                     placeholder="メッセージ"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    value={chatRelations.text}
+                    onChange={(e) => setChatRelations((prev) => ({ ...prev, text: [ ...prev.text, e.target.value] }))}
                     className="w-full rounded-lg border px-3 py-2"
                 />
                 <button
