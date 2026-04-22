@@ -2,13 +2,11 @@ import type { RowDataPacket, ResultSetHeader } from "mysql2";
 import type { Message } from "../../shared/types/MessageTypes.js";
 import pool from "../config/db.js";
 
-const messages: Message[] = [];
-
 export const messageRepository = {
-    async findAll() { 
+    async findAll() {
         const [rows] = await pool.execute<RowDataPacket[]>(
             `
-            SELECT id, text, user_name
+            SELECT id, text, user_name, created_at
             FROM chats
             `
         );
@@ -23,21 +21,35 @@ export const messageRepository = {
         return chatRelation;
      },
 
-    async create(chats: Message) {
+    async create(chats: Message): Promise<Message> {
         const [result] = await pool.execute<ResultSetHeader>(
             `
             INSERT INTO chats (
-                id, text, user_name
-            ) VALUES (?, ?, ?)
+                text, user_name
+            ) VALUES (?, ?)
             `,
             [
-                chats.id,
                 chats.text,
                 chats.userName
             ]
         );
 
-        return result;
+        if (result.affectedRows === 0) {
+            throw new Error("正しくメッセージを登録できませんでした");
+        }
+
+        const [rows] = await pool.execute<RowDataPacket[]>(
+            `SELECT id, text, user_name, created_at FROM chats WHERE id = ?`,
+            [result.insertId]
+        );
+
+        const row = (rows as RowDataPacket[])[0];
+        return {
+            id: row?.id,
+            text: row?.text,
+            userName: row?.user_name,
+            createdAt: row?.created_at
+        };
     },
 };
 
