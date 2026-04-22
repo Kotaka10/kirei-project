@@ -13,7 +13,7 @@ export default function Chat() {
             <h1 className="mb-4 text-2xl font-bold">チャット</h1>
 
             <div className="mb-4 h-96 overflow-auto rounded-lg border p-4">
-                {chatRelations.text.length === 0 ? (
+                {messageInfo.length === 0 ? (
                     <p className="text-sm text-gray-500">まだメッセージはありません</p>
                 ) : (
                     <ul className="space-y-3">
@@ -42,7 +42,7 @@ export default function Chat() {
                     type="text"
                     placeholder="メッセージ"
                     value={chatRelations.text}
-                    onChange={(e) => setChatRelations((prev) => ({ ...prev, text: [ ...prev.text, e.target.value] }))}
+                    onChange={(e) => setChatRelations((prev) => ({ ...prev, text: e.target.value }))}
                     className="w-full rounded-lg border px-3 py-2"
                 />
                 <button
