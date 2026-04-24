@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { initOneSignal, requestNotificationPermission } from '../lib/onesignal';
+import { initOneSignal, loginOneSignalUser, requestNotificationPermission } from '../lib/onesignal';
 import OneSignal from 'react-onesignal';
 
 export default function useOneSignal() {
@@ -12,10 +12,11 @@ export default function useOneSignal() {
     });
   }, []);
 
-  const handleEnableNotifications = async () => {
+  const handleEnableNotifications = async (userId: string) => {
     setStatus("処理中...");
     try {
       await requestNotificationPermission();
+      await loginOneSignalUser(userId);
       setStatus(`permission: ${OneSignal.Notifications.permission}, optedIn: ${OneSignal.User.PushSubscription.optedIn}`);
     } catch (err) {
       console.error(err);
