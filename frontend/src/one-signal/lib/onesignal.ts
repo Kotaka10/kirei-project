@@ -32,7 +32,7 @@ export const getOneSignalStatus = () => {
 };
 
 export const requestNotificationPermission = async () => {
-    await initOneSignal();
+    await initOneSignal(); //初期化処理
     
     const supported = OneSignal.Notifications.isPushSupported(); //ブラウザが通知対応しているか
     if (!supported) { //非対応なら無理に進めない
