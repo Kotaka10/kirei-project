@@ -1,4 +1,5 @@
 import './App.css'
+import { useState } from 'react';
 import RegisterForm from "./features/company/components/CompanyRegister";
 import CompanyList from './features/company/components/CompanyList';
 import CompanyEdit from './features/company/components/CompanyEdit';
@@ -16,6 +17,7 @@ import Chat from './features/chat/Chat';
 import useOneSignal from './one-signal/hooks/useOneSignal';
 
 function App() {
+  const [userId, setUserId] = useState("");
   const {
     status,
     handleEnableNotifications
@@ -39,12 +41,20 @@ function App() {
           <Route path="/upload-blob" element={<FileUploadByBlob />} />
           <Route path="/picture-blob" element={<UploadByBlob />} />
         </Route>
-      </Routes> 
+      </Routes>
       <div className='flex flex-col items-center justify-start p-4 gap-2'>
         <p className='text-sm text-gray-600'>状態: {status}</p>
+        <input
+          type="text"
+          value={userId}
+          onChange={(e) => setUserId(e.target.value)}
+          placeholder="ユーザーID（例: 1）"
+          className='px-3 py-2 border rounded text-sm'
+        />
         <button
-          onClick={handleEnableNotifications}
-          className='px-4 py-2 bg-blue-500 text-white rounded'
+          onClick={() => handleEnableNotifications(userId)}
+          disabled={!userId}
+          className='px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50'
         >
           通知を有効化
         </button>
