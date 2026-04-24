@@ -4,8 +4,10 @@ import type { Message } from "../../../../../shared/types/MessageTypes";
 import { fetchMessages } from "../../services/messageApi";
 
 export default function useChat() {
-    const [chatRelations, setChatRelations] = useState<Message>({
+    const [payload, setPayload] = useState<Message>({
         id: 0,
+        senderUserId: 0,
+        receiverUserId: 0,
         userName: "",
         text: "",
         createdAt: ""
@@ -51,16 +53,14 @@ export default function useChat() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        socketRef.current?.emit("send_message", {
-            chatRelations
-        });
+        socketRef.current?.emit("send_message", payload);
 
-        setChatRelations((prev) => ({ ...prev, text: "" }));
+        setPayload((prev) => ({ ...prev, text: "" }));
     };
 
     return {
-        chatRelations,
-        setChatRelations,
+        payload,
+        setPayload,
         messageInfo,
         handleSubmit
     };
