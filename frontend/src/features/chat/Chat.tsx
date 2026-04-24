@@ -2,8 +2,8 @@ import useChat from "./hooks/useChat";
 
 export default function Chat() {
     const {
-        chatRelations,
-        setChatRelations,
+        payload,
+        setPayload,
         messageInfo,
         handleSubmit,
     } = useChat();
@@ -34,15 +34,31 @@ export default function Chat() {
                 <input
                     type="text"
                     placeholder="名前"
-                    value={chatRelations.userName}
-                    onChange={(e) => setChatRelations((prev) => ({ ...prev, userName: e.target.value}))}
+                    value={payload.userName}
+                    onChange={(e) => setPayload((prev) => ({ ...prev, userName: e.target.value}))}
                     className="w-full rounded-lg border px-3 py-2"
                 />
+                <div className="flex gap-2">
+                    <input
+                        type="number"
+                        placeholder="自分のID（送信者）"
+                        value={payload.senderUserId || ""}
+                        onChange={(e) => setPayload((prev) => ({ ...prev, senderUserId: Number(e.target.value) }))}
+                        className="w-full rounded-lg border px-3 py-2"
+                    />
+                    <input
+                        type="number"
+                        placeholder="相手のID（受信者）"
+                        value={payload.receiverUserId || ""}
+                        onChange={(e) => setPayload((prev) => ({ ...prev, receiverUserId: Number(e.target.value) }))}
+                        className="w-full rounded-lg border px-3 py-2"
+                    />
+                </div>
                 <input
                     type="text"
                     placeholder="メッセージ"
-                    value={chatRelations.text}
-                    onChange={(e) => setChatRelations((prev) => ({ ...prev, text: e.target.value }))}
+                    value={payload.text}
+                    onChange={(e) => setPayload((prev) => ({ ...prev, text: e.target.value }))}
                     className="w-full rounded-lg border px-3 py-2"
                 />
                 <button
