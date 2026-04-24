@@ -1,7 +1,9 @@
 import type { Server } from "socket.io";
 import { messageService } from "../services/messageService.js";
+import { sendPushToUser } from "../services/notificationService.js";
 
 export const registerChatSocket = (io: Server) => {
+    /* 
     io.on("connection", (socket) => {// クライアントが接続したときに実行される socket = 「そのクライアント専用の通信口」
         socket.on("send_message", async ({ chatRelations }) => {// クライアントからこれが来る想定 → socket.emit("send_message", { chats }); socket.emit → その人だけに送信
             try {
@@ -14,4 +16,29 @@ export const registerChatSocket = (io: Server) => {
             }
         })
     })
+     */
+    io.on("connection", (socket) => {
+        socket.on("send_message", async (payload) => {
+            try {
+                const { userName, text, senderUserId, receiverUserId } = payload;
+                const saved = await messageService.createMessage(payload);
+
+                io.emit("receive_message", saved);
+            
+                if (senderUserId !== receiverUserId) {
+                    sendPushToUser({
+                        externalId: String(receiverUserId),
+                        title: "新着メッセージ",
+                        body: `${userName}: ${text}`,
+                    }).catch((err) => {
+                        console.error("[chat_socket] push notification error:", err);
+                    });
+                }
+            } catch (err) {
+                console.error("[chat_socket] send_message error:", err);
+                socket.emit("chat_error", {message: "メッセージ送信に失敗しました"});
+            }
+        });
+    })
+    
 }
