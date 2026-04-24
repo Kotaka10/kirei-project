@@ -7,7 +7,7 @@ export const useRegisterForm = () => {
         id: 0,
         companyName: "",
         zipcode: "",
-        prefecture: "",
+        prefecture: "", 
         city: "",
         otherAddress: "",
         buildingName: "",
@@ -61,7 +61,7 @@ export const useRegisterForm = () => {
     };
 
     const handleAddEmail = () => {
-        setForm((prev) => ({ ...prev, email: [...prev.emails, ""] }));
+        setForm((prev) => ({ ...prev, emails: [...prev.emails, ""] }));
     };
 
     const statusLabelMap: Record<string, string> = {
