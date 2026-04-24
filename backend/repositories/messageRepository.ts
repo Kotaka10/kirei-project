@@ -5,33 +5,23 @@ import pool from "../config/db.js";
 export const messageRepository = {
     async findAll() {
         const [rows] = await pool.execute<RowDataPacket[]>(
-            `
-            SELECT id, text, user_name, created_at
-            FROM chats
-            `
+            `SELECT id, senderUserId, receiverUserId, user_name, text, created_at FROM chats`
         );
 
-        const chatRelation = rows.map((row) => ({
+        return rows.map((row) => ({
             id: row.id,
-            text: row.text,
+            senderUserId: row.senderUserId,
+            receiverUserId: row.receiverUserId,
             userName: row.user_name,
-            createdAt: row.created_at
+            text: row.text,
+            createdAt: row.created_at,
         }));
-
-        return chatRelation;
-     },
+    },
 
     async create(chats: Message): Promise<Message> {
         const [result] = await pool.execute<ResultSetHeader>(
-            `
-            INSERT INTO chats (
-                text, user_name
-            ) VALUES (?, ?)
-            `,
-            [
-                chats.text,
-                chats.userName
-            ]
+            `INSERT INTO chats (senderUserId, receiverUserId, user_name, text) VALUES (?, ?, ?, ?)`,
+            [chats.senderUserId, chats.receiverUserId, chats.userName, chats.text]
         );
 
         if (result.affectedRows === 0) {
@@ -39,16 +29,20 @@ export const messageRepository = {
         }
 
         const [rows] = await pool.execute<RowDataPacket[]>(
-            `SELECT id, text, user_name, created_at FROM chats WHERE id = ?`,
+            `SELECT id, senderUserId, receiverUserId, user_name, text, created_at FROM chats WHERE id = ?`,
             [result.insertId]
         );
 
         const row = (rows as RowDataPacket[])[0];
+        if (!row) throw new Error("保存したメッセージが見つかりませんでした");
+
         return {
-            id: row?.id,
-            text: row?.text,
-            userName: row?.user_name,
-            createdAt: row?.created_at
+            id: row.id,
+            senderUserId: row.senderUserId,
+            receiverUserId: row.receiverUserId,
+            userName: row.user_name,
+            text: row.text,
+            createdAt: row.created_at,
         };
     },
 };
