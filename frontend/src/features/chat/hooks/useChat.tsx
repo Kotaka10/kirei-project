@@ -29,7 +29,7 @@ export default function useChat() {
     }, []);
 
     useEffect(() => {
-        const socket = io("http://localhost:3000"); //サーバーに接続
+        const socket = io(import.meta.env.VITE_BASE_API_URL); //サーバーに接続
         socketRef.current = socket; //他の場所でも使えるように保持（再レンダリングでも消えない）
 
         const handleReceiveMessage = (message: Message) => { //メッセージが来たら配列に追加
