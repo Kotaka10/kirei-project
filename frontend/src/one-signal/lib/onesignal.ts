@@ -1,25 +1,28 @@
 import OneSignal from "react-onesignal";
 
-let initialized = false;
+let initPromise: Promise<void> | null = null;
 
 export const initOneSignal = async () => {
-    if (initialized) return;
+    if (initPromise) return initPromise;
 
-    await OneSignal.init({
-        appId: import.meta.env.VITE_ONESIGNAL_APP_ID!, //one signalのappId
-        allowLocalhostAsSecureOrigin: true, //localhostでも通知を使えるようにする
-        serviceWorkerPath: "push/onesignal/OneSignalSDKWorker.js", //プッシュ通知用のservice workerの場所　service worker → ブラウザの裏で動くスクリプト
-        serviceWorkerParam: { scope: "/push/onesignal/" },
-    });
-
-    OneSignal.User.PushSubscription.addEventListener("change", (event) => { //通知状態が変わったときに発火
-        console.log("push change:", event);
-        console.log("optedIn:", event.current.optedIn); //通知onか
-        console.log("subscriptionId:", event.current.id); //subscriptionIdの取得
-        console.log("token:", event.current.token); //tokenの取得
+    initPromise = OneSignal.init({
+        appId: import.meta.env.VITE_ONESIGNAL_APP_ID!,
+        serviceWorkerPath: "push/onesignal/OneSignalSDKWorker.js",
+        serviceWorkerParam: { scope: "/push/onesignal/" }
     })
+        .then(() => {
+            console.log("OneSignal init done");
 
-    initialized = true;
+            OneSignal.User.PushSubscription.addEventListener("change", (event) => {
+                console.log("push change", event);
+            })
+        })
+        .catch((err) => {
+            initPromise = null;
+            throw err;
+        });
+
+    return initPromise;
 };
 
 export const getOneSignalStatus = () => {
@@ -31,22 +34,41 @@ export const getOneSignalStatus = () => {
     };
 };
 
-export const requestNotificationPermission = async () => {
-    await initOneSignal(); //初期化処理
-    
+export const requestNotificationPermission = async (setDebugStatus?: (message: string) => void ) => {
+    setDebugStatus?.("isPushSupported確認中...");
+
     const supported = OneSignal.Notifications.isPushSupported(); //ブラウザが通知対応しているか
+    setDebugStatus?.("supported: " + supported);
+    
     if (!supported) { //非対応なら無理に進めない
-        return {
-            permission: false,
-            optedIn: false,
-            subscriptionId: undefined,
-            token: undefined,
-        };
+        throw new Error("push not supported")
     }
+
+    setDebugStatus?.("通知許可リクエスト前");
 
     await OneSignal.Notifications.requestPermission(); //ブラウザの「通知許可しますか？」が出る
 
-    return getOneSignalStatus(); //状態返す
+    setDebugStatus?.(`通知許可リクエスト後: browser=${Notification.permission}, onesignal=${OneSignal.Notifications.permission}`);
+
+    if (Notification.permission !== "granted") {
+        throw new Error(`通知が許可されていません：${Notification.permission}`);
+    }
+
+    await OneSignal.User.PushSubscription.optIn();
+
+    setDebugStatus?.("PushSubscription optIn後");
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    const status = getOneSignalStatus();
+
+    if (!status.token) {
+        throw new Error(
+            `token未発行: permission=${Notification.permission}, optedIn=${status.optedIn}, id=${status.subscriptionId ?? "なし"}`
+        );
+    }
+
+    return status;
 };
 
 export const loginOneSignalUser = async (userId: string) => { //ユーザーと通知紐付ける　→ 誰に通知送るかを識別するため
