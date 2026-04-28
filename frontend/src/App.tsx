@@ -43,7 +43,7 @@ function App() {
         </Route>
       </Routes>
       <div className='flex flex-col items-center justify-start p-4 gap-2'>
-        <p className='text-sm text-gray-600'>状態: {status}</p>
+        <p className='text-sm text-gray-600 whitespace-pre-wrap'>状態: {status}</p>
         <input
           type="text"
           value={userId}
@@ -52,8 +52,9 @@ function App() {
           className='px-3 py-2 border rounded text-sm'
         />
         <button
-          onClick={() => handleEnableNotifications(userId)}
-          disabled={!userId}
+          type="button"
+          onClick={() => {handleEnableNotifications(userId.trim())}}
+          disabled={!userId.trim()}
           className='px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50'
         >
           通知を有効化
