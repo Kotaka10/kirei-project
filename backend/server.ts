@@ -19,7 +19,10 @@ const httpServer = createServer(app); //Express + Socket.IOを同じサーバー
 
 app.use( //フロントとバックエンドの連携
     cors({
-        origin: "http://localhost:5173",
+        origin: [
+            "http://localhost:5173",
+            "https://waviness-unsightly-freely.ngrok-free.dev",
+        ],
         credentials: true,
     })
 );
@@ -38,7 +41,10 @@ app.use("/api/messages", createMessageRouter(controller));
 
 const io = new Server(httpServer, { //Socket.IOサーバーを作っている
     cors: {
-        origin: "http://localhost:5173",
+        origin: [
+            "http://localhost:5173",
+            "https://waviness-unsightly-freely.ngrok-free.dev",
+        ],
         methods: ["GET", "POST"],
     },
 });
