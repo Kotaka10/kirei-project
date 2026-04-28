@@ -2,22 +2,20 @@ import OneSignal from "react-onesignal";
 
 let initPromise: Promise<void> | null = null;
 
-export const initOneSignal = async () => {
-    if (initPromise) return initPromise;
+export const initOneSignal = async () => { //one signalの初期化を一回だけ安全に実行する仕組みを作っている
+    if (initPromise) return initPromise; //すでに初期化中or完了済みならそれを再利用
 
-    initPromise = OneSignal.init({
+    initPromise = OneSignal.init({ //初期化のPromiseを保存している
         appId: import.meta.env.VITE_ONESIGNAL_APP_ID!,
-        serviceWorkerPath: "push/onesignal/OneSignalSDKWorker.js",
-        serviceWorkerParam: { scope: "/push/onesignal/" }
+        serviceWorkerPath: "push/onesignal/OneSignalSDKWorker.js", //このファイルを使って通知を処理する
+        serviceWorkerParam: { scope: "/push/onesignal/" } //Service Workerが影響するURL範囲（担当範囲）
     })
         .then(() => {
-            console.log("OneSignal init done");
-
             OneSignal.User.PushSubscription.addEventListener("change", (event) => {
                 console.log("push change", event);
             })
         })
-        .catch((err) => {
+        .catch((err) => { //失敗したらリセット
             initPromise = null;
             throw err;
         });
@@ -34,6 +32,7 @@ export const getOneSignalStatus = () => {
     };
 };
 
+//setDebugStatus?: (message: string) => void ← message（文字列）を受け取る関数を渡せるけど、無くてもOK　setDebugStatus?.("...") ← 関数があれば実行 無ければ何もしない
 export const requestNotificationPermission = async (setDebugStatus?: (message: string) => void ) => {
     setDebugStatus?.("isPushSupported確認中...");
 
@@ -54,15 +53,15 @@ export const requestNotificationPermission = async (setDebugStatus?: (message: s
         throw new Error(`通知が許可されていません：${Notification.permission}`);
     }
 
-    await OneSignal.User.PushSubscription.optIn();
+    await OneSignal.User.PushSubscription.optIn(); //通知ON状態にする
 
     setDebugStatus?.("PushSubscription optIn後");
 
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    const status = getOneSignalStatus();
+    const status = getOneSignalStatus(); //現在の状態をまとめて取得
 
-    if (!status.token) {
+    if (!status.token) { //token = 通知送信に必須　ないと通知送れない
         throw new Error(
             `token未発行: permission=${Notification.permission}, optedIn=${status.optedIn}, id=${status.subscriptionId ?? "なし"}`
         );
