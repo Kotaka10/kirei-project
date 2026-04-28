@@ -155,4 +155,14 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+CREATE TABLE IF NOT EXISTS `chats` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `sender_user_id` int NOT NULL,
+  `receiver_user_id` int NOT NULL,
+  `user_name` varchar(255) NOT NULL,
+  `text` text NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Dump completed on 2026-03-26  3:42:33
