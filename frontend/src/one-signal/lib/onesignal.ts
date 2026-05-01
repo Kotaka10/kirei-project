@@ -32,6 +32,21 @@ export const getOneSignalStatus = () => {
     };
 };
 
+const waitForSubscription = async () => {
+    for (let i = 0; i < 10; i++) {
+        const id = OneSignal.User.PushSubscription.id;
+        const token = OneSignal.User.PushSubscription.token;
+
+        if (id && token) {
+            return {id, token};
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+
+    throw new Error("subscriptionId/tokenが取得できません");
+}
+
 //setDebugStatus?: (message: string) => void ← message（文字列）を受け取る関数を渡せるけど、無くてもOK　setDebugStatus?.("...") ← 関数があれば実行 無ければ何もしない
 export const requestNotificationPermission = async (setDebugStatus?: (message: string) => void ) => {
     setDebugStatus?.("isPushSupported確認中...");
@@ -55,9 +70,9 @@ export const requestNotificationPermission = async (setDebugStatus?: (message: s
 
     await OneSignal.User.PushSubscription.optIn(); //通知ON状態にする
 
-    setDebugStatus?.("PushSubscription optIn後");
+    const subscription = await waitForSubscription();
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    setDebugStatus?.(`subscription ready: ${subscription.id}`);
 
     const status = getOneSignalStatus(); //現在の状態をまとめて取得
 
@@ -71,7 +86,7 @@ export const requestNotificationPermission = async (setDebugStatus?: (message: s
 };
 
 export const loginOneSignalUser = async (userId: string) => { //ユーザーと通知紐付ける　→ 誰に通知送るかを識別するため
-    await OneSignal.login(userId);
+    await OneSignal.login(`user-${userId}`);
 };
 
 export const clearOneSignalUser = async () => { //ユーザー紐付け解除
