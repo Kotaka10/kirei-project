@@ -19,7 +19,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "node -e \"const fs=require('fs'),p='./node_modules/@types/node/package.json';try{const pkg=JSON.parse(fs.readFileSync(p,'utf8'));delete pkg.typesVersions;fs.writeFileSync(p,JSON.stringify(pkg,null,2));}catch(e){}\""
   },
   "repository": {
     "type": "git",

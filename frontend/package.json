@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "node -e \"try{require('fs').rmSync('./node_modules/@types/node',{recursive:true})}catch(e){}\""
   },
   "dependencies": {
     "react": "^19.2.0",

@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "typeRoots": [],
+    "types": []
+  },
+  "exclude": [
+    "**/node_modules"
+  ]
+}

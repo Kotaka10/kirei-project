@@ -47,5 +47,6 @@
     "outDir": "./dist",
     "esModuleInterop": true,
     "resolveJsonModule": true,
+    "typeRoots": ["./node_modules/@types"],
   }
 }
