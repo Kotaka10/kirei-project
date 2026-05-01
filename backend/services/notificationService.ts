@@ -20,7 +20,7 @@ export const sendPushToUser = async ({
             headings: {
                 ja: title,
                 en: title,
-            }, //通知タイトル（日本語）
+            }, //通知タイトル（日本語）　one signal仕様でenが必要
             contents: {
                 ja: body,
                 en: body,

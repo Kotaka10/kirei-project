@@ -30,7 +30,7 @@ export default function useChat() {
 
     useEffect(() => {
         const socket = io(import.meta.env.VITE_SOCKET_URL, {
-            transports: ["websocket", "polling"],
+            transports: ["websocket", "polling"], // websocket → メイン, polling → 保険
         }); //サーバーに接続
 
         socket.on("connect", () => {
@@ -63,7 +63,7 @@ export default function useChat() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         socketRef.current?.emit("send_message", payload);
 
         setPayload((prev) => ({ ...prev, text: "" }));

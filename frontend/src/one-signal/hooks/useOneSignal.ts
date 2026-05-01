@@ -16,7 +16,7 @@ export default function useOneSignal() {
 
       await loginOneSignalUser(userId);
 
-      await OneSignal.User.PushSubscription.optIn();
+      await OneSignal.User.PushSubscription.optIn(); //通知受信を有効化 subscription作成
 
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
