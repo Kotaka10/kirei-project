@@ -23,6 +23,8 @@ services:
       DB_USER: root
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: kirei_db
+      ONESIGNAL_APP_ID: ${ONESIGNAL_APP_ID}
+      ONESIGNAL_REST_API_KEY: ${ONESIGNAL_REST_API_KEY}
     command: npx tsx server.ts
 
   db:
