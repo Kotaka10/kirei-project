@@ -24,8 +24,9 @@ export const practiceUseCompanyRegister = () => {
     useEffect(() => {
         const fetchCompany = async () => {
             const res = await fetch("http://localhost:3000/api/companies/1");
+
             if (!res.ok) {
-                alert("会社の取得に失敗しました");
+                alert("会社情報の取得に失敗しました");
             }
 
             const data = await res.json();
@@ -36,25 +37,28 @@ export const practiceUseCompanyRegister = () => {
     }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setForm((prev) => ({ ...prev, [name]: value }));
+        setForm((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value,
+        }));
     };
 
     const handleFetchAddress = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-
+        
         try {
-            const fetchedAddress = await fetchAddress(form.zipcode);
+            const result = await fetchAddress(form.zipcode);
 
-            setForm((prev) => ({ ...prev, ...fetchedAddress }));
+            setForm((prev) => ({
+                ...prev,
+                ...result,
+            }));
             setMsg("");
         } catch (err) {
-            console.error(err);
-
             if (err instanceof Error) {
-                setMsg(err.message);
+                console.error(err)
             } else {
-                setMsg("住所の取得に失敗しました");
+                console.error("通信の問題が発生しました");
             }
         }
     };
@@ -62,7 +66,7 @@ export const practiceUseCompanyRegister = () => {
     const handleChangeEmail = (index: number, value: string) => {
         const newEmails = [...form.emails];
         newEmails[index] = value;
-        setForm((prev) => ({ ...prev, emails: newEmails }));
+        setForm((prev) => ({ ...prev, emails: newEmails}));
     };
 
     const handleAddEmail = () => {
@@ -72,24 +76,23 @@ export const practiceUseCompanyRegister = () => {
     const statusLabelMap: Record<string, string> = {
         active: "契約中",
         negotiating: "商談中",
-        cancelled: "解約済み"
+        cancelled: "解約済み",
     };
 
     const handleAddCompany = async () => {
         const payload = {
             ...form,
-            status: statusLabelMap[form.status] ?? form.status
+            status: statusLabelMap[form.status] ?? form.status,
         };
         
         const res = await fetch("http://localhost:3000/api/companies", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+            headers: { "Content-Type": "application/json"},
+            body: JSON.stringify(payload),
         });
-
         await res.json();
-        alert(`${form.companyName}を登録しました`);
-    }
+        alert("登録に成功しました");
+    };
 
     return {
         form,
@@ -99,5 +102,5 @@ export const practiceUseCompanyRegister = () => {
         handleChangeEmail,
         handleAddEmail,
         handleAddCompany,
-    };
+    }
 }
