@@ -26,19 +26,21 @@ export const registerChatSocket = (io: Server) => {
                 io.emit("receive_message", saved); //接続している全クライアントに送信
             
                 if (senderUserId !== receiverUserId) { //自分自身には送らない
-                    sendPushToUser({ //特定のユーザーに通知送信
-                        externalId: String(receiverUserId),
-                        title: "新着メッセージ",
-                        body: `${userName}: ${text}`,
-                    }).catch((err) => {
-                        console.error("[chat_socket] push notification error:", err);
-                    });
+                    try {
+
+                        const pushResult = await sendPushToUser({ //特定のユーザーに通知送信
+                            externalId: `user-${Number(receiverUserId)}`,
+                            title: "新着メッセージ",
+                            body: `${userName}: ${text}`,
+                        })
+                    } catch (pushErr) {
+                        console.error("[chat_socket] push notification error", pushErr);
+                    }
                 }
             } catch (err) {
                 console.error("[chat_socket] send_message error:", err);
                 socket.emit("chat_error", {message: "メッセージ送信に失敗しました"}); //何か失敗したら 👉 送信した本人だけにエラー返す
             }
         });
-    })
-    
+    });
 }
