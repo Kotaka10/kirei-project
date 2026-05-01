@@ -1,7 +1,7 @@
 import type { Message } from "../../../../shared/types/MessageTypes";
 
 export const fetchMessages = async (): Promise<Message[]> => {
-    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/messages`);
+    const res = await fetch(`/api/messages`);
 
     if (!res.ok) {
         throw new Error("メッセージ取得に失敗しました");
