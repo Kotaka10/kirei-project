@@ -29,7 +29,18 @@ export default function useChat() {
     }, []);
 
     useEffect(() => {
-        const socket = io(import.meta.env.VITE_BASE_API_URL); //サーバーに接続
+        const socket = io(import.meta.env.VITE_SOCKET_URL, {
+            transports: ["websocket", "polling"],
+        }); //サーバーに接続
+
+        socket.on("connect", () => {
+            console.log("[socket] connected:", socket.id);
+        });
+
+        socket.on("connect_error", (err) => {
+            console.error("[socket] connect_error:", err.message);
+        });
+
         socketRef.current = socket; //他の場所でも使えるように保持（再レンダリングでも消えない）
 
         const handleReceiveMessage = (message: Message) => { //メッセージが来たら配列に追加
@@ -52,7 +63,7 @@ export default function useChat() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
+        
         socketRef.current?.emit("send_message", payload);
 
         setPayload((prev) => ({ ...prev, text: "" }));
