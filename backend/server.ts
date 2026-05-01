@@ -46,6 +46,7 @@ const io = new Server(httpServer, { //Socket.IOサーバーを作っている
             "https://waviness-unsightly-freely.ngrok-free.dev",
         ],
         methods: ["GET", "POST"],
+        credentials: true,
     },
 });
 
