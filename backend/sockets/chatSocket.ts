@@ -27,7 +27,6 @@ export const registerChatSocket = (io: Server) => {
             
                 if (senderUserId !== receiverUserId) { //自分自身には送らない
                     try {
-
                         await sendPushToUser({ //特定のユーザーに通知送信
                             externalId: `user-${Number(receiverUserId)}`,
                             title: "新着メッセージ",
