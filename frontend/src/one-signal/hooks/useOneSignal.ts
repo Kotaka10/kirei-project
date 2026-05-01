@@ -12,18 +12,19 @@ export default function useOneSignal() {
       setStatus("OneSignal初期化中...");
       await initOneSignal();
 
-      const result = await requestNotificationPermission((message) => {
-        setStatus(message);
-      });
+      await requestNotificationPermission();
 
       await loginOneSignalUser(userId);
+
+      await OneSignal.User.PushSubscription.optIn();
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       setStatus(`
         permission: ${OneSignal.Notifications.permission}
         optedIn: ${OneSignal.User.PushSubscription.optedIn}
         subscriptionId: ${OneSignal.User.PushSubscription.id ?? "なし"}
         token: ${OneSignal.User.PushSubscription.token ?? "なし"}
-        result: ${JSON.stringify(result)}
       `);
     } catch (err) {
       console.error(err);
