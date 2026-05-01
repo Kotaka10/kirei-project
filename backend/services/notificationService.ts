@@ -17,15 +17,22 @@ export const sendPushToUser = async ({
             include_aliases: {
                 external_id: [externalId], //誰に送るか指定
             },
-            headings: { ja: title }, //通知タイトル（日本語）
-            contents: { ja: body }, //通知本文
+            headings: {
+                ja: title,
+                en: title,
+            }, //通知タイトル（日本語）
+            contents: {
+                ja: body,
+                en: body,
+            }, //通知本文
         }),
     });
 
+    const text = await res.text();
+
     if (!res.ok) {
-        const text = await res.text();
         throw new Error(text);
     }
 
-    return res.json();
+    return JSON.parse(text);
 }
