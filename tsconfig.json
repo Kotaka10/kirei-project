@@ -2,7 +2,12 @@
   "compilerOptions": {
     "skipLibCheck": true,
     "typeRoots": [],
-    "types": []
+    "types": [],
+    "target": "ES2020",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "outDir": "./dist"
   },
   "exclude": [
     "**/node_modules"
