@@ -1,4 +1,4 @@
-import { generateCustomers } from "./generate";
+import { generateCustomers } from "./generateCustomers";
 import { validateCustomers } from "./validate";
 import { insertCustomers } from "./insert";
 
