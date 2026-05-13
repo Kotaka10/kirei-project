@@ -1,7 +1,6 @@
 import { Connection } from "mysql2/promise";
-import { Holiday } from "../types";
 
-const HOLIDAY_DATA: [string, string, boolean][] =[
+const HOLIDAY_DATA: [string, string, boolean][] = [
     ["2024-01-01", "元日",           false],
     ["2024-01-08", "成人の日",       false],
     ["2024-02-11", "建国記念の日",   false],
