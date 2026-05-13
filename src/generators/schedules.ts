@@ -1,0 +1,70 @@
+import { Connection, RowDataPacket } from "mysql2/promise";
+import { Schedule } from "../types";
+
+const AVAILABLE_SLOTS: [string, string][] = [
+    ["09:00:00", "11:00:00"],
+    ["13:00:00", "15:00:00"],
+    ["15:00:00", "17:00:00"],
+];
+
+const toDateStr = (d: Date): string => {
+    return d.toISOString().slice(0, 10);
+}
+
+export async function generateSchedules(conn: Connection): Promise<void> {
+    console.log("スケジュールデータ生成中...");
+
+    const [bookingRows] = await conn.query<RowDataPacket[]>(
+        `SELECT id, staff_id, scheduled_at
+         FROM bookings
+         Where status != 'cancelled'`
+    );
+
+    const [staffRows] = await conn.query<RowDataPacket[]>(
+        "SELECT id FROM staffs WHERE is_active = true"
+    );
+
+    const schedules: Schedule[][] = [];
+
+    for (const b of bookingRows) {
+        const dt = new Date(b.scheduled_at);
+        const date = toDateStr(dt);
+        const startHour = String(dt.getHours()).padStart(2, "0");
+        const endHour = String(dt.getHours() + 2).padStart(2, "0");
+
+        schedules.push([
+            b.staff_id,
+            date,
+            `${startHour}:00:00`,
+            `${endHour}:00:00`,
+            "booked",
+            b.id,
+        ]);
+    }
+
+    for (const staff of staffRows) {
+        for (let d = 0; d < 14; d++) {
+            const date = new Date();
+            date.setDate(date.getDate() + d);
+            const dateStr = toDateStr(date);
+
+            for (const [start, end] of AVAILABLE_SLOTS) {
+                if (Math.random() < 0.6) {
+                    schedules.push([staff.d, dateStr, start, end, "available", null]);
+                }
+            }
+        }
+    }
+
+    const CHUNK = 100;
+    for (let i = 0; i < schedules.length; i += CHUNK) {
+        await conn.query(
+            `INSERT IGNORE INTO schedules
+             (staff_id, date, start_time, end_time, status, booking_id)
+             VALUES ?`,
+             [schedules.slice(i, i + CHUNK)]
+        )
+    }
+
+    console.log(` ✔ schedules: ${schedules.length}件挿入`);
+}
