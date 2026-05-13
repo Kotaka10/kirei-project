@@ -9,9 +9,9 @@ export async function generateStaffs(conn: Connection): Promise<void> {
         `清掃・メンテナンスか会社のスタッフ10名のダミーデータを生成してください。
         各データ:
         - name: 日本人フルネーム（漢字）
-        - role: "cleaner"（清掃員） | "technician（技術者） | "supervisor"（管理者）
+        - role: "cleaner"（清掃員） | "technician"（技術者） | "supervisor"（管理者）
         - is_active: true or false（9名はtrue, 1名はfalse）`,
-        `ダミーデータ生成の専門家です。{"staff":[...]}の形式のJSONの見返し絵ください`
+        `ダミーデータ生成の専門家です。{"staffs":[...]}の形式のJSONを返してください`
     );
 
     const rows = (await data).staffs.map((s) => [

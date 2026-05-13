@@ -71,7 +71,7 @@ export const generateBookings = async (conn: Connection, count = 120): Promise<v
 
     await conn.query(
         `INSERT INTO bookings
-        (customer_id, staff_id, service_type, scheduled_at, status_price)
+        (customer_id, staff_id, service_type, scheduled_at, status, price)
         VALUES ?`,
         [rows]
     );

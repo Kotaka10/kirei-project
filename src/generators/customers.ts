@@ -14,7 +14,7 @@ export async function generateCustomers(conn: Connection, count = 30): Promise<v
         - company: 会社名（個人の場合はnull）
         - prefecture: 都道府県（東京・大阪・神奈川・愛知・福岡が多め）
         - plan: "free" | "basic" | "pro"`,
-        `ダミーデータ生成の専門家です。{"customers:[...]}の形式のJSONのみ返してください。`
+        `ダミーデータ生成の専門家です。{"customers":[...]}の形式のJSONのみ返してください。`
     );
 
     const rows = data.customers.map((c) => [
