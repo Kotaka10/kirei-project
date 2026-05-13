@@ -1,26 +1,30 @@
-import { generateCustomers } from "./generateCustomers";
-import { validateCustomers } from "./validate";
-import { insertCustomers } from "./insert";
+import { generateCustomers } from "./generators/customers";
+import { getConnection } from "./db/connection";
+import { generateStaffs } from "./generators/staffs";
+import { generateHolidays } from "./generators/holidays";
+import { generateBookings } from "./generators/bookings";
+import { generateSchedules } from "./generators/schedules";
+import { generateSales } from "./generators/sales";
 
 async function main () {
-    const TOTAL = 100;
-    const BATCH = 20;
-    const allValid = [];
+    const conn = await getConnection();
+    console.log("DB接続完了\n");
 
-    for (let i = 0; i < TOTAL / BATCH; i++) {
-        console.log(`生成中... ${i * 1}/${TOTAL / BATCH} バッチ`);
-        const raw = await generateCustomers(BATCH);
-        const { valid, invalid } = await validateCustomers(raw);
-        allValid.push(...valid);
+    try {
+        await generateCustomers(conn, 30);
+        await generateStaffs(conn);
+        await generateHolidays(conn);
+        await generateBookings(conn, 120);
+        await generateSchedules(conn);
+        await generateSales(conn);
 
-        if (invalid.length > 0) {
-            console.warn(` NG: ${invalid.length} 件スキップ`);
-        }
+        console.log("\n全テーブルのダミーデータを生成完了");
+    } catch (err) {
+        console.error("エラー:", err);
+        process.exit(1);
+    } finally {
+        await conn.end();
     }
-
-    console.log(`バリデーション済み: ${allValid.length} 件`);
-    await insertCustomers(allValid);
-    console.log("完了!");
 }
 
 main().catch(console.error);
