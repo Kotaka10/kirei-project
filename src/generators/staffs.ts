@@ -6,12 +6,12 @@ export async function generateStaffs(conn: Connection): Promise<void> {
     console.log("スタッフデータ生成中...");
 
     const data = generateJSON<{ staffs: Staff[] }>(
+        `ダミーデータ生成の専門家です。{"staffs":[...]}の形式のJSONを返してください`,
         `清掃・メンテナンスか会社のスタッフ10名のダミーデータを生成してください。
         各データ:
         - name: 日本人フルネーム（漢字）
         - role: "cleaner"（清掃員） | "technician"（技術者） | "supervisor"（管理者）
-        - is_active: true or false（9名はtrue, 1名はfalse）`,
-        `ダミーデータ生成の専門家です。{"staffs":[...]}の形式のJSONを返してください`
+        - is_active: true or false（9名はtrue, 1名はfalse）`
     );
 
     const rows = (await data).staffs.map((s) => [
