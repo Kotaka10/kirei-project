@@ -17,7 +17,7 @@ export async function generateCustomers(conn: Connection, count = 30): Promise<v
         `ダミーデータ生成の専門家です。{"customers":[...]}の形式のJSONのみ返してください。`
     );
 
-    const rows = data.customers.map((c) => [
+    const rows = data.customers.map((c) => [ //map：配列を変換して、新しい配列を作るメソッド
         c.name,
         c.email,
         c.phone,
@@ -26,8 +26,8 @@ export async function generateCustomers(conn: Connection, count = 30): Promise<v
         c.plan ?? "basic",
     ]);
 
-    await conn.query(
-        `INSERT IGNORE INTO customers
+    await conn.query( //IGNOREはDB制約ルールをもとに判断する → emailのuniqueやidのprimary key
+        `INSERT IGNORE INTO customers 
         (name, email, phone, company, prefecture, plan)
         VALUES ?`,
         [rows]
