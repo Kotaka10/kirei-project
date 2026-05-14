@@ -76,5 +76,5 @@ export const generateBookings = async (conn: Connection, count = 120): Promise<v
         [rows]
     );
 
-    console.log(` ✔︎bookings: ${rows.length}件挿入`);
+    console.log(` ✔︎ bookings: ${rows.length}件挿入`);
 }
