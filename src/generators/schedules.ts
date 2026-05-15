@@ -8,7 +8,10 @@ const AVAILABLE_SLOTS: [string, string][] = [
 ];
 
 const toDateStr = (d: Date): string => {
-    return d.toISOString().slice(0, 10);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
 }
 
 export async function generateSchedules(conn: Connection): Promise<void> {
@@ -50,7 +53,7 @@ export async function generateSchedules(conn: Connection): Promise<void> {
 
             for (const [start, end] of AVAILABLE_SLOTS) {
                 if (Math.random() < 0.6) {
-                    schedules.push([staff.d, dateStr, start, end, "available", null]);
+                    schedules.push([staff.id, dateStr, start, end, "available", null]);
                 }
             }
         }
