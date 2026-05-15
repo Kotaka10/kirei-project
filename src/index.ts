@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { getConnection } from "./db/connection";
 import { tools } from "./tools/definitions";
-import { getCustomerBookings } from "./tools/handler";
+import { getCustomerBookings } from "./tools/handlers";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -18,7 +18,7 @@ async function askAI(userMessage: string): Promise<void> {
         console.log(`\n質問: ${userMessage}`);
         console.log("-".repeat(50));
 
-        const step1 = await openai.chat.completions.create({
+        const step1 = await openai.chat.completions.create({ //OpenAIのLLM（GPT）にメッセージを送って、回答を生成してもらうAPI呼び出し
             model: "gpt-4o-mini",
             messages: [
                 { role: "system", content: SYSTEM_PROMPT },
@@ -28,9 +28,9 @@ async function askAI(userMessage: string): Promise<void> {
             tool_choice: "auto",
         });
 
-        const aiMessage = step1.choices[0].message;
+        const aiMessage = step1.choices[0].message; //choicesはOpenAIに元々あるプロパティ
 
-        if (!aiMessage.tool_calls?.length) {
+        if (!aiMessage.tool_calls?.length) { // tool_callsも元々あるプロパティ tool_callsはAIが呼びたいツール情報
             console.log("回答: ", aiMessage.content);
             return;
         }
@@ -48,10 +48,10 @@ async function askAI(userMessage: string): Promise<void> {
             messages: [
                 { role: "system", content: SYSTEM_PROMPT },
                 { role: "user", content: userMessage },
-                aiMessage,
+                aiMessage, // AIが「このtool呼んで」と言った履歴をGPTへ再度渡している
                 {
-                    role: "tool",
-                    tool_call_id: toolCall.id,
+                    role: "tool", // これはtool実行結果であると伝えている
+                    tool_call_id: toolCall.id, // どのtool callへの実行結果かを識別するID
                     content: JSON.stringify(dbResult),
                 },
             ],
