@@ -14,9 +14,11 @@ services:
       - "3000:3000"
     volumes:
       - ./backend:/app
-      - /app/node_modules
+      - backend_modules:/app/node_modules
     depends_on: #DBコンテナが先に起動する　※完全に接続可能になる保証ではない
       - db
+    env_file:
+      - ./backend/.env
     environment:
       DB_HOST: db
       DB_PORT: 3306
@@ -51,3 +53,4 @@ services:
 
 volumes:
   db_data:
+  backend_modules:
