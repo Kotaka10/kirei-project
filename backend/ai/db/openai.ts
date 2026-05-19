@@ -18,7 +18,7 @@ export async function generateJSON<T>(
         ],
     });
 
-    const text = res.choices[0].message.content ?? "{}";
+    const text = res.choices[0]?.message.content ?? "{}";
 
     return JSON.parse(text) as T;
 }
