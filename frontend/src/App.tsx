@@ -15,6 +15,7 @@ import FileUploadByBlob from './features/files/components/FileUploadByBlob';
 import UploadByBlob from './features/practice/UploadByBlob';
 import Chat from './features/chat/Chat';
 import useOneSignal from './one-signal/hooks/useOneSignal';
+import { ChatWidget } from './features/ai/components/chat/ChatWidget';
 
 function App() {
   const [userId, setUserId] = useState("");
@@ -59,6 +60,7 @@ function App() {
         >
           通知を有効化
         </button>
+        <ChatWidget />
       </div>
     </>
   )
