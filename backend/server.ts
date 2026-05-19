@@ -9,6 +9,7 @@ import uploadRoutes from "./routes/uploadByBlobRoutes.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { createMessageRouter } from "./routes/messageRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
 import { registerChatSocket } from "./sockets/chatSocket.js";
 import { messageService } from "./services/messageService.js";
 import { createMessageController } from "./controllers/messageController.js";
@@ -38,6 +39,7 @@ app.use("/upload-blob", uploadRoutes);
 const controller = createMessageController(messageService);
 
 app.use("/api/messages", createMessageRouter(controller));
+app.use("/api/chat", chatRoutes);
 
 const io = new Server(httpServer, { //Socket.IOサーバーを作っている
     cors: {
