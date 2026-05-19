@@ -67,10 +67,10 @@ export function ChatWindow({ onClose }: Props) {
             </div>
 
             {/* メッセージ一覧 */}
-            <div className="flex-1 overflow-y-auto px-4 space-y-4 scroll-smootth">
+            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
                 {isEmpty ? (
-                    <div className="flex flex-col items-center justify-center h-full text-center gap-3 pb-4">
-                        <div  className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center">
+                    <div className="flex flex-col items-center justify-center h-full text-center gap-3">
+                        <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center">
                             <svg className="w-7 h-7 text-red-500" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
                             </svg>
@@ -98,14 +98,16 @@ export function ChatWindow({ onClose }: Props) {
                     </div>
                 )}
 
-                {/* サジェスト（初回のみ表示）*/}
-                {isEmpty && (
-                    <SuggestedQuestions onSelect={(q) => sendMessage(q)} />
-                )}
-
-                {/* 入浴フォーム */}
-                <ChatInput onSend={sendMessage} isLoading={isLoading} />
+                <div ref={bottomRef} />
             </div>
+
+            {/* サジェスト（初回のみ表示）*/}
+            {isEmpty && (
+                <SuggestedQuestions onSelect={(q) => sendMessage(q)} />
+            )}
+
+            {/* 入力フォーム */}
+            <ChatInput onSend={sendMessage} isLoading={isLoading} />
         </div>
     )
 }
