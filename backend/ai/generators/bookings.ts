@@ -20,7 +20,7 @@ const STATUSES: Booking["status"][] = [
 ];
 
 const randomItem = <T>(arr: T[]): T => {
-    // !はこれはnull/undefinedではないと伝えている　Non-null Assertion Operator
+    // !はnull/undefinedではないと伝えている　Non-null Assertion Operator
     return arr[Math.floor(Math.random() * arr.length)]!;
 }
 
