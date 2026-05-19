@@ -1,5 +1,5 @@
-import { Connection, RowDataPacket } from "mysql2/promise";
-import { Booking } from "../types/index.js";
+import type { Connection, RowDataPacket } from "mysql2/promise";
+import type { Booking } from "../types/index.js";
 
 const SERVICE_TYPES = [
   "エアコン清掃", "エアコン清掃", "エアコン清掃", // 頻度高め
@@ -20,7 +20,8 @@ const STATUSES: Booking["status"][] = [
 ];
 
 const randomItem = <T>(arr: T[]): T => {
-    return arr[Math.floor(Math.random() * arr.length)];
+    // !はこれはnull/undefinedではないと伝えている　Non-null Assertion Operator
+    return arr[Math.floor(Math.random() * arr.length)]!;
 }
 
 const offsetDate = (days: number): Date => {
