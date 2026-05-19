@@ -1,6 +1,6 @@
-import { chat } from "./chat";
+import { chat } from "./chat.js";
 import { getConnection } from "./db/connection.js";
-import { ChatCompletionMessageParam } from "openai/resources/index";
+import type { ChatCompletionMessageParam } from "openai/resources";
 
 const QUESTIONS = [
     "佐藤さんの過去の予約を意教えてください",
