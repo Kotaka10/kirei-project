@@ -1,15 +1,15 @@
 import mysql from "mysql2/promise"; //promiseがあることでawait/async対応
-import { CompanyInfoTypes } from "../../shared/types/CompanyInfoTypes.js";
+import type { CompanyInfoTypes } from "../../shared/types/CompanyInfoTypes.js";
 import dotenv from "dotenv";
 
 dotenv.config(); //.env ファイルから環境変数を読み込むための処理
 
 export async function insertCustomers(customers: CompanyInfoTypes[]) {
     const conn = await mysql.createConnection({
-        host:     process.env.DB_HOST,
-        user:     process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME,
+        host:     process.env.DB_HOST!,
+        user:     process.env.DB_USER!,
+        password: process.env.DB_PASSWORD!,
+        database: process.env.DB_NAME!,
     });
 
     if (customers.length === 0) {
