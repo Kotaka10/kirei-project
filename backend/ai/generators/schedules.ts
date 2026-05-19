@@ -1,5 +1,5 @@
-import { Connection, RowDataPacket } from "mysql2/promise";
-import { Schedule } from "../types/index.js";
+import { Connection, type RowDataPacket } from "mysql2/promise";
+import type { Schedule } from "../types/index.js";
 
 const AVAILABLE_SLOTS: [string, string][] = [
     ["09:00:00", "11:00:00"],

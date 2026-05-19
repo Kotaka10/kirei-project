@@ -1,4 +1,4 @@
-import { Connection, RowDataPacket } from "mysql2/promise";
+import type { Connection, RowDataPacket } from "mysql2/promise";
 
 export async function generateSales(conn: Connection): Promise<void> {
     console.log("売上データ生成中...");
@@ -21,5 +21,5 @@ export async function generateSales(conn: Connection): Promise<void> {
         "SELECT COUNT(*) AS cnt FROM sales"
     );
 
-    console.log(` ✔︎ sales: ${result[0].cnt}件(bookingsから自動集計)`);
+    console.log(` ✔︎ sales: ${result[0]!.cnt}件(bookingsから自動集計)`);
 }
