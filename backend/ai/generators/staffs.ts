@@ -1,6 +1,6 @@
 import { Connection } from "mysql2/promise";
 import { generateJSON } from "../db/openai.js";
-import { Staff } from "../types/index.js";
+import type { Staff } from "../types/index.js";
 
 export async function generateStaffs(conn: Connection): Promise<void> {
     console.log("スタッフデータ生成中...");
