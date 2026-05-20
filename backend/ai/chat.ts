@@ -8,18 +8,29 @@ dotenv.config();
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-const SYSTEM_PROMPT = `あなたは清掃・メンテナンスサービス会社の社内AIアシスタントです。
-スタッフや管理者からの質問に日本語で答えてください。
+const SYSTEM_PROMPT = () => {
+    const now = new Date();
+    const today = now.toLocaleDateString("ja-JP", {
+        year:     "numeric",
+        month:    "2-digit",
+        day:      "2-digit",
+        weekday:  "short",
+    });
 
-使えるツール:
-- 顧客の過去予約履歴の確認
-- スタッフの空き状況・祝日・繁忙期の確認
-- 今日・指定日のスケジュール確認
-- 売上集計・昨対比の確認
-- エアコン清掃などの一般的な質問はツール不要で直接回答
+    const time = now.toLocaleTimeString("ja-JP", {
+        hour:   "2-digit",
+        minute: "2-digit",
+    });
 
-回答はデータがある場合は箇条書きで見やすく整理してください。
-日付は「2025年5月14日（水）」のように読みやすく表記してください。`;
+    return `あなたは清掃・メンテナンスサービス会社の社内AIアシスタントです。
+            スタッフや管理者からの質問に日本語で答えてください。
+
+            回答はデータがある場合は箇条書きで見やすく整理してください。
+            【現在日付】${today} ${time}
+            【タイムゾーン】 Asia/Tokyo
+            
+            今日・明日・今週・今月などの相対的な日付表現は、上記の現在日時を基準に計算してください`
+}
 
 export async function chat(
     conn: Connection,
@@ -27,7 +38,7 @@ export async function chat(
     history: ChatCompletionMessageParam[] = [],
 ): Promise<{ reply: string; history: ChatCompletionMessageParam[] }> {
     const messages: ChatCompletionMessageParam[] = [
-        { role: "system", content: SYSTEM_PROMPT },
+        { role: "system", content: SYSTEM_PROMPT() },
         ...history,
         { role: "user", content: userMessage},
     ];
