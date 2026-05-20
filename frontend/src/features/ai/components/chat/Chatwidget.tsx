@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChatWindow } from "./Chatwindow";
+import { ChatWindow } from "./ChatWindow";
 
 export function ChatWidget() {
     const [isOpen, setIsOpen] = useState(false);
@@ -15,7 +15,7 @@ export function ChatWidget() {
                 onClick={() => setIsOpen((prev) => !prev)}
                 className="
                     w-14 h-14 rounded-full bg-red-600 shadow-lg flex items-center justify-center
-                    hover:bg-red-700 hover: scale-105 active:scale-50 transition-all duration-200
+                    hover:bg-red-700 hover:scale-105 active:scale-50 transition-all duration-200
                 "
                 aria-label="AIチャットを開く"
             >
