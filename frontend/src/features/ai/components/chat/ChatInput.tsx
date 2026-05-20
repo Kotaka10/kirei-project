@@ -1,5 +1,5 @@
 import  { useState, useRef, type KeyboardEvent } from "react";
-import { ChatRequestSchema } from "../../types/chat";
+import { ChatRequestSchema } from "../../types/chatTypes";
 
 interface Props {
     onSend:    (message: string) => void;
@@ -29,7 +29,7 @@ export function ChatInput({ onSend, isLoading }: Props) {
     };
 
     const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-        if (e.key === "Enter" && !e.shiftKey) {
+        if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
             e.preventDefault();
             if (!isLoading) handleSend();
         }
