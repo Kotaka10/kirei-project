@@ -34,7 +34,7 @@ export const tools: ChatCompletionTool[] = [
         function: {
             name: "check_staff_availability",
             description:
-                "指定した日付にスタッフが空いているか確認する。祝日・繁忙期かどうかも合わせて返す",
+                "確認したい日付(YYYY-MM-DD)。「明日」「来週月曜」などの場合はシステムプロンプトの現在日時を基準に変換して渡すこと",
             parameters: {
                 type: "object",
                 properties: {
@@ -58,7 +58,7 @@ export const tools: ChatCompletionTool[] = [
         function: {
             name: "get_schedule",
             description:
-                "今日または指定した日の予約・スケジュールスケジュール一覧を返す。担当スタッフ・顧客名・サービス種別・時間が含まれる",
+                "今日または指定した日の予約・スケジュール一覧を返す。明日」「来週月曜」などの場合はシステムプロンプトの現在日時を基準に変換して渡すこと。担当スタッフ・顧客名・サービス種別・時間が含まれる",
             parameters: {
                 type: "object",
                 properties: {
