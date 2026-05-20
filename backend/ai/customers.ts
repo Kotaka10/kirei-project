@@ -1,6 +1,6 @@
 import { Connection } from "mysql2/promise";
 import { generateJSON } from "./db/openai.js";
-import type { Customer } from "./types/index.js";
+import type { Customer } from "./types/indexTypes.js";
 
 export async function generateCustomers(conn: Connection, count = 30): Promise<void> {
     console.log("顧客データ生成中...");

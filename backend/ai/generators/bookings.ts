@@ -1,5 +1,5 @@
 import type { Connection, RowDataPacket } from "mysql2/promise";
-import type { Booking } from "../types/index.js";
+import type { Booking } from "../types/indexTypes.js";
 
 const SERVICE_TYPES = [
   "エアコン清掃", "エアコン清掃", "エアコン清掃", // 頻度高め
