@@ -1,4 +1,4 @@
-import { SUGGESTED_QUESTIONS } from "../../types/chat";
+import { SUGGESTED_QUESTIONS } from "../../types/chatTypes";
 
 interface Props {
     onSelect: (question: string) => void;

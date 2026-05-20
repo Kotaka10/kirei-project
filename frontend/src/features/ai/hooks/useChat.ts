@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import type { Message } from "../types/chat";
+import type { Message } from "../types/chatTypes";
 import { sendChatMessage } from "../lib/api";
 
 export function useChat() {
@@ -7,7 +7,7 @@ export function useChat() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // 再レンダリングせず値保持　useRefは際レンダリングしても値が消えない
+    // 再レンダリングせず値保持　useRefは再レンダリングしても値が消えない
     const sessionIdRef = useRef<string | undefined>(undefined);
 
     const sendMessage = useCallback(async (content: string) => {
