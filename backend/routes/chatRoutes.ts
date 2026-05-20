@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from "express";
 import type { ChatCompletionMessageParam } from "openai/resources";
 import { chat } from "../ai/chat.js";
-import { getConnection } from "../ai/db/connection.js";
+import { getConnection } from "../db/connection.js";
 
 const router = Router();
 

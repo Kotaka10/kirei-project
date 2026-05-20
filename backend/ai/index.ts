@@ -1,7 +1,7 @@
 import OpenAI from "openai";
-import { getConnection } from "./db/connection.js";
-import { tools } from "./tools/definitions.js"; 
-import { getCustomerBookings } from "./tools/handlers.js";
+import { getConnection } from "../db/connection.js";
+import { tools } from "../tools/definitions.js"; 
+import { getCustomerBookings } from "../tools/handlers.js";
 import dotenv from "dotenv";
 dotenv.config();
 

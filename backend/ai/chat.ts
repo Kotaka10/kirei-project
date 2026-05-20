@@ -1,8 +1,8 @@
 import OpenAI from "openai";
 import { Connection } from "mysql2/promise";
 import type { ChatCompletionMessageParam } from "openai/resources";
-import { tools } from "./tools/definitions.js"; 
-import { dispatchTool } from "./tools/dispatcher.js";
+import { tools } from "../tools/definitions.js"; 
+import { dispatchTool } from "../tools/dispatcher.js";
 import dotenv from "dotenv";
 dotenv.config();
 

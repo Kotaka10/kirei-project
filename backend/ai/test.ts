@@ -1,5 +1,5 @@
 import { chat } from "./chat.js";
-import { getConnection } from "./db/connection.js";
+import { getConnection } from "../db/connection.js";
 import type { ChatCompletionMessageParam } from "openai/resources";
 
 const QUESTIONS = [
