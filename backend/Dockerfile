@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json ./ 
 
 #ライブラリをインストール
-RUN npm ci
+RUN npm install
 
 #プロジェクトの全ファイルをコピー
 COPY . .
