@@ -1,6 +1,7 @@
 import express from "express"; //Expressを使ってサーバーを作る準備をしている(expressというライブラリを読み込んでいる)
 import cors from "cors";
 import path from "path";
+import dotenv from "dotenv";
 import companyRoutes from "./routes/companyRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import itemRoutes from "./routes/itemRoutes.js";
@@ -10,6 +11,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { createMessageRouter } from "./routes/messageRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
+import authRoutes from "./routes/auth.js"
 import { registerChatSocket } from "./sockets/chatSocket.js";
 import { messageService } from "./services/messageService.js";
 import { createMessageController } from "./controllers/messageController.js";
@@ -39,7 +41,9 @@ app.use("/upload-blob", uploadRoutes);
 const controller = createMessageController(messageService);
 
 app.use("/api/messages", createMessageRouter(controller));
+
 app.use("/api/chat", chatRoutes);
+app.use("/api/auth", authRoutes);
 
 const io = new Server(httpServer, { //Socket.IOサーバーを作っている
     cors: {
