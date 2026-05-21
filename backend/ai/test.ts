@@ -1,6 +1,13 @@
 import { chat } from "./chat.js";
 import { getConnection } from "../db/connection.js";
 import type { ChatCompletionMessageParam } from "openai/resources";
+import type { UserContext } from "../types/auth.js";
+
+const TEST_CTX: UserContext = {
+    staffId: 1,
+    name:    "テストユーザー",
+    role:    "supervisor",
+};
 
 const QUESTIONS = [
     "佐藤さんの過去の予約を意教えてください",
@@ -21,7 +28,7 @@ async function main() {
             console.log(`\n 【質問】${question}`);
             console.log("ー".repeat(60));
 
-            const { reply, history: next } = await chat(conn, question, history);
+            const { reply, history: next } = await chat(conn, question, history, TEST_CTX);
             history = next;
 
             console.log(`【回答】\n${reply}`);
