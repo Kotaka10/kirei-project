@@ -2,6 +2,7 @@ import OpenAI from "openai";
 import { getConnection } from "../db/connection.js";
 import { tools } from "../tools/definitions.js"; 
 import { getCustomerBookings } from "../tools/handlers.js";
+import type { UserContext } from "../types/auth.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -11,7 +12,7 @@ const SYSTEM_PROMPT = `あなたは清掃・メンテナンスサービス会社
 顧客の予約履歴について質問されたら、必ずget_customer_bookingsツールを使って答えてください。
 回答は日本語で、データを見やすく整理して返してください。`;
 
-async function askAI(userMessage: string): Promise<void> {
+async function askAI(userMessage: string, ctx: UserContext): Promise<void> {
     const conn = await getConnection();
 
     try {
@@ -40,7 +41,7 @@ async function askAI(userMessage: string): Promise<void> {
         const args = JSON.parse(toolCall.function.arguments);
         console.log(`[Tool呼び出し] get_customer_bookings(${JSON.stringify(args)})`);
 
-        const dbResult = await getCustomerBookings(conn, args);
+        const dbResult = await getCustomerBookings(conn, args, ctx);
         console.log("[DB結果]", JSON.stringify(dbResult, null, 2));
 
         const step2 = await openai.chat.completions.create({
@@ -64,5 +65,10 @@ async function askAI(userMessage: string): Promise<void> {
 }
 
 (async () => {
-    await askAI("佐藤さんの過去の予約を教えてください");
+    const testCtx: UserContext = {
+        staffId: 1,
+        name:    "テストユーザー",
+        role:    "supervisor",
+    };
+    await askAI("佐藤さんの過去の予約を教えてください", testCtx);
 })();
