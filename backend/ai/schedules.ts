@@ -1,4 +1,4 @@
-import { Connection, RowDataPacket } from "mysql2/promise";
+import { Connection, type RowDataPacket } from "mysql2/promise";
 
 export async function generateSchedules(conn: Connection): Promise<void> {
     console.log("スケジュールデータ生成中...");
