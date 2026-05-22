@@ -1,10 +1,11 @@
 import { ChatRequestSchema, ChatResponseSchema, type ChatResponse } from "../types/chatTypes";
 
-const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+const API_BASE = import.meta.env.VITE_API_URL ?? "https://waviness-unsightly-freely.ngrok-free.dev";
 
 export async function sendChatMessage(
     message: string,
-    sessionId?: string
+    sessionId?: string,
+    token?: string,
 ): Promise<ChatResponse> {
     // safeParse = zod検証　zodに元々含まれる標準メソッド
     const parsed = ChatRequestSchema.safeParse({ message, session_id: sessionId });
@@ -13,9 +14,12 @@ export async function sendChatMessage(
         throw new Error(firstError);
     }
 
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+
     const res = await fetch(`${API_BASE}/api/chat`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify(parsed.data), // parsed.data = バリデーション済みデータ
     })
 
