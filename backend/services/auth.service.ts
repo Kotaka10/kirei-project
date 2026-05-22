@@ -32,7 +32,7 @@ export class AuthService {
             role:     staff.role,
             email:    staff.email,
         }
-        const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES as any });
+        const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES as any }); // payload + secretの署名生成
 
         this.staffRepo.updateLastLogin(staff.id).catch(console.error);
 
@@ -48,7 +48,7 @@ export class AuthService {
 
     verifyToken(token: string) {
         try {
-            const decoded = jwt.verify(token, JWT_SECRET) as any;
+            const decoded = jwt.verify(token, JWT_SECRET) as any; // jwt.verify → jwt標準のメソッド　jwtが本物かどうか確認
             return {
                 staff_id: decoded.staff_id,
                 name:     decoded.name,
