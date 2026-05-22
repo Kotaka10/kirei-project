@@ -1,10 +1,10 @@
-import { generateCustomers } from "./customers.js";
+import { generateCustomers } from "./generators/customers.js";
 import { getConnection } from "../db/connection.js";
-import { generateStaff } from "./staff.js";
-import { generateHolidays } from "../generators/holidays.js";
-import { generateBookings } from "./bookings.js";
-import { generateSchedules } from "./schedules.js";
-import { generateSales } from "./sales.js";
+import { generateStaff } from "./generators/staff.js";
+import { generateHolidays } from "./generators/holidays.js";
+import { generateBookings } from "./generators/bookings.js";
+import { generateSchedules } from "./generators/schedules.js";
+import { generateSales } from "./generators/sales.js";
 
 async function main () {
     const conn = await getConnection();
