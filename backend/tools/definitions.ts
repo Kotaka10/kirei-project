@@ -72,6 +72,30 @@ export const tools: ChatCompletionTool[] = [
         },
     },
 
+    // スタッフ検索
+    {
+        type: "function",
+        function: {
+            name: "search_staff",
+            description: "スタッフ名や役職でスタッフ一覧を検索する。同僚の基本情報（名前・役職）を調べる際に使用。全ロールで利用可能",
+            parameters: {
+                type: "object",
+                properties: {
+                    name: {
+                        type: "string",
+                        description: "スタッフ名（部分一致）",
+                    },
+                    role: {
+                        type: "string",
+                        enum: ["cleaner", "technician", "supervisor"],
+                        description: "役職で絞り込む場合（cleaner: 清掃員 / technician: 技術者 / supervisor: 管理者）",
+                    },
+                },
+                required: [],
+            },
+        },
+    },
+
     // 売上げ・昨対比
     {
         type: "function",
