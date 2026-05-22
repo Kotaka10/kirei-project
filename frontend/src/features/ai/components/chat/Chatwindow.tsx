@@ -11,10 +11,10 @@ interface Props {
 
 export function ChatWindow({ onClose }: Props) {
     const { messages, isLoading, error, sendMessage, clearHistory } = useChat();
-    const bottomRef = useRef<HTMLDivElement>(null);
+    const bottomRef = useRef<HTMLDivElement>(null); // div要素を参照するref <div ref={bottomRef}></div> → bottomRef.currentに実際のDOM要素を入れてくれる
 
     useEffect(() => {
-        bottomRef.current?.scrollIntoView({ behavior: "smooth"});
+        bottomRef.current?.scrollIntoView({ behavior: "smooth"}); // scrollIntoView → その要素が見える位置までスクロール behavnior: "smooth"によってぬるっとスクロール
     }, [messages, isLoading]);
 
     const isEmpty = messages.length === 0;
@@ -31,7 +31,7 @@ export function ChatWindow({ onClose }: Props) {
                         {/* svg = ベクター画像, viewBox = 左上 (0, 0) 幅 24 高さ 24, fill = 塗りつぶし色,　currentColor = 親要素の色に追従 */}
                         <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
                             {/* 
-                                d=drawing(描画命令), M=Move to, 20 2 = 座標(20, 2)へ移動, H4=Horizontal line(x = 4まで移動), c=curve, v=vertical, I4-4(l = line)善を引く
+                                d=drawing(描画命令), M=Move to, 20 2 = 座標(20, 2)へ移動, H4=Horizontal line(x = 4まで移動), c=curve, v=vertical, I4-4(l = line)線を引く
                                 z = close path　全体として吹き出しっぽいチャットアイコン
                              */}
                             <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
@@ -51,7 +51,9 @@ export function ChatWindow({ onClose }: Props) {
                             className="p-1.5 rounded-lg hover:bg-white/20 transition-colors"
                         >{/* transition-colors = 色の変化をアニメーションする。今回はホバーすると背景が少し白くなる */}
                             <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                                <path d="
+                                    M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z
+                                "/>
                             </svg>
                         </button>
                     )}
