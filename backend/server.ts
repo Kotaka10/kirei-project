@@ -1,7 +1,7 @@
+import dotenv from "dotenv";
 import express from "express"; //Expressを使ってサーバーを作る準備をしている(expressというライブラリを読み込んでいる)
 import cors from "cors";
 import path from "path";
-import dotenv from "dotenv";
 import companyRoutes from "./routes/companyRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import itemRoutes from "./routes/itemRoutes.js";
@@ -11,10 +11,12 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { createMessageRouter } from "./routes/messageRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
-import authRoutes from "./routes/auth.js"
+import authRoutes from "./routes/auth.router.js"
 import { registerChatSocket } from "./sockets/chatSocket.js";
 import { messageService } from "./services/messageService.js";
 import { createMessageController } from "./controllers/messageController.js";
+
+dotenv.config(); // ローカル開発用: .envから環境変数を読み込む（Docker環境ではcompose.yamlが注入）
 
 const app = express(); //サーバーを作っている
 const PORT = 3000;
