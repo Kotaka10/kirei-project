@@ -103,7 +103,34 @@ export async function checkStaffAvailability(
     };
 }
 
-// ③ スケジュール確認
+// ③ スタッフ検索
+export async function searchStaff(
+    conn: Connection,
+    args: { name?: string; role?: string },
+    _ctx: UserContext
+): Promise<object> {
+    const params: any[] = [];
+    const conditions: string[] = ["is_active = true"];
+
+    if (args.name) {
+        conditions.push("name LIKE ?");
+        params.push(`%${args.name}%`);
+    }
+    if (args.role) {
+        conditions.push("role = ?");
+        params.push(args.role);
+    }
+
+    const [rows] = await conn.query<RowDataPacket[]>(
+        `SELECT id, name, role FROM staffs WHERE ${conditions.join(" AND ")} ORDER BY name`,
+        params
+    );
+
+    if (rows.length === 0) return { message: "該当するスタッフが見つかりませんでした" };
+    return { staff_list: rows };
+}
+
+// ④ スケジュール確認
 export async function getSchedule(
     conn: Connection,
     args: { date?: string },
@@ -114,7 +141,7 @@ export async function getSchedule(
     const params: any[] = [targetDate];
     const conditions: string[] = ["sc.date = ?"];
 
-    // 権限フィルター
+    // 自分のスケジュールのみ（supervisorは全スタッフ分）
     if (ctx.role !== "supervisor") {
         conditions.push("sc.staff_id = ?");
         params.push(ctx.staffId);
