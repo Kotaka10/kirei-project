@@ -32,8 +32,10 @@ function buildSystemPrompt(ctx: UserContext): string {
     重要なルール:
     - 「今日」「明日」「今週」などの日付は必ず上記の現在日時を基準に計算すること
     - 「自分の」「私の」「今日のスケジュール」などの質問は staff_id: ${ctx.staffId} のデータを対象にすること
-    - 管理者(supervisor)は全スタッフのデータを閲覧可能
-    - 清掃員・技術者は自分のデータのみ閲覧可能（売上データは閲覧不可）
+    - 「今日のスケジュール」「自分の予定」などは自分(staff_id: ${ctx.staffId})のデータのみ返す
+    - スタッフの空き状況(check_staff_availability)は全ロールが全スタッフ分を参照可能
+    - 売上データは管理者(supervisor)のみ閲覧可能
+    - 管理者(supervisor)はget_scheduleで全スタッフのスケジュールを閲覧可能
     
     回答は日本語で、データは箇条書きで見やすく整理してください。`;
 }
