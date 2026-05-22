@@ -2,6 +2,7 @@ import { Connection } from "mysql2/promise";
 import {
   getCustomerBookings,
   checkStaffAvailability,
+  searchStaff,
   getSchedule,
   getSalesSummary,
 } from "./handlers.js";
@@ -22,6 +23,9 @@ export async function dispatchTool(
                 break;
             case "check_staff_availability":
                 result = await checkStaffAvailability(conn, args as { date: string; staff_name?: string }, ctx);
+                break;
+            case "search_staff":
+                result = await searchStaff(conn, args as { name?: string; role?: string }, ctx);
                 break;
             case "get_schedule":
                 result = await getSchedule(conn, args, ctx);
