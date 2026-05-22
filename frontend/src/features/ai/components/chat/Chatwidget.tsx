@@ -10,6 +10,7 @@ export function ChatWidget() {
             {isOpen && <ChatWindow onClose={() => setIsOpen(false)} />}
 
             {/* トグルボタン */}
+            {/* aria-label = 画面には見えない説明文 スクリーンリーダー */}
             <button
                 onClick={() => setIsOpen((prev) => !prev)}
                 aria-label={isOpen ? "チャットを閉じる" : "AIアシスタントを開く"}
