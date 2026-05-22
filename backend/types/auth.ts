@@ -11,7 +11,7 @@ export type LoginRequest = z.infer<typeof LoginRequestSchema>;
 export const JwtPayloadSchema = z.object({
     staff_id: z.number(),
     name:     z.string(),
-    role:     z.enum(["cleaner", "technitian", "supervisor"]),
+    role:     z.enum(["cleaner", "technician", "supervisor"]),
     email:    z.string().email(),
 })
 export type JwtPayload = z.infer<typeof JwtPayloadSchema>;
@@ -19,7 +19,7 @@ export type JwtPayload = z.infer<typeof JwtPayloadSchema>;
 export const UserContextSchema = z.object({
     staffId: z.number(),
     name:    z.string(),
-    role:    z.enum(["cleaner", "technitian", "supervisor"]),
+    role:    z.enum(["cleaner", "technician", "supervisor"]),
 });
 export type UserContext = z.infer<typeof UserContextSchema>;
 
