@@ -11,7 +11,10 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { createMessageRouter } from "./routes/messageRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
-import authRoutes from "./routes/auth.router.js"
+import authRoutes from "./routes/auth.router.js";
+import skillRoutes from "./routes/skillRoutes.js";
+import jobRoutes from "./routes/jobRoutes.js";
+import assignmentRoutes from "./routes/assignmentRoutes.js";
 import { registerChatSocket } from "./sockets/chatSocket.js";
 import { messageService } from "./services/messageService.js";
 import { createMessageController } from "./controllers/messageController.js";
@@ -46,6 +49,9 @@ app.use("/api/messages", createMessageRouter(controller));
 
 app.use("/api/chat", chatRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/skills",      skillRoutes);
+app.use("/api/jobs",        jobRoutes);
+app.use("/api/assignments", assignmentRoutes);
 
 const io = new Server(httpServer, { //Socket.IOサーバーを作っている
     cors: {
