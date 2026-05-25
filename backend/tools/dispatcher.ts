@@ -5,6 +5,10 @@ import {
   searchStaff,
   getSchedule,
   getSalesSummary,
+  findMatchingStaff,
+  analyzeSkillGaps,
+  suggestTeam,
+  requestStaffAssignment,
 } from "./handlers.js";
 import type { UserContext } from "../types/auth.js";
 
@@ -28,10 +32,30 @@ export async function dispatchTool(
                 result = await searchStaff(conn, args as { name?: string; role?: string }, ctx);
                 break;
             case "get_schedule":
-                result = await getSchedule(conn, args, ctx);
+                result = await getSchedule(
+                    conn,
+                    args as { date?: string; start_date?: string; end_date?: string; service_type?: string; status?: string },
+                    ctx
+                );
                 break;
             case "get_sales_summary":
                 result = await getSalesSummary(conn, args as { period: string; year?: number; month?: number }, ctx);
+                break;
+            case "find_matching_staff":
+                result = await findMatchingStaff(conn, args as { service_type: string; date?: string }, ctx);
+                break;
+            case "analyze_skill_gaps":
+                result = await analyzeSkillGaps(conn, args as { service_type?: string }, ctx);
+                break;
+            case "suggest_team":
+                result = await suggestTeam(conn, args as { service_type: string; date: string; team_size?: number }, ctx);
+                break;
+            case "request_staff_assignment":
+                result = await requestStaffAssignment(
+                    conn,
+                    args as { date: string; target_staff_name: string; service_type?: string; customer_name?: string; booking_id?: number; note?: string },
+                    ctx
+                );
                 break;
             default:
                 result = { error: `未知のツール: ${toolName}`};
