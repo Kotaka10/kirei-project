@@ -19,6 +19,9 @@ import LoginPage from './features/auth/components/LoginPage';
 import ProtectedRoute from './features/auth/components/ProtectedRoute';
 import { useAuth } from './features/auth/context/AuthContext';
 import { ChatWidget } from './features/ai/components/chat/ChatWidget';
+import StaffSkillPage from './features/staff-skills/components/StaffSkillPage';
+import JobListPage from './features/jobs/components/JobListPage';
+import ApprovalPage from './features/approvals/components/ApprovalPage';
 
 function App() {
   const [userId, setUserId] = useState("");
@@ -39,6 +42,9 @@ function App() {
             <Route path="/item-edit/:id"     element={<ItemEdit />} />
             <Route path="/uploads"           element={<FileUploadPage />} />
             <Route path="/messages"          element={<Chat />} />
+            <Route path="/staff-skills"      element={<StaffSkillPage />} />
+            <Route path="/jobs"              element={<JobListPage />} />
+            <Route path="/approvals"         element={<ApprovalPage />} />
           </Route>
           <Route element={<ColoredLayout />}>
             <Route path="/user-register"  element={<UserRegister />} />
