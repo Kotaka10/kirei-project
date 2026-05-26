@@ -42,7 +42,7 @@ export async function dispatchTool(
                 result = await getSalesSummary(conn, args as { period: string; year?: number; month?: number }, ctx);
                 break;
             case "find_matching_staff":
-                result = await findMatchingStaff(conn, args as { service_type: string; date?: string }, ctx);
+                result = await findMatchingStaff(conn, args as { service_type: string; date?: string; booking_id?: number }, ctx);
                 break;
             case "analyze_skill_gaps":
                 result = await analyzeSkillGaps(conn, args as { service_type?: string }, ctx);
