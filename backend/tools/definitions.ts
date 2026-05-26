@@ -122,7 +122,7 @@ export const tools: ChatCompletionTool[] = [
         type: "function",
         function: {
             name: "find_matching_staff",
-            description: "指定したサービス種別に必要なスキルを満たし、かつ指定日に空きがあるスタッフを熟練度順で返す。「○○ができる人を教えて」「明日のエアコン清掃に誰が向いている？」などに使用",
+            description: "指定したサービス種別に必要なスキルを満たし、かつ指定日に空きがあるスタッフを熟練度順で返す。「○○ができる人を教えて」「明日のエアコン清掃に誰が向いている？」などに使用。booking_id が分かっている場合は渡すと既にアサイン済みのスタッフを除外できる",
             parameters: {
                 type: "object",
                 properties: {
@@ -133,6 +133,10 @@ export const tools: ChatCompletionTool[] = [
                     date: {
                         type: "string",
                         description: "対象日（YYYY-MM-DD）。空き確認も同時に行う。省略時は今日",
+                    },
+                    booking_id: {
+                        type: "number",
+                        description: "ジョブID。get_schedule の結果から booking_id が分かっている場合に指定するとアサイン済みスタッフを除外して返す",
                     },
                 },
                 required: ["service_type"],
