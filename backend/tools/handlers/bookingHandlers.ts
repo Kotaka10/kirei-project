@@ -74,6 +74,7 @@ export async function requestStaffAssignment(
             candidates: staffRows.map(s => s.name),
         };
     }
+    // ! = 配列の先頭要素を取得して、null/undefinedではないと断言する
     const targetStaff = staffRows[0]!;
 
     // ジョブを特定
