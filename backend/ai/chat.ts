@@ -44,6 +44,7 @@ function buildSystemPrompt(ctx: UserContext): string {
     - 「○○に△△さんを追加して」「○○のジョブに××を割り振りたい」など、ジョブへのスタッフ追加を依頼されたら request_staff_assignment を使用する
     - スタッフ追加リクエストは全ロールが送信可能だが、管理者の承認が必要であることを必ず伝える
     - 同じ日に複数のジョブがある場合、AIがサービス種別や顧客名で絞り込んで特定すること
+    - 「○○のジョブに適したスタッフは？」「このジョブに誰が合う？」など特定ジョブについて find_matching_staff を使う場合、get_schedule などで booking_id が判明していれば必ず booking_id を渡すこと（既アサイン済みスタッフが除外される）
     - 売上データは管理者(supervisor)のみ閲覧可能
     - 管理者(supervisor)はget_scheduleで全スタッフのスケジュールを閲覧可能
     
