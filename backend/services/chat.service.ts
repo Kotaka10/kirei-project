@@ -27,7 +27,10 @@ export class ChatService {
                 ctx
             );
 
-            this.sessions.set(key, newHistory.slice(-40));
+            // tool ロールが先頭に残らないよう、最初の user メッセージから始める
+            const trimmed = newHistory.slice(-40);
+            const firstUserIdx = trimmed.findIndex(m => m.role === "user");
+            this.sessions.set(key, firstUserIdx > 0 ? trimmed.slice(firstUserIdx) : trimmed);
 
             return { reply, session_id: sessionId };
         } finally {
