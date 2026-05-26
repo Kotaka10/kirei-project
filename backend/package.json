@@ -4,7 +4,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch server.ts",
+    "dev": "tsx watch backend/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "node -e \"try{require('fs').rmSync('./node_modules/@types/node',{recursive:true})}catch(e){}\""
   },
