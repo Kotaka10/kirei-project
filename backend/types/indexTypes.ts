@@ -33,7 +33,7 @@ export interface Schedule {
     date: string;
     start_time: string;
     end_time: string;
-    status: "available" | "booked" | "off";
+    status: "available" | "booked";
     booking_id: number | null;
 }
 
@@ -41,4 +41,35 @@ export interface Sale {
     date: string;
     total_amount: number;
     booking_count: number;
+}
+
+export type SkillCategory = "清掃" | "技術" | "資格" | "対応力";
+
+export interface Skill {
+    id:          number;
+    name:        string;
+    category:    SkillCategory;
+    description: string;
+}
+
+export interface StaffSkill {
+    skill_id:    number;
+    skill_name:  string;
+    category:    SkillCategory;
+    level:       number;  // 1〜5
+    acquired_at: string | null;
+}
+
+export interface StaffWithSkills {
+    id:     number;
+    name:   string;
+    role:   "cleaner" | "technician" | "supervisor";
+    skills: StaffSkill[];
+}
+
+export interface ServiceSkillRequirement {
+    service_type:   string;
+    skill_id:       number;
+    skill_name:     string;
+    required_level: number;
 }
