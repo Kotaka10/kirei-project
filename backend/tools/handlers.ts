@@ -55,7 +55,7 @@ export async function getCustomerBookings(
 export async function checkStaffAvailability(
     conn: Connection,
     args: { date: string; staff_name?: string },
-    ctx: UserContext
+    _ctx: UserContext
 ): Promise<object> {
     // 祝日・繁忙期チェック
     const [holidayRows] = await conn.query<RowDataPacket[]>(
@@ -66,13 +66,9 @@ export async function checkStaffAvailability(
     const params: any[] = [args.date];
     const conditions: string[] = ["sc.date = ?", "s.is_active = true"];
 
-    // 権限フィルター
-    if (ctx.role !== "supervisor") {
-        // 一般スタッフは自分のスケジュールのみ
-        conditions.push("sc.staff_id = ?");
-        params.push(ctx.staffId);
-    } else if (args.staff_name) {
-        // supervisorが特定スタッフを指定した場合
+    // 全ロールが全スタッフの空き状況を参照可能
+    // 特定スタッフ名で絞り込む場合のみフィルター
+    if (args.staff_name) {
         conditions.push("s.name LIKE ?");
         params.push(`%${args.staff_name}%`);
     }
