@@ -101,7 +101,7 @@ export default function UploadByBlob() {
                         </>
                     )}
 
-                    {uploadedId && (
+                    {uploadedId !== 0 && (
                         <div className="mt-5">
                             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
                                 保存済み画像
