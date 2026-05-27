@@ -5,6 +5,7 @@ export default function useFileUploadPage() {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [files, setFiles] = useState<FileInfoTypes[]>([]);
     const [message, setMessage] = useState("");
+    const [fetchError, setFetchError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,10 +27,10 @@ export default function useFileUploadPage() {
         } catch (error) {
             if (error instanceof Error) {
                 console.error(error);
-                setMessage(error.message);
+                setFetchError(error.message);
             } else {
                 console.error("通信の問題が発生しました");
-                setMessage("通信の問題が発生しました");
+                setFetchError("通信の問題が発生しました");
             }
         }
     }
@@ -87,6 +88,7 @@ export default function useFileUploadPage() {
         selectedFile,
         files,
         message,
+        fetchError,
         isLoading,
         handleFileChange,
         handleUpload
