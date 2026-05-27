@@ -55,58 +55,107 @@ export async function chat(
     conn: Connection,
     userMessage: string,
     history: ChatCompletionMessageParam[],
-    ctx: UserContext  // ← ユーザーコンテキストを受け取る
-): Promise<{ reply: string; history: ChatCompletionMessageParam[] }> {
- 
+    ctx: UserContext,
+    onChunk: (delta: string) => void,
+): Promise<{ reply: string; history: ChatCompletionMessageParam[]; assignmentRequested: boolean }> {
+
     const messages: ChatCompletionMessageParam[] = [
-        { role: "system", content: buildSystemPrompt(ctx) }, // 毎回新鮮な日時・ユーザー情報
+        { role: "system", content: buildSystemPrompt(ctx) },
         ...history,
         { role: "user", content: userMessage },
     ];
-    
-    // Step1: AIがツールを選択（ツール選択はブレないよう低め）
-    const step1 = await openai.chat.completions.create({
+
+    // Step1: ストリーミングでツール判定 + コンテンツ生成
+    const step1Stream = await openai.chat.completions.create({
         model:       "gpt-4o-mini",
         messages,
         tools,
         tool_choice: "auto",
         temperature: 0,
+        stream:      true,
     });
-    
-    const aiMsg = step1.choices[0]?.message;
-    if (!aiMsg) return { reply: "", history: messages.slice(1) };
-    messages.push(aiMsg as ChatCompletionMessageParam);
 
-    // ツール不要（一般Q&A）
-    if (!aiMsg.tool_calls?.length) {
-        return { reply: aiMsg.content ?? "", history: messages.slice(1) };
+    let fullContent = "";
+    const toolCallsMap = new Map<number, { id: string; name: string; arguments: string }>();
+
+    for await (const chunk of step1Stream) {
+        const delta = chunk.choices[0]?.delta;
+
+        if (delta?.content) {
+            onChunk(delta.content);
+            fullContent += delta.content;
+        }
+
+        if (delta?.tool_calls) {
+            for (const tc of delta.tool_calls) {
+                const existing = toolCallsMap.get(tc.index) ?? { id: "", name: "", arguments: "" };
+                toolCallsMap.set(tc.index, {
+                    id:        existing.id + (tc.id ?? ""),
+                    name:      existing.name + (tc.function?.name ?? ""),
+                    arguments: existing.arguments + (tc.function?.arguments ?? ""),
+                });
+            }
+        }
     }
-    
-    // Step2: ツール実行（UserContextを渡す）
-    for (const toolCall of aiMsg.tool_calls) {
-        if (toolCall.type !== "function") continue;
-        const name   = toolCall.function.name;
-        const args   = JSON.parse(toolCall.function.arguments);
+
+    const reconstructedToolCalls = [...toolCallsMap.entries()]
+        .sort(([a], [b]) => a - b)
+        .map(([_, tc]) => ({
+            id:       tc.id,
+            type:     "function" as const,
+            function: { name: tc.name, arguments: tc.arguments },
+        }));
+
+    const aiMsg: ChatCompletionMessageParam = reconstructedToolCalls.length > 0
+        ? { role: "assistant", content: null, tool_calls: reconstructedToolCalls } as ChatCompletionMessageParam
+        : { role: "assistant", content: fullContent };
+    messages.push(aiMsg);
+
+    // ツール不要（コンテンツはすでにストリーム済み）
+    if (reconstructedToolCalls.length === 0) {
+        return { reply: fullContent, history: messages.slice(1), assignmentRequested: false };
+    }
+
+    // Step2: ツール実行
+    let assignmentRequested = false;
+    for (const toolCall of reconstructedToolCalls) {
+        const name = toolCall.function.name;
+        const args = JSON.parse(toolCall.function.arguments);
         console.log(`[Tool][${ctx.name}] ${name}(${JSON.stringify(args)})`);
-    
-        const result = await dispatchTool(conn, name, args, ctx); 
-    
+
+        const result = await dispatchTool(conn, name, args, ctx);
+
+        if (name === "request_staff_assignment") {
+            try {
+                const parsed = JSON.parse(result);
+                if (parsed.success === true) assignmentRequested = true;
+            } catch { /* ignore */ }
+        }
+
         messages.push({
-        role:         "tool",
-        tool_call_id: toolCall.id,
-        content:      result,
+            role:         "tool",
+            tool_call_id: toolCall.id,
+            content:      result,
         });
     }
-    
-    // Step3: 自然言語で回答生成（表現に幅を持たせるため中程度）
-    const step2 = await openai.chat.completions.create({
+
+    // Step3: 自然言語回答をストリーミング生成
+    const step3Stream = await openai.chat.completions.create({
         model:       "gpt-4o-mini",
         messages,
         temperature: 0.5,
+        stream:      true,
     });
-    
-    const finalMsg = step2.choices[0]?.message;
-    if (finalMsg) messages.push(finalMsg as ChatCompletionMessageParam);
 
-    return { reply: finalMsg?.content ?? "", history: messages.slice(1) };
+    let finalContent = "";
+    for await (const chunk of step3Stream) {
+        const delta = chunk.choices[0]?.delta?.content ?? "";
+        if (delta) {
+            onChunk(delta);
+            finalContent += delta;
+        }
+    }
+
+    messages.push({ role: "assistant", content: finalContent } as ChatCompletionMessageParam);
+    return { reply: finalContent, history: messages.slice(1), assignmentRequested };
 }
