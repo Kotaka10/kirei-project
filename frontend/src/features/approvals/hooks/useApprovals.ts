@@ -29,12 +29,14 @@ export function useApprovals(statusFilter?: string) {
         if (!token) return;
         await approvalApi.approve(token, id);
         await fetchRequests();
+        window.dispatchEvent(new Event("approvals:updated"));
     };
 
     const reject = async (id: number) => {
         if (!token) return;
         await approvalApi.reject(token, id);
         await fetchRequests();
+        window.dispatchEvent(new Event("approvals:updated"));
     };
 
     return { requests, loading, error, approve, reject, refetch: fetchRequests };
@@ -57,7 +59,11 @@ export function usePendingCount() {
     useEffect(() => {
         fetchCount();
         const id = setInterval(fetchCount, 30_000);
-        return () => clearInterval(id);
+        window.addEventListener("approvals:updated", fetchCount);
+        return () => {
+            clearInterval(id);
+            window.removeEventListener("approvals:updated", fetchCount);
+        };
     }, [fetchCount]);
 
     return count;
