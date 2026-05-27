@@ -14,17 +14,19 @@ export class ChatService {
         message: string,
         sessionId: string = "default",
         ctx: UserContext,
+        onChunk: (delta: string) => void,
     ) {
         const key     = this.buildSessionKey(ctx.staffId, sessionId);
         const history = this.sessions.get(key) ?? [];
 
         const conn = await getConnection();
         try {
-            const { reply, history: newHistory } = await chat(
+            const { reply, history: newHistory, assignmentRequested } = await chat(
                 conn,
                 message,
                 history,
-                ctx
+                ctx,
+                onChunk,
             );
 
             // tool ロールが先頭に残らないよう、最初の user メッセージから始める
@@ -32,7 +34,7 @@ export class ChatService {
             const firstUserIdx = trimmed.findIndex(m => m.role === "user");
             this.sessions.set(key, firstUserIdx > 0 ? trimmed.slice(firstUserIdx) : trimmed);
 
-            return { reply, session_id: sessionId };
+            return { reply, session_id: sessionId, assignment_requested: assignmentRequested };
         } finally {
             await conn.end();
         }

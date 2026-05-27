@@ -26,20 +26,25 @@ export class ChatController {
             return;
         }
 
+        res.setHeader("Content-Type", "text/event-stream");
+        res.setHeader("Cache-Control", "no-cache");
+        res.setHeader("Connection", "keep-alive");
+        res.setHeader("X-Accel-Buffering", "no");
+        res.flushHeaders();
+
         try {
             const result = await this.chatService.sendMessage(
                 parsed.data.message,
                 parsed.data.session_id,
-                {
-                    staffId: user.staff_id,
-                    name:    user.name,
-                    role:    user.role,
-                }
+                { staffId: user.staff_id, name: user.name, role: user.role },
+                (delta) => res.write(`data: ${JSON.stringify({ delta })}\n\n`),
             );
-            res.json(result);
+            res.write(`data: ${JSON.stringify({ done: true, session_id: result.session_id, assignment_requested: result.assignment_requested })}\n\n`);
+            res.end();
         } catch (err: any) {
             console.error(`[ChatController][${user.name}]`, err);
-            res.status(500).json({ error: err.message ?? "エラーが発生しました" });
+            res.write(`data: ${JSON.stringify({ error: err.message ?? "エラーが発生しました" })}\n\n`);
+            res.end();
         }
     };
 

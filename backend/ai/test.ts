@@ -28,7 +28,7 @@ async function main() {
             console.log(`\n 【質問】${question}`);
             console.log("ー".repeat(60));
 
-            const { reply, history: next } = await chat(conn, question, history, TEST_CTX);
+            const { reply, history: next } = await chat(conn, question, history, TEST_CTX, (delta) => process.stdout.write(delta));
             history = next;
 
             console.log(`【回答】\n${reply}`);

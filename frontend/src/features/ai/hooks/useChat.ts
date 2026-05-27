@@ -27,26 +27,40 @@ export function useChat() {
             role:      "user",
             content,
             timestamp: new Date(),
-        }
-        setMessages((prev) => [...prev, userMsg]);
+        };
+
+        const aiMsgId = crypto.randomUUID();
+        const placeholderMsg: Message = {
+            id:        aiMsgId,
+            role:      "assistant",
+            content:   "",
+            timestamp: new Date(),
+        };
+
+        setMessages((prev) => [...prev, userMsg, placeholderMsg]);
         setIsLoading(true);
 
         try {
-            const res = await sendChatMessage(content, sessionIdRef.current, token);
+            const res = await sendChatMessage(
+                content,
+                sessionIdRef.current,
+                token,
+                (delta) => {
+                    setMessages((prev) =>
+                        prev.map((m) => m.id === aiMsgId ? { ...m, content: m.content + delta } : m)
+                    );
+                },
+            );
 
             sessionIdRef.current = res.session_id;
 
-            const aiMsg: Message = {
-                id:        crypto.randomUUID(),
-                role:      "assistant",
-                content:   res.reply,
-                timestamp: new Date(),
-            };
-            setMessages((prev) => [...prev, aiMsg]);
+            if (res.assignment_requested) {
+                window.dispatchEvent(new Event("approvals:updated"));
+            }
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : "エラーが発生しました";
             setError(message);
-            setMessages((prev) => prev.filter((m) => m.id !== userMsg.id));
+            setMessages((prev) => prev.filter((m) => m.id !== userMsg.id && m.id !== aiMsgId));
         } finally {
             setIsLoading(false);
         }
