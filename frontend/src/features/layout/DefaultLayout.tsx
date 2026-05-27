@@ -25,8 +25,7 @@ export default function DefaultLayout() {
 
         {/* ナビゲーション */}
         <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
-          <NavLink to="/messages"    className={navItem}>チャット</NavLink>
-          <NavLink to="/jobs"        className={navItem}>ジョブ一覧</NavLink>
+          <NavLink to="/jobs"         className={navItem}>ジョブ一覧</NavLink>
           <NavLink to="/staff-skills" className={navItem}>スキル管理</NavLink>
 
           {isSupervisor && (
@@ -40,16 +39,22 @@ export default function DefaultLayout() {
             </NavLink>
           )}
 
-          {/* その他ページ */}
+          {/* 会社・ユーザー管理 */}
           <div className="pt-3 mt-3 border-t space-y-0.5">
-            <p className="px-3 pb-1 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">その他</p>
+            <p className="px-3 pb-1 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">管理</p>
             <NavLink to="/register"      className={navItem}>会社登録</NavLink>
             <NavLink to="/list"          className={navItem}>会社一覧</NavLink>
             <NavLink to="/user-register" className={navItem}>ユーザー登録</NavLink>
             <NavLink to="/item-register" className={navItem}>商品登録</NavLink>
+          </div>
+
+          {/* その他 */}
+          <div className="pt-3 mt-3 border-t space-y-0.5">
+            <p className="px-3 pb-1 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">その他</p>
+            <NavLink to="/messages"      className={navItem}>チャット</NavLink>
             <NavLink to="/uploads"       className={navItem}>ファイルアップロード</NavLink>
-            <NavLink to="/upload-blob"   className={navItem}>テキスト Blob</NavLink>
-            <NavLink to="/picture-blob"  className={navItem}>画像 Blob</NavLink>
+            <NavLink to="/upload-blob"   className={navItem}>テキストBlobアップロード</NavLink>
+            <NavLink to="/picture-blob"  className={navItem}>画像Blobアップロード</NavLink>
           </div>
         </nav>
 
