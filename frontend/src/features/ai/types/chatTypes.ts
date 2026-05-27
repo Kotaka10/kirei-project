@@ -20,8 +20,9 @@ export type ChatRequest = z.infer<typeof ChatRequestSchema>;
 
 // APIレスポンス
 export const ChatResponseSchema = z.object({
-    reply:       z.string(),
-    session_id:  z.string(),
+    reply:                z.string(),
+    session_id:           z.string(),
+    assignment_requested: z.boolean().optional(),
 });
 export type ChatResponse = z.infer<typeof ChatResponseSchema>;
 
