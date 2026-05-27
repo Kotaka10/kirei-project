@@ -1,12 +1,11 @@
+import { useState } from "react";
 import useChat from "./hooks/useChat";
+import useOneSignal from "../../one-signal/hooks/useOneSignal";
 
 export default function Chat() {
-    const {
-        payload,
-        setPayload,
-        messageInfo,
-        handleSubmit,
-    } = useChat();
+    const { payload, setPayload, messageInfo, handleSubmit } = useChat();
+    const { status, handleEnableNotifications } = useOneSignal();
+    const [notifUserId, setNotifUserId] = useState("");
 
     return (
         <div className="mx-auto mt-10 max-w-xl rounded-2xl border p-6 shadow">
@@ -35,7 +34,7 @@ export default function Chat() {
                     type="text"
                     placeholder="名前"
                     value={payload.userName}
-                    onChange={(e) => setPayload((prev) => ({ ...prev, userName: e.target.value}))}
+                    onChange={(e) => setPayload((prev) => ({ ...prev, userName: e.target.value }))}
                     className="w-full rounded-lg border px-3 py-2"
                 />
                 <div className="flex gap-2">
@@ -68,6 +67,31 @@ export default function Chat() {
                     送信
                 </button>
             </form>
+
+            {/* 通知設定 */}
+            <div className="mt-6 pt-4 border-t">
+                <p className="text-sm font-semibold text-gray-600 mb-2">通知設定</p>
+                <div className="flex gap-2">
+                    <input
+                        type="text"
+                        value={notifUserId}
+                        onChange={(e) => setNotifUserId(e.target.value)}
+                        placeholder="ユーザーID（例: 1）"
+                        className="flex-1 rounded-lg border px-3 py-2 text-sm"
+                    />
+                    <button
+                        type="button"
+                        onClick={() => handleEnableNotifications(notifUserId.trim())}
+                        disabled={!notifUserId.trim()}
+                        className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm disabled:opacity-50"
+                    >
+                        通知を有効化
+                    </button>
+                </div>
+                {status !== "未実行" && (
+                    <p className="mt-2 text-xs text-gray-500 whitespace-pre-wrap">{status}</p>
+                )}
+            </div>
         </div>
-    )
+    );
 }
