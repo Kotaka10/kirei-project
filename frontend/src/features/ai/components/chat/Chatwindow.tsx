@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useChat } from "../../hooks/useChat";
 import { MessageBubble } from "./MessageBubble";
 import { TypingIndicator } from "./TypingIndicator";
@@ -11,13 +11,34 @@ interface Props {
 
 export function ChatWindow({ onClose }: Props) {
     const { messages, isLoading, error, sendMessage, clearHistory } = useChat();
-    const bottomRef = useRef<HTMLDivElement>(null); // div要素を参照するref <div ref={bottomRef}></div> → bottomRef.currentに実際のDOM要素を入れてくれる
+    const bottomRef          = useRef<HTMLDivElement>(null);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const shouldAutoScrollRef = useRef(true); // ユーザーが上にスクロールしたら false になる
 
+    // スクロール位置を監視してフラグを更新
+    const handleScroll = () => {
+        const el = scrollContainerRef.current;
+        if (!el) return;
+        const { scrollTop, scrollHeight, clientHeight } = el;
+        shouldAutoScrollRef.current = scrollHeight - scrollTop - clientHeight < 8;
+    };
+
+    // メッセージ追加・更新時、フラグが true のときだけ自動スクロール
     useEffect(() => {
-        bottomRef.current?.scrollIntoView({ behavior: "smooth"}); // scrollIntoView → その要素が見える位置までスクロール behavnior: "smooth"によってぬるっとスクロール
-    }, [messages, isLoading]);
+        if (shouldAutoScrollRef.current) {
+            bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [messages]);
+
+    // メッセージ送信時は常に最下部へ（スクロール位置をリセット）
+    const handleSend = useCallback((content: string) => {
+        shouldAutoScrollRef.current = true;
+        sendMessage(content);
+    }, [sendMessage]);
 
     const isEmpty = messages.length === 0;
+    const lastMsg = messages.at(-1);
+    const showTyping = isLoading && (!lastMsg || lastMsg.content === "");
 
     return (
         <div className="
@@ -69,7 +90,7 @@ export function ChatWindow({ onClose }: Props) {
             </div>
 
             {/* メッセージ一覧 */}
-            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+            <div ref={scrollContainerRef} onScroll={handleScroll} className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
                 {isEmpty ? (
                     <div className="flex flex-col items-center justify-center h-full text-center gap-3">
                         <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center">
@@ -83,13 +104,13 @@ export function ChatWindow({ onClose }: Props) {
                         </div>
                     </div>
                 ) : (
-                    messages.map((msg) => (
-                        <MessageBubble key={msg.id} message={msg} />
-                    ))
+                    messages.map((msg) =>
+                        msg.content ? <MessageBubble key={msg.id} message={msg} /> : null
+                    )
                 )}
 
-                {/* ローディング */}
-                {isLoading && <TypingIndicator />}
+                {/* ローディング：最初のチャンク到達前のみ表示 */}
+                {showTyping && <TypingIndicator />}
 
                 {/* エラー表示 */}
                 {error && (
@@ -105,11 +126,11 @@ export function ChatWindow({ onClose }: Props) {
 
             {/* サジェスト（初回のみ表示）*/}
             {isEmpty && (
-                <SuggestedQuestions onSelect={(q) => sendMessage(q)} />
+                <SuggestedQuestions onSelect={handleSend} />
             )}
 
             {/* 入力フォーム */}
-            <ChatInput onSend={sendMessage} isLoading={isLoading} />
+            <ChatInput onSend={handleSend} isLoading={isLoading} />
         </div>
     )
 }
