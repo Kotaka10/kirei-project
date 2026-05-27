@@ -7,6 +7,19 @@ const contractStatusOptions = [
     { value: "cancelled", label: "解約" },
 ] as const;
 
+const fieldCls = "flex flex-col gap-1";
+const labelCls = "text-xs font-semibold text-gray-500 uppercase tracking-wide";
+const inputCls = "w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-colors";
+
+function SectionLabel({ children }: { children: string }) {
+    return (
+        <div className="flex items-center gap-3 pt-1">
+            <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{children}</span>
+            <div className="h-px flex-1 bg-gray-100" />
+        </div>
+    );
+}
+
 export default function CompanyRegister() {
     const {
         form,
@@ -19,146 +32,115 @@ export default function CompanyRegister() {
     } = useRegisterForm();
 
     return (
-        <div className="mb-8">
-            <div className="bg-sky-100 m-auto max-w-lg border rounded-2xl pb-8 my-8">
-            <h1 className="text-3xl text-center text-black p-6">会社登録</h1>
-                <div className="bg-white m-auto max-w-md border rounded-2xl p-4">
-                    <form className="flex flex-col items-center gap-4">
-                        <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">会社名</label>
-                            <input
-                                type="text"
-                                name="companyName"
-                                value={form.companyName}
-                                onChange={handleChange}
-                                className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
-                            />
-                        </div>
-                        <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <label htmlFor="zipcode" className="mb-2 text-sm font-medium text-gray-700">郵便番号</label>
-                            <input
-                                type="text"
-                                name="zipcode"
-                                value={form.zipcode}
-                                onChange={handleChange}
-                                placeholder="0123456"
-                                className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
-                            />
-                        </div>
-                        <button
-                            type="submit"
-                            onClick={handleFetchAddress}
-                            className="rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-sm text-sky-700 hover:bg-sky-100"
-                        >
-                            住所自動入力
-                        </button>
-                        {msg && <p className="text-red-500">{msg}</p>}
-                        <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <label htmlFor="prefecture" className="mb-2 text-sm font-medium text-gray-700">都道府県</label>
-                            <select
-                                name="prefecture"
-                                onChange={handleChange}
-                                className="max-w-24 bg-gray-100"
+        <div className="bg-gray-50 min-h-screen p-6">
+            <div className="max-w-xl mx-auto">
+                <h1 className="text-xl font-bold text-gray-800 pl-3 border-l-4 border-blue-400 mb-5">
+                    会社登録
+                </h1>
+
+                <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-4">
+
+                    <div className={fieldCls}>
+                        <label className={labelCls}>会社名</label>
+                        <input type="text" name="companyName" value={form.companyName} onChange={handleChange} className={inputCls} />
+                    </div>
+
+                    <SectionLabel>住所</SectionLabel>
+
+                    <div className={fieldCls}>
+                        <label className={labelCls}>郵便番号</label>
+                        <div className="flex gap-2">
+                            <input type="text" name="zipcode" value={form.zipcode} onChange={handleChange} placeholder="例：1234567" className={inputCls} />
+                            <button
+                                type="button"
+                                onClick={handleFetchAddress}
+                                className="flex-shrink-0 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 whitespace-nowrap transition-colors"
                             >
-                                {PREFECTURES.map((pref) => (
-                                    <option key={pref} value={pref}>
-                                        {pref}
-                                    </option>
-                                ))}
-                            </select>
+                                住所自動入力
+                            </button>
                         </div>
-                        <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <label htmlFor="city" className="mb-2 text-sm font-medium text-gray-700">市区町村</label>
+                        {msg && <p className="text-xs text-red-500">{msg}</p>}
+                    </div>
+
+                    <div className={fieldCls}>
+                        <label className={labelCls}>都道府県</label>
+                        <select name="prefecture" onChange={handleChange} className={inputCls}>
+                            {PREFECTURES.map((pref) => (
+                                <option key={pref} value={pref}>{pref}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className={fieldCls}>
+                        <label className={labelCls}>市区町村</label>
+                        <input type="text" name="city" value={form.city} onChange={handleChange} className={inputCls} />
+                    </div>
+
+                    <div className={fieldCls}>
+                        <label className={labelCls}>丁目・番地・号</label>
+                        <input type="text" name="otherAddress" value={form.otherAddress} onChange={handleChange} className={inputCls} />
+                    </div>
+
+                    <div className={fieldCls}>
+                        <label className={labelCls}>建物名・部屋番号（任意）</label>
+                        <input type="text" name="buildingName" value={form.buildingName} onChange={handleChange} className={inputCls} />
+                    </div>
+
+                    <SectionLabel>連絡先</SectionLabel>
+
+                    <div className={fieldCls}>
+                        <label className={labelCls}>電話番号</label>
+                        <input type="text" name="phoneNumber" value={form.phoneNumber} onChange={handleChange} placeholder="例：0312345678" className={inputCls} />
+                    </div>
+
+                    {form.emails.map((email, index) => (
+                        <div key={index} className={fieldCls}>
+                            <label className={labelCls}>
+                                メールアドレス{index > 0 ? `（${index + 1}件目）` : ""}
+                            </label>
                             <input
                                 type="text"
-                                name="city"
-                                value={form.city}
-                                onChange={handleChange}
-                                className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
+                                name="email"
+                                value={email}
+                                onChange={(e) => handleChangeEmail(index, e.target.value)}
+                                className={inputCls}
                             />
                         </div>
-                        <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <label htmlFor="otherAddress" className="mb-2 text-sm font-medium text-gray-700">その他の住所</label>
-                            <input
-                                type="text"
-                                name="otherAddress"
-                                value={form.otherAddress}
-                                onChange={handleChange}
-                                className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
-                            />
+                    ))}
+
+                    <button
+                        type="button"
+                        onClick={handleAddEmail}
+                        className="flex items-center gap-1.5 text-sm font-medium text-blue-500 hover:text-blue-700 transition-colors"
+                    >
+                        ＋ メールアドレスを追加
+                    </button>
+
+                    <SectionLabel>契約情報</SectionLabel>
+
+                    <div className={fieldCls}>
+                        <label className={labelCls}>契約日</label>
+                        <input type="date" name="contractDate" value={form.contractDate ?? ""} onChange={handleChange} className={inputCls} />
+                    </div>
+
+                    {form.status === "cancelled" && (
+                        <div className={fieldCls}>
+                            <label className={labelCls}>解約日</label>
+                            <input type="date" name="cancellationDate" value={form.cancellationDate} onChange={handleChange} className={inputCls} />
                         </div>
-                        <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <label htmlFor="buildingName" className="mb-2 text-sm font-medium text-gray-700">アパートマンション名</label>
-                            <input
-                                type="text"
-                                name="buildingName"
-                                value={form.buildingName}
-                                onChange={handleChange}
-                                className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
-                            />
-                        </div>
-                        <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <label htmlFor="phoneNumber" className="mb-2 text-sm font-medium text-gray-700">電話番号</label>
-                            <input
-                                type="text"
-                                name="phoneNumber"
-                                value={form.phoneNumber}
-                                onChange={handleChange}
-                                className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
-                            />
-                        </div>
-                        {form.emails.map((email, index) => (
-                            <div
-                                key={index}
-                                className="flex flex-col w-64 sm:w-72 md:w-96"
-                            >
-                                <label htmlFor="email" className="mb-2 text-sm font-medium text-gray-700">メールアドレス</label>
-                                <input
-                                    type="text"
-                                    name="email"
-                                    value={email}
-                                    onChange={(e) => handleChangeEmail(index, e.target.value)}
-                                    className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
-                                />
-                            </div>
-                        ))}
-                        <button
-                            type="submit"
-                            onClick={handleAddEmail}
-                            className="rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-sm text-sky-700 hover:bg-sky-100"
-                        >
-                            ＋メールアドレスを追加
-                        </button>
-                        <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                            <label htmlFor="contractDate" className="mb-2 text-sm font-medium text-gray-700">契約日</label>
-                            <input
-                                type="date"
-                                name="contractDate"
-                                value={form.contractDate ?? ""}
-                                onChange={handleChange}
-                                className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
-                            />
-                        </div>
-                        {form.status === "cancelled" && (
-                            <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                                <label htmlFor="cancellationDate" className="mb-2 text-sm font-medium text-gray-700">解約日</label>
-                                <input
-                                    type="date"
-                                    name="cancellationDate"
-                                    value={form.cancellationDate}
-                                    onChange={handleChange}
-                                    className="bg-white p-2 ring-1 ring-gray-300 rounded-md"
-                                />
-                            </div>
-                        )}
-                        <div className="text-left self-start mt-2">
-                            <label htmlFor="status" className="mb-2 ml-4 text-sm font-medium text-gray-700">契約状態</label>
-                        </div>
-                        <div className="mb-4">
+                    )}
+
+                    <div className={fieldCls}>
+                        <label className={labelCls}>契約状態</label>
+                        <div className="flex gap-2">
                             {contractStatusOptions.map((option) => (
                                 <label
                                     key={option.value}
-                                    className="text-black mx-2"
+                                    className={`flex items-center gap-1.5 rounded-lg border px-3 py-2 text-sm cursor-pointer transition-colors ${
+                                        form.status === option.value
+                                            ? "border-blue-300 bg-blue-50 text-blue-700 font-medium"
+                                            : "border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50"
+                                    }`}
                                 >
                                     <input
                                         type="radio"
@@ -166,18 +148,21 @@ export default function CompanyRegister() {
                                         value={option.value}
                                         checked={form.status === option.value}
                                         onChange={handleChange}
+                                        className="sr-only"
                                     />
                                     {option.label}
                                 </label>
                             ))}
                         </div>
-                        <button
-                            onClick={handleAddCompany}
-                            className="w-full rounded-lg text-white hover:bg-slate-800 bg-blue-500 px-4 py-3"
-                        >
-                            登録
-                        </button>
-                    </form>
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={handleAddCompany}
+                        className="w-full rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 transition-colors mt-2"
+                    >
+                        登録する
+                    </button>
                 </div>
             </div>
         </div>

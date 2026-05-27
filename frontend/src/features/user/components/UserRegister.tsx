@@ -1,5 +1,18 @@
 import { Link } from "react-router-dom";
-import useUserRegister from "./hooks/useUserRegister"
+import useUserRegister from "./hooks/useUserRegister";
+
+const fieldCls = "flex flex-col gap-1";
+const labelCls = "text-xs font-semibold text-gray-500 uppercase tracking-wide";
+const inputCls = "w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-colors";
+
+function SectionLabel({ children }: { children: string }) {
+    return (
+        <div className="flex items-center gap-3 pt-1">
+            <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{children}</span>
+            <div className="h-px flex-1 bg-gray-100" />
+        </div>
+    );
+}
 
 export default function UserRegister() {
     const {
@@ -12,145 +25,102 @@ export default function UserRegister() {
     } = useUserRegister();
 
     return (
-        <>
-            <form onSubmit={handleRegister} className="bg-slate-100 p-8 m-auto rounded-xl">
-            <h1 className="text-3xl text-center pb-6">ユーザー登録</h1>
-                <div className="bg-white p-4 rounded-xl max-w-md mx-auto flex flex-col items-center justify-center gap-8">
-                    <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">名前</label>
-                        <input
-                            type="text"
-                            name="name"
-                            value={form.name}
-                            onChange={handleChange}
-                            placeholder="お客様名"
-                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
-                        />
+        <div className="bg-gray-50 min-h-screen p-6">
+            <div className="max-w-xl mx-auto">
+                <h1 className="text-xl font-bold text-gray-800 pl-3 border-l-4 border-indigo-400 mb-5">
+                    ユーザー登録
+                </h1>
+
+                <form onSubmit={handleRegister} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-4">
+
+                    <div className={fieldCls}>
+                        <label className={labelCls}>氏名</label>
+                        <input type="text" name="name" value={form.name} onChange={handleChange} placeholder="例：山田 太郎" className={inputCls} />
                     </div>
-                    <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">電話番号</label>
-                        <input
-                            type="text"
-                            name="phoneNumber"
-                            value={form.phoneNumber}
-                            onChange={handleChange}
-                            placeholder="電話番号（例：0123456789)"
-                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
-                        />
+
+                    <div className={fieldCls}>
+                        <label className={labelCls}>電話番号</label>
+                        <input type="text" name="phoneNumber" value={form.phoneNumber} onChange={handleChange} placeholder="例：0312345678" className={inputCls} />
                     </div>
-                    <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">郵便番号</label>
-                        <input
-                            type="text"
-                            name="zipcode"
-                            value={form.zipcode}
-                            onChange={handleChange}
-                            placeholder="0123456"
-                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
-                        />
+
+                    <SectionLabel>住所</SectionLabel>
+
+                    <div className={fieldCls}>
+                        <label className={labelCls}>郵便番号</label>
+                        <div className="flex gap-2">
+                            <input type="text" name="zipcode" value={form.zipcode} onChange={handleChange} placeholder="例：1234567" className={inputCls} />
+                            <button
+                                type="button"
+                                onClick={handleFetchAddress}
+                                className="flex-shrink-0 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 whitespace-nowrap transition-colors"
+                            >
+                                住所自動入力
+                            </button>
+                        </div>
                     </div>
-                    <button
-                        type="button"
-                        onClick={handleFetchAddress}
-                        className="bg-gray-50 p-1 ring-1 ring-gray-300"
-                    >
-                        住所自動入力
-                    </button>
-                    <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">都道府県</label>
-                        <input
-                            type="text"
-                            name="prefecture"
-                            value={form.prefecture}
-                            onChange={handleChange}
-                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
-                        />
+
+                    <div className={fieldCls}>
+                        <label className={labelCls}>都道府県</label>
+                        <input type="text" name="prefecture" value={form.prefecture} onChange={handleChange} className={inputCls} />
                     </div>
-                    <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">市区町村</label>
-                        <input
-                            type="text"
-                            name="city"
-                            value={form.city}
-                            onChange={handleChange}
-                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
-                        />
+
+                    <div className={fieldCls}>
+                        <label className={labelCls}>市区町村</label>
+                        <input type="text" name="city" value={form.city} onChange={handleChange} className={inputCls} />
                     </div>
-                    <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">その他のアドレス</label>
-                        <input
-                            type="text"
-                            name="otherAddress"
-                            value={form.otherAddress}
-                            onChange={handleChange}
-                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
-                        />
+
+                    <div className={fieldCls}>
+                        <label className={labelCls}>丁目・番地・号</label>
+                        <input type="text" name="otherAddress" value={form.otherAddress} onChange={handleChange} className={inputCls} />
                     </div>
-                    <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">アパートマンション名</label>
-                        <input
-                            type="text"
-                            name="buildingName"
-                            value={form.buildingName}
-                            onChange={handleChange}
-                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
-                        />
+
+                    <div className={fieldCls}>
+                        <label className={labelCls}>建物名・部屋番号（任意）</label>
+                        <input type="text" name="buildingName" value={form.buildingName} onChange={handleChange} className={inputCls} />
                     </div>
-                    <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">発行日</label>
-                        <input
-                            type="date"
-                            name="publicationDate"
-                            value={form.publicationDate}
-                            onChange={handleChange}
-                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
-                        />
+
+                    <SectionLabel>その他の情報</SectionLabel>
+
+                    <div className="grid grid-cols-2 gap-3">
+                        <div className={fieldCls}>
+                            <label className={labelCls}>発行日</label>
+                            <input type="date" name="publicationDate" value={form.publicationDate} onChange={handleChange} className={inputCls} />
+                        </div>
+                        <div className={fieldCls}>
+                            <label className={labelCls}>有効期限</label>
+                            <input type="date" name="expirationDate" value={form.expirationDate} onChange={handleChange} className={inputCls} />
+                        </div>
                     </div>
-                    <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">有効期限</label>
-                        <input
-                            type="date"
-                            name="expirationDate"
-                            value={form.expirationDate}
-                            onChange={handleChange}
-                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
-                        />
+
+                    <div className={fieldCls}>
+                        <label className={labelCls}>備考</label>
+                        <input type="text" name="notes" value={form.notes} onChange={handleChange} className={inputCls} />
                     </div>
-                    <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">備考欄</label>
-                        <input
-                            type="text"
-                            name="notes"
-                            value={form.notes}
-                            onChange={handleChange}
-                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
-                        />
+
+                    <div className={fieldCls}>
+                        <label className={labelCls}>メモ</label>
+                        <input type="text" name="memo" value={form.memo} onChange={handleChange} className={inputCls} />
                     </div>
-                    <div className="flex flex-col w-64 sm:w-72 md:w-96">
-                        <label htmlFor="companyName" className="mb-2 text-sm font-medium text-gray-700">メモ</label>
-                        <input
-                            type="text"
-                            name="memo"
-                            value={form.memo}
-                            onChange={handleChange}
-                            className="w-full rounded-md ring-1 ring-gray-300 px-3 py-2"
-                        />
-                    </div>
+
                     <button
                         type="submit"
-                        className="w-full rounded-lg bg-slate-900 px-4 py-3 text-white hover:bg-slate-800"
+                        disabled={isLoading}
+                        className="w-full rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 transition-colors disabled:opacity-60 mt-2"
                     >
-                        {isLoading ? "ユーザーを登録中..." : "ユーザーを登録する"}
+                        {isLoading ? "登録中..." : "ユーザーを登録する"}
                     </button>
+
                     {msg && <p className="text-center text-sm text-blue-600">{msg}</p>}
-                    <Link
-                        to="/item-register"
-                        className="text-blue-500 underline hover:text-blue-700"
-                    >
-                        商品登録が済んでない方はこちら
-                    </Link>
-                </div>
-            </form>    
-        </>
-    )
+
+                    <p className="text-center text-xs text-gray-400">
+                        商品が未登録の場合は
+                        <Link to="/item-register" className="text-blue-500 hover:text-blue-700 font-medium ml-1">
+                            商品登録
+                        </Link>
+                        から先に登録できます
+                    </p>
+                </form>
+            </div>
+        </div>
+    );
 }
