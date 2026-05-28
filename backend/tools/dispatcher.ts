@@ -9,6 +9,8 @@ import {
   analyzeSkillGaps,
   suggestTeam,
   requestStaffAssignment,
+  getJobMaterials,
+  recordJobMaterials,
 } from "./handlers.js";
 import type { UserContext } from "../types/auth.js";
 
@@ -34,7 +36,7 @@ export async function dispatchTool(
             case "get_schedule":
                 result = await getSchedule(
                     conn,
-                    args as { date?: string; start_date?: string; end_date?: string; service_type?: string; status?: string },
+                    args as { date?: string; start_date?: string; end_date?: string; service_type?: string; status?: string; staff_name?: string },
                     ctx
                 );
                 break;
@@ -54,6 +56,16 @@ export async function dispatchTool(
                 result = await requestStaffAssignment(
                     conn,
                     args as { date: string; target_staff_name: string; service_type?: string; customer_name?: string; booking_id?: number; note?: string },
+                    ctx
+                );
+                break;
+            case "get_job_materials":
+                result = await getJobMaterials(conn, args as { service_type?: string; booking_id?: number }, ctx);
+                break;
+            case "record_job_materials":
+                result = await recordJobMaterials(
+                    conn,
+                    args as { booking_id: number; materials: { name: string; qty?: number; notes?: string }[] },
                     ctx
                 );
                 break;
