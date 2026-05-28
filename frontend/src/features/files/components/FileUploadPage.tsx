@@ -1,3 +1,4 @@
+import { useState } from "react";
 import useFileUploadPage from "./hooks/useFileUploadPage";
 
 export default function FileUploadPage() {
@@ -8,8 +9,11 @@ export default function FileUploadPage() {
         fetchError,
         isLoading,
         handleFileChange,
+        handleDrop,
         handleUpload
     } = useFileUploadPage();
+
+    const [isDragging, setIsDragging] = useState(false);
 
     return (
         <div className="bg-gray-50 min-h-screen p-6">
@@ -24,15 +28,28 @@ export default function FileUploadPage() {
                         ファイルを選択してアップロード
                     </p>
 
-                    <label className="flex flex-col items-center justify-center gap-2 w-full rounded-xl border-2 border-dashed border-gray-200 py-8 cursor-pointer hover:border-blue-300 hover:bg-blue-50/20 transition-colors">
-                        {selectedFile ? (
+                    <label
+                        className={`flex flex-col items-center justify-center gap-2 w-full rounded-xl border-2 border-dashed py-8 cursor-pointer transition-colors ${
+                            isDragging
+                                ? "border-blue-400 bg-blue-50/40"
+                                : "border-gray-200 hover:border-blue-300 hover:bg-blue-50/20"
+                        }`}
+                        onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                        onDragEnter={(e) => { e.preventDefault(); setIsDragging(true); }}
+                        onDragLeave={() => setIsDragging(false)}
+                        onDrop={(e) => { handleDrop(e); setIsDragging(false); }}
+                    >
+                        {isDragging ? (
+                            <span className="text-sm font-semibold text-blue-500">ここにドロップ</span>
+                        ) : selectedFile ? (
                             <>
                                 <span className="text-sm font-semibold text-blue-600">{selectedFile.name}</span>
-                                <span className="text-xs text-gray-400">クリックして変更</span>
+                                <span className="text-xs text-gray-400">クリックして変更 またはドラッグ&ドロップ</span>
                             </>
                         ) : (
                             <>
                                 <span className="text-sm font-semibold text-gray-600">クリックしてファイルを選択</span>
+                                <span className="text-xs text-gray-400">またはここにドラッグ&ドロップ</span>
                                 <span className="text-xs text-gray-400">画像（jpg・png）・PDF・Excel など</span>
                             </>
                         )}
