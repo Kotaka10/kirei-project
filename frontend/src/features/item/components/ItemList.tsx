@@ -1,6 +1,8 @@
 import useItemList from "./hooks/useItemList";
 import type { ItemInfoTypes } from "../../../../../shared/types/ItemInfoTypes";
 
+const inputCls = "rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-400 transition-colors";
+
 export default function ItemList() {
     const {
         items,
@@ -12,67 +14,83 @@ export default function ItemList() {
     } = useItemList();
 
     return (
-        <>
-            <div className="p-8">
-                <h1 className="text-3xl font-semibold mb-6">商品一覧</h1>
-                <div className="flex gap-3 mb-6">
-                    <form onSubmit={handleFindItem}>
-                        <input
-                            type="text"
-                            value={keyword}
-                            onChange={(e) => setKeyword(e.target.value)}
-                            placeholder="商品名で検索"
-                            className="flex-1 rounded-md ring-1 ring-gray-300 px-3 py-2"
-                        />
-                        <button
-                            type="submit"
-                            className="px-4 py-2 ml-2 rounded-md bg-slate-900 text-white"
-                        >
-                            検索
-                        </button>
-                    </form>
-                </div>
-                <table className="w-full border-collapse">
-                    <thead>
-                        <tr className="border-b bg-gray-50">
-                            <th className="p-3 text-left">商品名</th>
-                            <th className="p-3 text-left">数量</th>
-                            <th className="p-3 text-left">単位</th>
-                            <th className="p-3 text-left">単価</th>
-                            <th className="p-3 text-left">金額</th>
-                            <th className="p-3 text-left">内容</th>
-                            <th className="p-3 text-left">操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {items.map((i: ItemInfoTypes) => (
-                            <tr key={i.id} className="border-b">
-                                <td className="p-3">{i.itemName}</td>
-                                <td className="p-3">{i.quantity}</td>
-                                <td className="p-3">{i.unit}</td>
-                                <td className="p-3">{i.unitPrice}</td>
-                                <td className="p-3">{((Number(i.quantity) || 0) * (Number(i.unitPrice) || 0)).toLocaleString()}</td>
-                                <td className="p-3">{i.description}</td>
-                                <td className="p-3 flex gap-3">
-                                    <button
-                                        onClick={() => handleEdit(i.id)}
-                                        className="text-white ring bg-blue-500 p-1 ring-blue-600 rounded-md"
-                                    >
-                                        編集
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => handleDelete(i.id)}
-                                        className="text-white ring ring-red-700 bg-red-600 rounded-md p-1"
-                                    >
-                                        削除
-                                    </button>
-                                </td>
+        <div className="bg-gray-50 min-h-screen p-6">
+            <div className="max-w-5xl mx-auto">
+                <h1 className="text-xl font-bold text-gray-800 pl-3 border-l-4 border-teal-400 mb-5">
+                    商品一覧
+                </h1>
+
+                <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                    <div className="p-4 border-b border-gray-100">
+                        <form onSubmit={handleFindItem} className="flex gap-2">
+                            <input
+                                type="text"
+                                value={keyword}
+                                onChange={(e) => setKeyword(e.target.value)}
+                                placeholder="商品名で検索"
+                                className={inputCls + " flex-1"}
+                            />
+                            <button
+                                type="submit"
+                                className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+                            >
+                                検索
+                            </button>
+                        </form>
+                    </div>
+
+                    <table className="w-full">
+                        <thead className="bg-gray-50 border-b border-gray-100">
+                            <tr>
+                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">商品名</th>
+                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">数量</th>
+                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">単位</th>
+                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">単価</th>
+                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">金額</th>
+                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">内容</th>
+                                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">操作</th>
                             </tr>
-                        ))}    
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                            {items.map((i: ItemInfoTypes) => (
+                                <tr key={i.id} className="hover:bg-gray-50 transition-colors">
+                                    <td className="px-4 py-3 text-sm text-gray-800">{i.itemName}</td>
+                                    <td className="px-4 py-3 text-sm text-gray-600">{i.quantity}</td>
+                                    <td className="px-4 py-3 text-sm text-gray-600">{i.unit}</td>
+                                    <td className="px-4 py-3 text-sm text-gray-600">{i.unitPrice}</td>
+                                    <td className="px-4 py-3 text-sm text-gray-600">
+                                        {((Number(i.quantity) || 0) * (Number(i.unitPrice) || 0)).toLocaleString()}
+                                    </td>
+                                    <td className="px-4 py-3 text-sm text-gray-600 max-w-xs truncate">{i.description}</td>
+                                    <td className="px-4 py-3">
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => handleEdit(i.id)}
+                                                className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+                                            >
+                                                編集
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleDelete(i.id)}
+                                                className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors"
+                                            >
+                                                削除
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                    {items.length === 0 && (
+                        <div className="p-8 text-center text-sm text-gray-400">
+                            該当する商品が見つかりません
+                        </div>
+                    )}
+                </div>
             </div>
-        </>
-    )
+        </div>
+    );
 }
