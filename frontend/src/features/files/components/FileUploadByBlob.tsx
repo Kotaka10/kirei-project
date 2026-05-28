@@ -7,6 +7,7 @@ export default function FileUploadByBlob() {
         result,
         error,
         isValidJson,
+        jsonError,
         handleUpload,
         handleFormat,
     } = useFileUploadByBlob();
@@ -39,6 +40,10 @@ export default function FileUploadByBlob() {
                         className="h-72 w-full rounded-xl border border-gray-200 p-3 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-purple-100 focus:border-purple-400 transition-colors resize-none"
                         placeholder='{"key": "value"}'
                     />
+
+                    {!isValidJson && jsonError && (
+                        <p className="mt-1.5 text-xs text-red-500 font-mono">{jsonError}</p>
+                    )}
 
                     <div className="mt-3 flex gap-2">
                         <button
