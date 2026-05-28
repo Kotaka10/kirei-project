@@ -12,11 +12,11 @@ export default function UploadByBlob() {
     const {
         originalUrl,
         processedUrl,
+        processedBlob,
         handleChange,
         handleUpload,
         result,
-        setSelectedFile,
-        uploadedId
+        uploadedId,
     } = usePictureBlob();
 
     return (
@@ -40,7 +40,7 @@ export default function UploadByBlob() {
                             </>
                         ) : (
                             <>
-                                <span className="text-sm font-semibold text-gray-600">プレビュー用の画像を選択</span>
+                                <span className="text-sm font-semibold text-gray-600">画像を選択</span>
                                 <span className="text-xs text-gray-400">jpg・png・gif など</span>
                             </>
                         )}
@@ -73,19 +73,14 @@ export default function UploadByBlob() {
                         Blob として保存
                     </p>
 
-                    <label className="flex flex-col items-center justify-center gap-1 w-full rounded-xl border-2 border-dashed border-gray-200 py-5 cursor-pointer hover:border-amber-300 hover:bg-amber-50/20 transition-colors mb-4">
-                        <span className="text-sm font-semibold text-gray-600">保存する画像を選択</span>
-                        <span className="text-xs text-gray-400">選択後に「保存」ボタンを押してください</span>
-                        <input
-                            type="file"
-                            onChange={(e) => setSelectedFile(e.target.files?.[0] ?? null)}
-                            className="sr-only"
-                        />
-                    </label>
+                    <p className="text-xs text-gray-400 mb-4">
+                        上で選択した加工後画像をBlobとして保存します
+                    </p>
 
                     <button
                         onClick={handleUpload}
-                        className="w-full rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-amber-600 transition-colors"
+                        disabled={!processedBlob}
+                        className="w-full rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-amber-600 transition-colors disabled:opacity-50"
                     >
                         保存する
                     </button>
