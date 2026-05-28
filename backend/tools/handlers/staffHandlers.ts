@@ -1,5 +1,6 @@
 import { Connection, type RowDataPacket } from "mysql2/promise";
 import type { UserContext } from "../../types/auth.js";
+import { normalizeNameForSearch, stripSpacesExpr } from "./utils.js";
 
 export async function searchStaff(
     conn: Connection,
@@ -10,8 +11,8 @@ export async function searchStaff(
     const conditions: string[] = ["is_active = true"];
 
     if (args.name) {
-        conditions.push("name LIKE ?");
-        params.push(`%${args.name}%`);
+        conditions.push(`${stripSpacesExpr("name")} LIKE ?`);
+        params.push(`%${normalizeNameForSearch(args.name)}%`);
     }
     if (args.role) {
         conditions.push("role = ?");
