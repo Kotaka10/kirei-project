@@ -1,5 +1,6 @@
 import { Connection, type RowDataPacket } from "mysql2/promise";
 import type { UserContext } from "../../types/auth.js";
+import { normalizeNameForSearch, stripSpacesExpr } from "./utils.js";
 
 export async function checkStaffAvailability(
     conn: Connection,
@@ -15,8 +16,8 @@ export async function checkStaffAvailability(
     const conditions: string[] = ["sc.date = ?", "s.is_active = true"];
 
     if (args.staff_name) {
-        conditions.push("s.name LIKE ?");
-        params.push(`%${args.staff_name}%`);
+        conditions.push(`${stripSpacesExpr("s.name")} LIKE ?`);
+        params.push(`%${normalizeNameForSearch(args.staff_name)}%`);
     }
 
     const [slots] = await conn.query<RowDataPacket[]>(
@@ -48,7 +49,7 @@ export async function checkStaffAvailability(
 
 export async function getSchedule(
     conn: Connection,
-    args: { date?: string; start_date?: string; end_date?: string; service_type?: string; status?: string },
+    args: { date?: string; start_date?: string; end_date?: string; service_type?: string; status?: string; staff_name?: string },
     ctx: UserContext
 ): Promise<object> {
     const today = new Date().toISOString().slice(0, 10);
@@ -74,7 +75,10 @@ export async function getSchedule(
         params.push(today);
     }
 
-    if (ctx.role !== "supervisor") {
+    if (args.staff_name) {
+        conditions.push(`${stripSpacesExpr("s.name")} LIKE ?`);
+        params.push(`%${normalizeNameForSearch(args.staff_name)}%`);
+    } else if (ctx.role !== "supervisor") {
         conditions.push("sc.staff_id = ?");
         params.push(ctx.staffId);
     }
