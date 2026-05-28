@@ -1,51 +1,73 @@
 import { Connection, type RowDataPacket, type ResultSetHeader } from "mysql2/promise";
 import type { UserContext } from "../../types/auth.js";
+import { normalizeNameForSearch, stripSpacesExpr } from "./utils.js";
 
 export async function getCustomerBookings(
     conn: Connection,
     args: { customer_name?: string; customer_id?: number; limit?: number },
-    ctx: UserContext
+    _ctx: UserContext
 ): Promise<object> {
-    const limit = args.limit ?? 5;
-    const params: any[] = [];
+    const limit = args.limit ?? 10;
     const conditions: string[] = [];
+    const params: any[] = [];
 
     if (args.customer_id) {
         conditions.push("c.id = ?");
         params.push(args.customer_id);
     } else if (args.customer_name) {
-        conditions.push("c.name LIKE ?");
-        params.push(`%${args.customer_name}%`);
+        conditions.push(`${stripSpacesExpr("c.name")} LIKE ?`);
+        params.push(`%${normalizeNameForSearch(args.customer_name)}%`);
     } else {
         return { error: "customer_name または customer_id を指定してください" };
     }
 
-    if (ctx.role !== "supervisor") {
-        conditions.push("b.staff_id = ?");
-        params.push(ctx.staffId);
-    }
-
-    const where = conditions.join(" AND ");
-
     const [rows] = await conn.query<RowDataPacket[]>(
         `SELECT
-        c.name        AS customer_name,
-        b.service_type,
-        b.scheduled_at,
-        b.status,
-        b.price,
-        s.name        AS staff_name
+            b.id           AS booking_id,
+            c.name         AS customer_name,
+            b.service_type,
+            b.scheduled_at,
+            b.status,
+            b.price
         FROM bookings b
         JOIN customers c ON b.customer_id = c.id
-        LEFT JOIN staffs s ON b.staff_id = s.id
-        WHERE ${where}
+        WHERE ${conditions.join(" AND ")}
         ORDER BY b.scheduled_at DESC
         LIMIT ?`,
         [...params, limit]
     );
 
     if (rows.length === 0) return { message: "該当する予約履歴が見つかりませんでした" };
-    return { bookings: rows };
+
+    // schedules 経由で各予約の担当スタッフを全員取得
+    const bookingIds   = rows.map(r => r.booking_id);
+    const placeholders = bookingIds.map(() => "?").join(",");
+
+    const [staffRows] = await conn.query<RowDataPacket[]>(
+        `SELECT sc.booking_id, s.name AS staff_name, s.role
+         FROM schedules sc
+         JOIN staffs s ON sc.staff_id = s.id
+         WHERE sc.booking_id IN (${placeholders}) AND sc.status = 'booked'`,
+        bookingIds
+    );
+
+    const staffByBooking = new Map<number, { name: string; role: string }[]>();
+    for (const sr of staffRows) {
+        if (!staffByBooking.has(sr.booking_id)) staffByBooking.set(sr.booking_id, []);
+        staffByBooking.get(sr.booking_id)!.push({ name: sr.staff_name, role: sr.role });
+    }
+
+    const bookings = rows.map(r => ({
+        booking_id:    r.booking_id,
+        customer_name: r.customer_name,
+        service_type:  r.service_type,
+        scheduled_at:  r.scheduled_at,
+        status:        r.status,
+        price:         r.price,
+        staff_members: staffByBooking.get(r.booking_id) ?? [],
+    }));
+
+    return { customer_name: rows[0]!.customer_name, total: bookings.length, bookings };
 }
 
 export async function requestStaffAssignment(
@@ -62,8 +84,8 @@ export async function requestStaffAssignment(
 ): Promise<object> {
     // 追加対象スタッフを名前で検索
     const [staffRows] = await conn.query<RowDataPacket[]>(
-        `SELECT id, name, role FROM staffs WHERE name LIKE ? AND is_active = true`,
-        [`%${args.target_staff_name}%`]
+        `SELECT id, name, role FROM staffs WHERE ${stripSpacesExpr("name")} LIKE ? AND is_active = true`,
+        [`%${normalizeNameForSearch(args.target_staff_name)}%`]
     );
     if (staffRows.length === 0) {
         return { error: `「${args.target_staff_name}」に該当するスタッフが見つかりませんでした` };
@@ -93,8 +115,8 @@ export async function requestStaffAssignment(
     } else {
         const conditions: string[] = ["DATE(b.scheduled_at) = ?", "b.status != 'cancelled'"];
         const params: any[] = [args.date];
-        if (args.service_type)  { conditions.push("b.service_type LIKE ?"); params.push(`%${args.service_type}%`); }
-        if (args.customer_name) { conditions.push("c.name LIKE ?");         params.push(`%${args.customer_name}%`); }
+        if (args.service_type)  { conditions.push("b.service_type LIKE ?");                             params.push(`%${args.service_type}%`); }
+        if (args.customer_name) { conditions.push(`${stripSpacesExpr("c.name")} LIKE ?`);              params.push(`%${normalizeNameForSearch(args.customer_name)}%`); }
 
         const [rows] = await conn.query<RowDataPacket[]>(
             `SELECT b.id, b.service_type, b.scheduled_at, c.name AS customer_name
