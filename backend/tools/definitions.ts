@@ -34,7 +34,7 @@ export const tools: ChatCompletionTool[] = [
         function: {
             name: "check_staff_availability",
             description:
-                "確認したい日付(YYYY-MM-DD)。「明日」「来週月曜」などの場合はシステムプロンプトの現在日時を基準に変換して渡すこと",
+                "指定した日付に空き（available）のスタッフ一覧を返す。「○日に空いている人は？」「来週月曜に誰が空いてる？」など空き枠の確認に使用する。スケジュール一覧には使わずget_scheduleを使うこと",
             parameters: {
                 type: "object",
                 properties: {
