@@ -15,14 +15,17 @@ export default function useFileUploadByBlob() {
     const [result, setResult] = useState("");
     const [error, setError] = useState("");
 
-    const isValidJson = useMemo(() => {
+    const jsonValidation = useMemo(() => {
         try {
             JSON.parse(jsonText);
-            return true;
-        } catch {
-            return false;
+            return { valid: true, error: null as string | null };
+        } catch (e) {
+            return { valid: false, error: (e as Error).message };
         }
     }, [jsonText]);
+
+    const isValidJson = jsonValidation.valid;
+    const jsonError = jsonValidation.error;
 
     const handleUpload = async () => {
         setError("");
@@ -77,6 +80,7 @@ export default function useFileUploadByBlob() {
         result,
         error,
         isValidJson,
+        jsonError,
         handleUpload,
         handleFormat,
     }
