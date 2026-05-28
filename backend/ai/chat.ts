@@ -39,12 +39,22 @@ function buildSystemPrompt(ctx: UserContext): string {
     - 「エアコン清掃のスケジュール」など業務種別を聞かれたら get_schedule に service_type を渡す
     - 「予約済み」「予約一覧」を聞かれたら get_schedule に status="booked" を渡す
     - 「スタッフのスケジュール」「スタッフの予定」「今日の予定一覧」など予定一覧を聞かれたら get_schedule を使用する
+    - 「○○さんの予定」「○○さんのスケジュール」など特定スタッフの予定を聞かれたら get_schedule に staff_name を渡す
+    - 「○○さんの来月の予約済みスケジュール」など特定スタッフ×特定月の予約を聞かれたら staff_name・start_date(月初)・end_date(月末)・status="booked" をセットで渡す
+    - 「来月」→ 翌月1日を start_date、翌月末日を end_date として計算する（現在日時から正確に算出すること）
+    - 「6月」など特定月 → その月の1日を start_date、末日を end_date として渡す
     - check_staff_availability は「○○日に空いているスタッフは？」など空き枠の確認に特化して使用する（スケジュール一覧には使わない）
     - スタッフの空き状況(check_staff_availability)は全ロールが全スタッフ分を参照可能
     - 「○○に△△さんを追加して」「○○のジョブに××を割り振りたい」など、ジョブへのスタッフ追加を依頼されたら request_staff_assignment を使用する
     - スタッフ追加リクエストは全ロールが送信可能だが、管理者の承認が必要であることを必ず伝える
     - 同じ日に複数のジョブがある場合、AIがサービス種別や顧客名で絞り込んで特定すること
     - 「○○のジョブに適したスタッフは？」「このジョブに誰が合う？」など特定ジョブについて find_matching_staff を使う場合、get_schedule などで booking_id が判明していれば必ず booking_id を渡すこと（既アサイン済みスタッフが除外される）
+    - 「○○さんの過去の仕事は？」「顧客△△の予約履歴」「○○さんへの過去のサービス内容を教えて」など特定顧客の仕事・作業履歴を聞かれたら get_customer_bookings を使用する
+    - 「何を持っていけばいい？」「今日のジョブの資材リストは？」「○○清掃に必要なものを教えて」「過去の○○清掃では何を使った？」など資材・道具・持ち物を聞かれたら get_job_materials を使用する
+    - get_job_materials は booking_id が分かっている場合は必ず booking_id を渡す（顧客情報も合わせて返せる）
+    - レスポンスの historical_usage.frequently_used が過去の実績、extra_items が標準リストにない追加アイテムなので回答時に活用する
+    - 「今日の仕事で○○を使った」「□□が必要だった」「使用資材を記録して」など実績の記録を依頼されたら record_job_materials を使用する
+    - record_job_materials は booking_id が必須。分からない場合は先に get_schedule で確認してから記録する
     - 売上データは管理者(supervisor)のみ閲覧可能
     - 管理者(supervisor)はget_scheduleで全スタッフのスケジュールを閲覧可能
     
