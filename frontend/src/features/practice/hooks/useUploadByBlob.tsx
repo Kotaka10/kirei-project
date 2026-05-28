@@ -4,7 +4,7 @@ import type { UploadByBlobResponse } from "../../types/UploadResponse";
 export default function usePictureBlob() {
     const [originalUrl, setOriginalUrl] = useState("");
     const [processedUrl, setProcessedUrl] = useState("");
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [processedBlob, setProcessedBlob] = useState<Blob | null>(null);
     const [result, setResult] = useState("");
     const [uploadedId, setUploadedId] = useState(0);
 
@@ -14,6 +14,8 @@ export default function usePictureBlob() {
 
         const originalObjectUrl = URL.createObjectURL(file); // ファイルをブラウザで表示できるURLに変換
         setOriginalUrl(originalObjectUrl);
+        setProcessedBlob(null);
+        setProcessedUrl("");
 
         const img = new Image();
         img.src = originalObjectUrl; // JSで画像を扱うためにImageに読み込み
@@ -23,34 +25,34 @@ export default function usePictureBlob() {
             const ctx = canvas.getContext("2d");
             if (!ctx) return;
 
-            const width = 300;
+            // 元画像が300px未満の場合は拡大しない
+            const width = Math.min(300, img.width);
             const scale = width / img.width;
-            const height = img.height * scale; // 幅を300pxに固定して縦横比を維持
+            const height = img.height * scale;
 
             canvas.width = width;
             canvas.height = height;
-
             ctx.drawImage(img, 0, 0, width, height); // 元画像 → リサイズしてcanvasに描く
 
-            const blob = await new Promise<Blob | null>((resolve) => { // blobに変換
+            const blob = await new Promise<Blob | null>((resolve) => {
                 canvas.toBlob(resolve, "image/jpeg", 0.9); // JPEG形式　品質90％
             });
 
             if (!blob) return;
 
-            const processedObjectUrl = URL.createObjectURL(blob);
-            setProcessedUrl(processedObjectUrl);
-        }
+            setProcessedBlob(blob);
+            setProcessedUrl(URL.createObjectURL(blob));
+        };
     };
 
     const handleUpload = async () => {
-        if (!selectedFile) {
-            setResult("ファイルを選択してください");
+        if (!processedBlob) {
+            setResult("先に画像を選択してください");
             return;
         }
 
         const formData = new FormData();
-        formData.append("file", selectedFile);
+        formData.append("file", processedBlob, "processed.jpg");
 
         try {
             const res = await fetch("http://localhost:3000/upload-blob", {
@@ -63,17 +65,17 @@ export default function usePictureBlob() {
             setResult(JSON.stringify(data, null, 2));
         } catch (err) {
             console.error(err);
-            setResult("アップロードアップロードに失敗しました");
+            setResult("アップロードに失敗しました");
         }
-    }
+    };
 
     return {
         originalUrl,
         processedUrl,
+        processedBlob,
         handleChange,
         handleUpload,
         result,
-        setSelectedFile,
-        uploadedId
-    }
+        uploadedId,
+    };
 }
