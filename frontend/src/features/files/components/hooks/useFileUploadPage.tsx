@@ -16,6 +16,12 @@ export default function useFileUploadPage() {
         setSelectedFile(e.target.files[0]);
     }
 
+    const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if (file) setSelectedFile(file);
+    }
+
     const fetchFiles = async () => {
         try {
             const res = await fetch("http://localhost:3000/api/uploads");
@@ -91,6 +97,7 @@ export default function useFileUploadPage() {
         fetchError,
         isLoading,
         handleFileChange,
+        handleDrop,
         handleUpload
     }
 }
