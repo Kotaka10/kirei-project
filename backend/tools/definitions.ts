@@ -52,17 +52,18 @@ export const tools: ChatCompletionTool[] = [
         },
     },
 
-    // スケジュール確認（1日・期間・サービス種別対応）
+    // スケジュール確認（1日・期間・サービス種別・スタッフ名対応）
     {
         type: "function",
         function: {
             name: "get_schedule",
             description:
-                "指定した日・期間・サービス種別の予約・スケジュール一覧を返す。" +
+                "指定した日・期間・サービス種別・スタッフ名の予約・スケジュール一覧を返す。" +
                 "「今日」「明日」「来週月曜」など1日指定は date で渡す。" +
-                "「今月」「今週」など期間指定は start_date と end_date をセットで渡す。" +
+                "「今月」「今週」「来月」「6月」など期間指定は start_date と end_date をセットで渡す。" +
                 "「エアコン清掃のスケジュール」など業務種別で絞る場合は service_type を指定する。" +
-                "「予約済みの予定」を聞く場合は status=booked を指定する。",
+                "「予約済みの予定」を聞く場合は status=booked を指定する。" +
+                "「○○さんの予定」など特定スタッフを指定する場合は staff_name を渡す。",
             parameters: {
                 type: "object",
                 properties: {
@@ -72,7 +73,7 @@ export const tools: ChatCompletionTool[] = [
                     },
                     start_date: {
                         type: "string",
-                        description: "検索開始日（YYYY-MM-DD）。end_date なしで渡すと「この日以降すべて」になる。「今日以降」はここに今日の日付を入れる",
+                        description: "検索開始日（YYYY-MM-DD）。end_date なしで渡すと「この日以降すべて」になる",
                     },
                     end_date: {
                         type: "string",
@@ -86,6 +87,10 @@ export const tools: ChatCompletionTool[] = [
                         type: "string",
                         enum: ["booked", "available"],
                         description: "ステータスで絞り込む。「予約済み」を聞く場合は booked を指定",
+                    },
+                    staff_name: {
+                        type: "string",
+                        description: "特定スタッフ名で絞り込む（部分一致）。「○○さんの予定」など特定スタッフを聞く場合に指定する",
                     },
                 },
                 required: [],
@@ -227,6 +232,68 @@ export const tools: ChatCompletionTool[] = [
                     },
                 },
                 required: ["date", "target_staff_name"],
+            },
+        },
+    },
+
+    // 仕事の持っていくものリスト（標準チェックリスト + 過去実績）
+    {
+        type: "function",
+        function: {
+            name: "get_job_materials",
+            description:
+                "サービス種別またはジョブIDに基づいて、仕事に必要な資材・ツールの持っていくものリストを返す。" +
+                "標準チェックリストに加え、過去の同種ジョブで実際に使用された資材の実績（使用頻度・平均数量）も含む。" +
+                "「○○清掃に何が必要？」「今日のジョブの持ち物は？」「過去の○○清掃では何を使った？」などに使用する。" +
+                "booking_id が分かっている場合は必ず booking_id を渡すと顧客情報も含めて返せる。",
+            parameters: {
+                type: "object",
+                properties: {
+                    service_type: {
+                        type: "string",
+                        description: "サービス種別（例: エアコン清掃、浴室清掃）。部分一致で検索",
+                    },
+                    booking_id: {
+                        type: "number",
+                        description: "ジョブID。get_schedule などで判明している場合に指定すると顧客情報も返す",
+                    },
+                },
+                required: [],
+            },
+        },
+    },
+
+    // 使用資材の記録
+    {
+        type: "function",
+        function: {
+            name: "record_job_materials",
+            description:
+                "ジョブ完了後に実際に使用した資材・道具を記録する。" +
+                "「今日の仕事で○○を使った」「□□が必要だった」など使用実績を報告する際に使用する。" +
+                "記録されたデータは次回の同種ジョブの持ち物提案に活用される。",
+            parameters: {
+                type: "object",
+                properties: {
+                    booking_id: {
+                        type: "number",
+                        description: "記録対象のジョブID。get_schedule などで判明している場合に指定",
+                    },
+                    materials: {
+                        type: "array",
+                        description: "使用した資材のリスト",
+                        items: {
+                            type: "object",
+                            properties: {
+                                name:  { type: "string", description: "資材名" },
+                                qty:   { type: "number", description: "使用数量（省略時1）" },
+                                notes: { type: "string", description: "メモ（省略可）。例: 汚れが激しかったため2本使用" },
+                            },
+                            required: ["name"],
+                        },
+                    },
+                },
+                required: ["booking_id", "materials"],
             },
         },
     },
