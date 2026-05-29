@@ -72,7 +72,7 @@ export default function JobListPage() {
                         </div>
 
                         <p className="text-sm text-gray-500 mb-2">
-                            {job.customer_name} ／{" "}
+                            {job.customer_name}（顧客） ／{" "}
                             {new Date(job.scheduled_at).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}
                             ／ ¥{job.price.toLocaleString()}
                         </p>
