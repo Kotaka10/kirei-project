@@ -92,11 +92,11 @@ export async function getSchedule(
         conditions.push("sc.status = ?");
         params.push(args.status);
         if (args.status === "booked") {
-            conditions.push("b.status = 'scheduled'");
+            conditions.push("b.status != 'cancelled'");
         }
     } else if (args.service_type) {
         conditions.push("sc.status = 'booked'");
-        conditions.push("b.status = 'scheduled'");
+        conditions.push("b.status != 'cancelled'");
     }
 
     const [rows] = await conn.query<RowDataPacket[]>(
