@@ -38,19 +38,29 @@ export default function CompanyList() {
     return (
         <div className="bg-gray-50 min-h-screen p-6">
             <div className="max-w-3xl mx-auto">
-                <h1 className="text-xl font-bold text-gray-800 pl-3 border-l-4 border-blue-400 mb-5">
-                    会社一覧
-                </h1>
+                <div className="flex items-center justify-between mb-6">
+                    <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
+                        <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-100 text-xl shrink-0">🏢</span>
+                        会社一覧
+                    </h1>
+                    <button
+                        onClick={() => navigate("/register")}
+                        className="flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 transition-colors"
+                    >
+                        ＋ 新規登録
+                    </button>
+                </div>
 
                 <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                    <div className="p-4 border-b border-gray-100">
+                    <div className="flex items-center justify-between p-4 border-b border-gray-100">
                         <input
                             type="text"
                             placeholder="会社名で検索..."
                             value={keyword}
                             onChange={(e) => setKeyword(e.target.value)}
-                            className="w-60 rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-colors"
+                            className="w-64 rounded-lg border border-gray-200 px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-colors"
                         />
+                        <span className="text-sm text-gray-400">{filteredCompanies.length} 件</span>
                     </div>
 
                     <table className="w-full text-sm">

@@ -15,14 +15,15 @@ export default function FileUploadByBlob() {
     return (
         <div className="bg-gray-50 min-h-screen p-6">
             <div className="max-w-3xl mx-auto">
-                <h1 className="text-xl font-bold text-gray-800 pl-3 border-l-4 border-purple-400 mb-5">
+                <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-3 mb-6">
+                    <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-purple-100 text-xl shrink-0">📝</span>
                     テキストBlobアップロード
                 </h1>
 
                 <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
                     {/* ラベル + JSON状態バッジ */}
                     <div className="flex items-center justify-between mb-2">
-                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                        <p className="text-sm font-medium text-gray-600">
                             JSONを入力
                         </p>
                         <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
@@ -48,16 +49,16 @@ export default function FileUploadByBlob() {
                     <div className="mt-3 flex gap-2">
                         <button
                             onClick={handleFormat}
-                            className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                            className="rounded-lg border border-gray-200 px-4 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 transition-colors"
                         >
                             整形
                         </button>
                         <button
                             onClick={handleUpload}
                             disabled={!isValidJson}
-                            className="rounded-lg bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-700 transition-colors disabled:opacity-50"
+                            className="rounded-lg bg-purple-600 px-4 py-3 text-base font-semibold text-white hover:bg-purple-700 transition-colors disabled:opacity-50"
                         >
-                            Blob として送信
+                            Blob として送信 →
                         </button>
                     </div>
 
@@ -69,7 +70,7 @@ export default function FileUploadByBlob() {
 
                     {result && (
                         <>
-                            <p className="mt-5 text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                            <p className="mt-5 text-sm font-medium text-gray-600 mb-2">
                                 レスポンス
                             </p>
                             <pre className="overflow-auto rounded-xl bg-gray-900 text-gray-100 p-4 text-xs font-mono leading-relaxed">

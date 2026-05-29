@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import useItemRegister from "./hooks/useItemRegister";
 
-const fieldCls = "flex flex-col gap-1";
-const labelCls = "text-xs font-semibold text-gray-500 uppercase tracking-wide";
-const inputCls = "w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-colors";
+const fieldCls = "flex flex-col gap-1.5";
+const labelCls = "text-sm font-medium text-gray-600";
+const inputCls = "w-full rounded-lg border border-gray-200 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-400 transition-colors";
 
 export default function ItemRegister() {
     const {
@@ -21,7 +21,8 @@ export default function ItemRegister() {
     return (
         <div className="bg-gray-50 min-h-screen p-6">
             <div className="max-w-xl mx-auto">
-                <h1 className="text-xl font-bold text-gray-800 pl-3 border-l-4 border-teal-400 mb-5">
+                <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-3 mb-6">
+                    <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-teal-100 text-xl shrink-0">📦</span>
                     商品登録
                 </h1>
 
@@ -39,7 +40,7 @@ export default function ItemRegister() {
                             value={form.description}
                             onChange={handleChange}
                             rows={3}
-                            className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-colors resize-none"
+                            className="w-full rounded-lg border border-gray-200 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-400 transition-colors resize-none"
                         />
                     </div>
 
@@ -82,9 +83,9 @@ export default function ItemRegister() {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full rounded-xl bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-700 transition-colors disabled:opacity-60"
+                        className="w-full rounded-xl bg-teal-600 px-4 py-3 text-base font-semibold text-white hover:bg-teal-700 transition-colors disabled:opacity-60"
                     >
-                        {isLoading ? "登録中..." : "商品を登録する"}
+                        {isLoading ? "登録中..." : "商品を登録する →"}
                     </button>
 
                     {msg && <p className="text-center text-sm text-teal-600">{msg}</p>}

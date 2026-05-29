@@ -41,7 +41,7 @@ export default function DefaultLayout() {
 
           {/* 会社・ユーザー管理 */}
           <div className="pt-3 mt-3 border-t space-y-0.5">
-            <p className="px-3 pb-1 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">管理</p>
+            <p className="px-3 pb-1 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">ビジネス</p>
             <NavLink to="/register"      className={navItem}>会社登録</NavLink>
             <NavLink to="/list"          className={navItem}>会社一覧</NavLink>
             <NavLink to="/user-register" className={navItem}>ユーザー登録</NavLink>

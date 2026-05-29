@@ -18,18 +18,19 @@ export default function FileUploadPage() {
     return (
         <div className="bg-gray-50 min-h-screen p-6">
             <div className="max-w-2xl mx-auto">
-                <h1 className="text-xl font-bold text-gray-800 pl-3 border-l-4 border-blue-400 mb-5">
+                <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-3 mb-6">
+                    <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-100 text-xl shrink-0">📁</span>
                     ファイルアップロード
                 </h1>
 
                 {/* アップロードカード */}
                 <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 mb-5">
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                    <p className="text-sm font-medium text-gray-600 mb-3">
                         ファイルを選択してアップロード
                     </p>
 
                     <label
-                        className={`flex flex-col items-center justify-center gap-2 w-full rounded-xl border-2 border-dashed py-8 cursor-pointer transition-colors ${
+                        className={`flex flex-col items-center justify-center gap-2 w-full rounded-xl border-2 border-dashed py-10 cursor-pointer transition-colors ${
                             isDragging
                                 ? "border-blue-400 bg-blue-50/40"
                                 : "border-gray-200 hover:border-blue-300 hover:bg-blue-50/20"
@@ -40,17 +41,22 @@ export default function FileUploadPage() {
                         onDrop={(e) => { handleDrop(e); setIsDragging(false); }}
                     >
                         {isDragging ? (
-                            <span className="text-sm font-semibold text-blue-500">ここにドロップ</span>
+                            <>
+                                <span className="text-3xl">📂</span>
+                                <span className="text-base font-semibold text-blue-500">ここにドロップ</span>
+                            </>
                         ) : selectedFile ? (
                             <>
-                                <span className="text-sm font-semibold text-blue-600">{selectedFile.name}</span>
-                                <span className="text-xs text-gray-400">クリックして変更 またはドラッグ&ドロップ</span>
+                                <span className="text-3xl">📄</span>
+                                <span className="text-base font-semibold text-blue-600">{selectedFile.name}</span>
+                                <span className="text-sm text-gray-400">クリックして変更 またはドラッグ&ドロップ</span>
                             </>
                         ) : (
                             <>
-                                <span className="text-sm font-semibold text-gray-600">クリックしてファイルを選択</span>
-                                <span className="text-xs text-gray-400">またはここにドラッグ&ドロップ</span>
-                                <span className="text-xs text-gray-400">画像（jpg・png）・PDF・Excel など</span>
+                                <span className="text-3xl">📁</span>
+                                <span className="text-base font-semibold text-gray-600">クリックしてファイルを選択</span>
+                                <span className="text-sm text-gray-400">またはここにドラッグ&ドロップ</span>
+                                <span className="text-sm text-gray-400">画像（jpg・png）・PDF・Excel など</span>
                             </>
                         )}
                         <input type="file" onChange={handleFileChange} className="sr-only" />
@@ -59,9 +65,9 @@ export default function FileUploadPage() {
                     <button
                         onClick={handleUpload}
                         disabled={isLoading || !selectedFile}
-                        className="mt-4 w-full rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 transition-colors disabled:opacity-50"
+                        className="mt-4 w-full rounded-xl bg-blue-600 px-4 py-3 text-base font-semibold text-white hover:bg-blue-700 transition-colors disabled:opacity-50"
                     >
-                        {isLoading ? "アップロード中..." : "アップロードする"}
+                        {isLoading ? "アップロード中..." : "アップロードする →"}
                     </button>
 
                     {message && (
@@ -73,7 +79,7 @@ export default function FileUploadPage() {
 
                 {/* 保存済みファイル一覧 */}
                 <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">
+                    <p className="text-sm font-medium text-gray-600 mb-4">
                         保存済みファイル一覧
                     </p>
 

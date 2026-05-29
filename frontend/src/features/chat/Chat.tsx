@@ -3,7 +3,7 @@ import useChat from "./hooks/useChat";
 import useOneSignal from "../../one-signal/hooks/useOneSignal";
 import { useAuth } from "../auth/context/AuthContext";
 
-const inputCls = "w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-colors";
+const inputCls = "w-full rounded-lg border border-gray-200 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-colors";
 
 export default function Chat() {
     const { payload, setPayload, messageInfo, handleSubmit } = useChat();
@@ -15,13 +15,14 @@ export default function Chat() {
     return (
         <div className="bg-gray-50 min-h-screen p-6">
             <div className="max-w-xl mx-auto">
-                <h1 className="text-xl font-bold text-gray-800 pl-3 border-l-4 border-blue-400 mb-5">
+                <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-3 mb-6">
+                    <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-100 text-xl shrink-0">💬</span>
                     チャット
                 </h1>
 
                 {/* 送信フォーム + メッセージ一覧 */}
                 <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 mb-5">
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                    <p className="text-sm font-medium text-gray-600 mb-3">
                         メッセージを送る
                     </p>
 
@@ -58,14 +59,14 @@ export default function Chat() {
                         />
                         <button
                             type="submit"
-                            className="w-full rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 transition-colors"
+                            className="w-full rounded-xl bg-blue-600 px-4 py-3 text-base font-semibold text-white hover:bg-blue-700 transition-colors"
                         >
-                            送信する
+                            送信する →
                         </button>
                     </form>
 
                     <div className="flex items-center gap-3 mt-5 mb-3">
-                        <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">メッセージ一覧</span>
+                        <span className="text-sm font-medium text-gray-400">メッセージ一覧</span>
                         <div className="h-px flex-1 bg-gray-100" />
                     </div>
 
@@ -91,7 +92,7 @@ export default function Chat() {
                 {/* 通知設定（管理者のみ） */}
                 {isSupervisor &&
                     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
-                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                        <p className="text-sm font-medium text-gray-600 mb-3">
                             通知設定
                         </p>
                         <div className="flex gap-2">
@@ -106,7 +107,7 @@ export default function Chat() {
                                 type="button"
                                 onClick={() => handleEnableNotifications(notifUserId.trim())}
                                 disabled={!notifUserId.trim()}
-                                className="flex-shrink-0 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 transition-colors disabled:opacity-50"
+                                className="flex-shrink-0 rounded-lg bg-blue-600 px-4 py-3 text-base font-semibold text-white hover:bg-blue-700 transition-colors disabled:opacity-50"
                             >
                                 通知を有効化
                             </button>

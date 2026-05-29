@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import useUserRegister from "./hooks/useUserRegister";
 
-const fieldCls = "flex flex-col gap-1";
-const labelCls = "text-xs font-semibold text-gray-500 uppercase tracking-wide";
-const inputCls = "w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-colors";
+const fieldCls = "flex flex-col gap-1.5";
+const labelCls = "text-sm font-medium text-gray-600";
+const inputCls = "w-full rounded-lg border border-gray-200 px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-colors";
 
 function SectionLabel({ children }: { children: string }) {
     return (
@@ -27,7 +27,8 @@ export default function UserRegister() {
     return (
         <div className="bg-gray-50 min-h-screen p-6">
             <div className="max-w-xl mx-auto">
-                <h1 className="text-xl font-bold text-gray-800 pl-3 border-l-4 border-indigo-400 mb-5">
+                <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-3 mb-6">
+                    <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-indigo-100 text-xl shrink-0">👤</span>
                     ユーザー登録
                 </h1>
 
@@ -52,7 +53,7 @@ export default function UserRegister() {
                             <button
                                 type="button"
                                 onClick={handleFetchAddress}
-                                className="flex-shrink-0 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 whitespace-nowrap transition-colors"
+                                className="flex-shrink-0 rounded-lg border border-gray-200 px-3 py-3 text-base text-gray-600 hover:bg-gray-50 whitespace-nowrap transition-colors"
                             >
                                 住所自動入力
                             </button>
@@ -105,9 +106,9 @@ export default function UserRegister() {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 transition-colors disabled:opacity-60 mt-2"
+                        className="w-full rounded-xl bg-indigo-600 px-4 py-3 text-base font-semibold text-white hover:bg-indigo-700 transition-colors disabled:opacity-60 mt-2"
                     >
-                        {isLoading ? "登録中..." : "ユーザーを登録する"}
+                        {isLoading ? "登録中..." : "ユーザーを登録する →"}
                     </button>
 
                     {msg && <p className="text-center text-sm text-blue-600">{msg}</p>}
