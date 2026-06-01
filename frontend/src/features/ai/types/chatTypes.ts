@@ -30,6 +30,8 @@ export type ChatResponse = z.infer<typeof ChatResponseSchema>;
 export const SUGGESTED_QUESTIONS = [
     "今月のスケジュールを教えて",
     "今月の売上げと昨対比は？",
-    "エアコン清掃の方法を教えて",
     "明日空いているスタッフは？",
+    "エアコン5台のオフィスで汚れありの概算は？",
+    "新規顧客への営業トークを教えて",
+    "競合がいるときのクロージング方法は？",
 ] as const;
