@@ -13,6 +13,9 @@ import {
   recordJobMaterials,
   estimateVisitPrice,
   getSalesTalkTips,
+  searchKnowhow,
+  saveKnowhow,
+  markKnowhowHelpful,
 } from "./handlers.js";
 import type { UserContext } from "../types/auth.js";
 
@@ -90,6 +93,27 @@ export async function dispatchTool(
                 result = await getSalesTalkTips(
                     conn,
                     args as { service_type?: string; situation?: string; talk_phase?: string },
+                    ctx
+                );
+                break;
+            case "search_knowhow":
+                result = await searchKnowhow(
+                    conn,
+                    args as { keyword?: string; category?: string; difficulty?: "beginner" | "intermediate" | "advanced"; limit?: number },
+                    ctx
+                );
+                break;
+            case "save_knowhow":
+                result = await saveKnowhow(
+                    conn,
+                    args as { title: string; content: string; category?: string; tags?: string; difficulty?: "beginner" | "intermediate" | "advanced" },
+                    ctx
+                );
+                break;
+            case "mark_knowhow_helpful":
+                result = await markKnowhowHelpful(
+                    conn,
+                    args as { id: number },
                     ctx
                 );
                 break;
