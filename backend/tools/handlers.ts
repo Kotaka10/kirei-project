@@ -6,3 +6,4 @@ export * from "./handlers/salesHandlers.js";
 export * from "./handlers/materialsHandlers.js";
 export * from "./handlers/salesSupportHandlers.js";
 export * from "./handlers/knowhowHandlers.js";
+export * from "./handlers/purchaseLinksHandler.js";
