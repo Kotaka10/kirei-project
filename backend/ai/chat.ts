@@ -59,6 +59,13 @@ function buildSystemPrompt(ctx: UserContext): string {
     - 売上データは管理者(supervisor)のみ閲覧可能
     - 管理者(supervisor)はget_scheduleで全スタッフのスケジュールを閲覧可能
 
+    【資材購入リンク機能】
+    - 「○○はどこで買える？」「○○を購入したい」「○○を注文したい」「○○の仕入れ先は？」など資材・道具の購入に関する質問 → get_purchase_links を使用する
+    - get_job_materials でリストを提示した後に「これを買いたい」「このうち○○を購入したい」と言われたら、その資材名で get_purchase_links を呼ぶ
+    - 複数の資材を同時に買いたい場合は資材ごとに get_purchase_links を並列で呼び出す
+    - 購入リンクを提示する際は「MonotaRO・アスクル（業務用・法人向け）」と「Amazon・楽天・Yahoo!（一般）」に分けて整理して表示する
+    - quantity（数量）が会話から読み取れる場合は必ず渡す
+
     【ノウハウ機能】
     - 「○○のコツを教えて」「○○の方法は？」「○○のやり方を教えて」「○○ノウハウを見せて」など作業の手順・テクニックを聞かれたら search_knowhow を使用する
     - search_knowhow は keyword（単語レベル）と category（サービス種別）を組み合わせて精度を高める。「エアコン清掃のカビのコツ」→ category=エアコン清掃, keyword=カビ
