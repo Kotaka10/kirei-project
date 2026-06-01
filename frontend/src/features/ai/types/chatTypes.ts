@@ -6,6 +6,7 @@ export const MessageSchema = z.object({
     role: z.enum(["user", "assistant"]),
     content: z.string().min(1),
     timestamp: z.date(),
+    suggestions: z.array(z.string()).optional(),
 });
 export type Message = z.infer<typeof MessageSchema>;
 
@@ -23,6 +24,7 @@ export const ChatResponseSchema = z.object({
     reply:                z.string(),
     session_id:           z.string(),
     assignment_requested: z.boolean().optional(),
+    suggestions:          z.array(z.string()).optional(),
 });
 export type ChatResponse = z.infer<typeof ChatResponseSchema>;
 
