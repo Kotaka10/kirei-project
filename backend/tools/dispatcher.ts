@@ -16,6 +16,7 @@ import {
   searchKnowhow,
   saveKnowhow,
   markKnowhowHelpful,
+  getPurchaseLinks,
 } from "./handlers.js";
 import type { UserContext } from "../types/auth.js";
 
@@ -114,6 +115,13 @@ export async function dispatchTool(
                 result = await markKnowhowHelpful(
                     conn,
                     args as { id: number },
+                    ctx
+                );
+                break;
+            case "get_purchase_links":
+                result = getPurchaseLinks(
+                    conn,
+                    args as { material_name: string; quantity?: number },
                     ctx
                 );
                 break;
