@@ -483,6 +483,32 @@ export const tools: ChatCompletionTool[] = [
         },
     },
 
+    // 資材購入リンク
+    {
+        type: "function",
+        function: {
+            name: "get_purchase_links",
+            description:
+                "資材・道具の名前をもとに、Amazon・楽天市場・MonotaRO・アスクル・Yahoo!ショッピングの購入検索URLを返す。" +
+                "「○○はどこで買える？」「○○を購入したい」「○○の仕入れ先を教えて」「○○を注文したい」" +
+                "「この資材を買いたい」などの購入・仕入れに関する質問に使用する。",
+            parameters: {
+                type: "object",
+                properties: {
+                    material_name: {
+                        type: "string",
+                        description: "購入したい資材・道具の名前（例: マイクロファイバークロス、ゴム手袋、洗濯槽クリーナー）",
+                    },
+                    quantity: {
+                        type: "number",
+                        description: "購入予定数量（省略可）。回答に「○○個を目安に」と補足するために使用",
+                    },
+                },
+                required: ["material_name"],
+            },
+        },
+    },
+
     // ノウハウ「参考になった」
     {
         type: "function",
