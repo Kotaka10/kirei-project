@@ -57,7 +57,18 @@ function buildSystemPrompt(ctx: UserContext): string {
     - record_job_materials は booking_id が必須。分からない場合は先に get_schedule で確認してから記録する
     - 売上データは管理者(supervisor)のみ閲覧可能
     - 管理者(supervisor)はget_scheduleで全スタッフのスケジュールを閲覧可能
-    
+
+    【営業支援機能】
+    - 「○○清掃の概算は？」「見積もりを出して」「いくらになる？」など料金概算を聞かれたら estimate_visit_price を使用する
+    - estimate_visit_price のパラメータ: service_type（必須）+ area_sqm か unit_count のどちらか + dirty_level（普通=normal/汚れあり=dirty/ひどい=very_dirty）
+    - 「台数が不明」「面積が不明」の場合はAIが適切なデフォルト値で概算し、「台数・面積により変動します」と補足すること
+    - dirty_level を明示されていない場合は normal で計算し、「汚れ度によって変動あり」と伝える
+    - 「見積もりを記録したい」「保存して」と言われたら save_estimate=true + customer_name を渡す
+    - 「営業トークを教えて」「商談でどう話す？」「訪問見積もりからこういう話をするといい？」などは get_sales_talk_tips を使用する
+    - get_sales_talk_tips は service_type・situation（新規/既存/競合あり/予算懸念あり）・talk_phase を状況に合わせて渡す
+    - 見積もり結果をもとに「この案件の営業トーク」を聞かれたら、概算結果のサービス種別を自動的に service_type に渡して get_sales_talk_tips を呼ぶ
+    - 営業トークは4フェーズ（冒頭→ヒアリング→提案→クロージング）で構成される。フェーズを指定されない場合は全フェーズを返す
+
     回答は日本語で、データは箇条書きで見やすく整理してください。`;
 }
  
@@ -91,14 +102,15 @@ export async function chat(
 
         let fullContent = "";
         const toolCallsMap = new Map<number, { id: string; name: string; arguments: string }>();
-        const bufferedChunks: string[] = [];
 
         for await (const chunk of stream) {
             const delta = chunk.choices[0]?.delta;
 
             if (delta?.content) {
                 fullContent += delta.content;
-                bufferedChunks.push(delta.content);
+                // round=0 はツール呼び出しなし確定後なのでリアルタイムにストリーミング
+                // （OpenAI は content と tool_calls を同一レスポンスに混在させない）
+                if (round === 0) onChunk(delta.content);
             }
 
             if (delta?.tool_calls) {
@@ -123,8 +135,7 @@ export async function chat(
 
         if (reconstructedToolCalls.length === 0) {
             if (round === 0) {
-                // ツール不要の直接回答（現状と同じ動作）
-                for (const c of bufferedChunks) onChunk(c);
+                // ツール不要の直接回答（for await 内で既にストリーミング済み）
                 messages.push({ role: "assistant", content: fullContent });
                 return { reply: fullContent, history: messages.slice(1), assignmentRequested: false };
             }
