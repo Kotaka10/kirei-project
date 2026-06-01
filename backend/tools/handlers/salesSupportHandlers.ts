@@ -124,11 +124,11 @@ export async function estimateVisitPrice(
     };
 }
 
-async function getAvailableServices(conn: Connection): Promise<string[]> {
+export async function getAvailableServices(conn: Connection): Promise<string[]> {
     const [rows] = await conn.query<RowDataPacket[]>(
         `SELECT service_type FROM estimate_templates ORDER BY id`
     );
-    return rows.map(r => r.service_type);
+    return rows.map(r => r.service_type as string);
 }
 
 // =============================================
