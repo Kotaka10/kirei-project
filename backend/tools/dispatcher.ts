@@ -11,6 +11,8 @@ import {
   requestStaffAssignment,
   getJobMaterials,
   recordJobMaterials,
+  estimateVisitPrice,
+  getSalesTalkTips,
 } from "./handlers.js";
 import type { UserContext } from "../types/auth.js";
 
@@ -66,6 +68,28 @@ export async function dispatchTool(
                 result = await recordJobMaterials(
                     conn,
                     args as { booking_id: number; materials: { name: string; qty?: number; notes?: string }[] },
+                    ctx
+                );
+                break;
+            case "estimate_visit_price":
+                result = await estimateVisitPrice(
+                    conn,
+                    args as {
+                        service_type: string;
+                        location_type?: string;
+                        area_sqm?: number;
+                        unit_count?: number;
+                        dirty_level?: "normal" | "dirty" | "very_dirty";
+                        customer_name?: string;
+                        save_estimate?: boolean;
+                    },
+                    ctx
+                );
+                break;
+            case "get_sales_talk_tips":
+                result = await getSalesTalkTips(
+                    conn,
+                    args as { service_type?: string; situation?: string; talk_phase?: string },
                     ctx
                 );
                 break;
