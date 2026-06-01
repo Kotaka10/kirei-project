@@ -298,6 +298,86 @@ export const tools: ChatCompletionTool[] = [
         },
     },
 
+    // 訪問見積もり概算
+    {
+        type: "function",
+        function: {
+            name: "estimate_visit_price",
+            description:
+                "現場情報（サービス種別・場所タイプ・面積・台数・汚れ度）をもとに概算料金レンジを算出する。" +
+                "「エアコン10台でいくら？」「オフィスの定期清掃の概算は？」「汚れがひどいキッチンのクリーニング料金を教えて」などに使用。" +
+                "save_estimate=true + customer_name を渡すと見積もり履歴として保存できる。",
+            parameters: {
+                type: "object",
+                properties: {
+                    service_type: {
+                        type: "string",
+                        description: "サービス種別（例: エアコン清掃、ハウスクリーニング、定期清掃）",
+                    },
+                    location_type: {
+                        type: "string",
+                        enum: ["戸建て", "マンション", "オフィス", "店舗"],
+                        description: "現場の種別",
+                    },
+                    area_sqm: {
+                        type: "number",
+                        description: "面積（平米）。床ワックス・定期清掃・キッチン清掃などで使用",
+                    },
+                    unit_count: {
+                        type: "number",
+                        description: "台数・箇所数・部屋数。エアコン清掃・換気扇清掃・窓ガラス・ハウスクリーニングなどで使用",
+                    },
+                    dirty_level: {
+                        type: "string",
+                        enum: ["normal", "dirty", "very_dirty"],
+                        description: "汚れ度。normal=通常 / dirty=汚れあり / very_dirty=ひどい汚れ",
+                    },
+                    customer_name: {
+                        type: "string",
+                        description: "顧客名（save_estimate=true の場合に記録される）",
+                    },
+                    save_estimate: {
+                        type: "boolean",
+                        description: "true にすると見積もり結果を履歴として保存する（customer_name が必要）",
+                    },
+                },
+                required: ["service_type"],
+            },
+        },
+    },
+
+    // 営業トーク提案
+    {
+        type: "function",
+        function: {
+            name: "get_sales_talk_tips",
+            description:
+                "訪問見積もりの状況に応じた営業トーク・商談スクリプトを提案する。" +
+                "「エアコン清掃の営業トークを教えて」「競合他社がいる場合の話し方は？」「予算が気になっているお客様へのクロージングは？」などに使用。" +
+                "フェーズ（冒頭/ヒアリング/提案/クロージング）別に整理されたトークのコツが返ってくる。",
+            parameters: {
+                type: "object",
+                properties: {
+                    service_type: {
+                        type: "string",
+                        description: "サービス種別（例: エアコン清掃）。省略すると全サービス共通のトークが返る",
+                    },
+                    situation: {
+                        type: "string",
+                        enum: ["新規", "既存", "競合あり", "予算懸念あり", "全般"],
+                        description: "商談の状況。省略すると全般のトークが返る",
+                    },
+                    talk_phase: {
+                        type: "string",
+                        enum: ["all", "opening", "discovery", "proposal", "closing"],
+                        description: "取得したいフェーズ。all=全フェーズ（デフォルト）",
+                    },
+                },
+                required: [],
+            },
+        },
+    },
+
     // 売上げ・昨対比
     {
         type: "function",
