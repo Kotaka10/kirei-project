@@ -54,6 +54,12 @@ export function useChat() {
 
             sessionIdRef.current = res.session_id;
 
+            if (res.suggestions && res.suggestions.length > 0) {
+                setMessages((prev) =>
+                    prev.map((m) => m.id === aiMsgId ? { ...m, suggestions: res.suggestions } : m)
+                );
+            }
+
             if (res.assignment_requested) {
                 window.dispatchEvent(new Event("approvals:updated"));
             }

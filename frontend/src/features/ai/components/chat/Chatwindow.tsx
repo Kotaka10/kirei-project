@@ -40,6 +40,12 @@ export function ChatWindow({ onClose }: Props) {
     const lastMsg = messages.at(-1);
     const showTyping = isLoading && (!lastMsg || lastMsg.content === "");
 
+    // 最後のアシスタントメッセージのインデックス（提案ボタン表示制御）
+    const lastAssistantIdx = messages.reduceRight(
+        (acc, msg, idx) => (acc === -1 && msg.role === "assistant" ? idx : acc),
+        -1,
+    );
+
     return (
         <div className="
             flex flex-col w-[360px] h-[560px] bg-gray-50 rounded-2xl shadow-2xl
@@ -104,8 +110,28 @@ export function ChatWindow({ onClose }: Props) {
                         </div>
                     </div>
                 ) : (
-                    messages.map((msg) =>
-                        msg.content ? <MessageBubble key={msg.id} message={msg} /> : null
+                    messages.map((msg, idx) =>
+                        msg.content ? (
+                            <div key={msg.id}>
+                                <MessageBubble message={msg} />
+                                {msg.role === "assistant" &&
+                                 idx === lastAssistantIdx &&
+                                 !isLoading &&
+                                 msg.suggestions && msg.suggestions.length > 0 && (
+                                    <div className="flex flex-wrap gap-1.5 mt-2 ml-10">
+                                        {msg.suggestions.map((s) => (
+                                            <button
+                                                key={s}
+                                                onClick={() => handleSend(s)}
+                                                className="text-[11px] px-3 py-1.5 rounded-full border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 transition-colors duration-150 whitespace-nowrap"
+                                            >
+                                                {s}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ) : null
                     )
                 )}
 

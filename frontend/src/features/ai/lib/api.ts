@@ -52,6 +52,7 @@ export async function sendChatMessage(
                     reply:                accumulated,
                     session_id:           data.session_id,
                     assignment_requested: data.assignment_requested ?? false,
+                    suggestions:          Array.isArray(data.suggestions) ? data.suggestions as string[] : [],
                 };
             } else if (data.error) {
                 throw new Error(data.error);

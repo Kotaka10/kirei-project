@@ -21,7 +21,7 @@ export class ChatService {
 
         const conn = await getConnection();
         try {
-            const { reply, history: newHistory, assignmentRequested } = await chat(
+            const { reply, history: newHistory, assignmentRequested, suggestions } = await chat(
                 conn,
                 message,
                 history,
@@ -34,7 +34,7 @@ export class ChatService {
             const firstUserIdx = trimmed.findIndex(m => m.role === "user");
             this.sessions.set(key, firstUserIdx > 0 ? trimmed.slice(firstUserIdx) : trimmed);
 
-            return { reply, session_id: sessionId, assignment_requested: assignmentRequested };
+            return { reply, session_id: sessionId, assignment_requested: assignmentRequested, suggestions };
         } finally {
             await conn.end();
         }

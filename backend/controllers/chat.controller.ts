@@ -39,7 +39,7 @@ export class ChatController {
                 { staffId: user.staff_id, name: user.name, role: user.role },
                 (delta) => res.write(`data: ${JSON.stringify({ delta })}\n\n`),
             );
-            res.write(`data: ${JSON.stringify({ done: true, session_id: result.session_id, assignment_requested: result.assignment_requested })}\n\n`);
+            res.write(`data: ${JSON.stringify({ done: true, session_id: result.session_id, assignment_requested: result.assignment_requested, suggestions: result.suggestions ?? [] })}\n\n`);
             res.end();
         } catch (err: any) {
             console.error(`[ChatController][${user.name}]`, err);
