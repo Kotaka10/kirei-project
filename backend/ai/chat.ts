@@ -58,6 +58,15 @@ function buildSystemPrompt(ctx: UserContext): string {
     - 売上データは管理者(supervisor)のみ閲覧可能
     - 管理者(supervisor)はget_scheduleで全スタッフのスケジュールを閲覧可能
 
+    【ノウハウ機能】
+    - 「○○のコツを教えて」「○○の方法は？」「○○のやり方を教えて」「○○ノウハウを見せて」など作業の手順・テクニックを聞かれたら search_knowhow を使用する
+    - search_knowhow は keyword（単語レベル）と category（サービス種別）を組み合わせて精度を高める。「エアコン清掃のカビのコツ」→ category=エアコン清掃, keyword=カビ
+    - 「初級向けのノウハウは？」「初心者向けのコツは？」→ difficulty=beginner を指定する
+    - 「このコツを保存して」「ノウハウを記録して」「覚えておいて」「メモしておいて」などを言われたら save_knowhow を使用する
+    - save_knowhow を呼ぶ前にAIがユーザーの言葉を整理して title（簡潔なタイトル）と content（手順・詳細）に構造化すること。ユーザーの口語をそのまま title にしない
+    - 「このノウハウ参考になった」「役に立った」「ありがとう」などでノウハウIDが文脈から分かる場合は mark_knowhow_helpful を使用する
+    - search_knowhow の結果を回答する際は content を箇条書きに整形して見やすく提示する
+
     【営業支援機能】
     - 「○○清掃の概算は？」「見積もりを出して」「いくらになる？」など料金概算を聞かれたら estimate_visit_price を使用する
     - estimate_visit_price のパラメータ: service_type（必須）+ area_sqm か unit_count のどちらか + dirty_level（普通=normal/汚れあり=dirty/ひどい=very_dirty）
