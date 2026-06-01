@@ -3,6 +3,7 @@ import { Connection } from "mysql2/promise";
 import type { ChatCompletionMessageParam } from "openai/resources";
 import { tools } from "../tools/definitions.js";
 import { dispatchTool } from "../tools/dispatcher.js";
+import { getAvailableServices } from "../tools/handlers/salesSupportHandlers.js";
 import type { UserContext } from "../types/auth.js";
 import dotenv from "dotenv";
 dotenv.config();
@@ -78,16 +79,78 @@ function buildSystemPrompt(ctx: UserContext): string {
     - 見積もり結果をもとに「この案件の営業トーク」を聞かれたら、概算結果のサービス種別を自動的に service_type に渡して get_sales_talk_tips を呼ぶ
     - 営業トークは4フェーズ（冒頭→ヒアリング→提案→クロージング）で構成される。フェーズを指定されない場合は全フェーズを返す
 
+    【訪問見積もりフロー】
+    このフローは「現場を見た後にAIに概算を出させる」ための手順である。
+    ─ トリガーワード ─
+    「訪問見積もりしてきた」「現場を見てきた」「下見してきた」「お客様先に行ってきた」
+    「○○さんの現場を確認した」「現場調査してきた」など。
+    ─ フロー手順 ─
+    ① ユーザーが上記トリガーを発した場合、以下の4項目を確認する（まとめて一度に聞く）:
+       - 必要なサービス種別（複数可。例: 浴室清掃・床清掃・レンジフード清掃）
+       - 各サービスの規模（面積の場合は平米数、台数の場合は台数）
+       - 汚れ具合（普通／汚れあり／ひどい汚れ）
+       - お客様名（任意・記録に使用）
+    ② 情報収集中に一部が不明な場合の対応:
+       - 面積・台数が不明 → 一般的な値（床清掃=20平米、エアコン=1台）で仮計算し「実測値で再計算できます」と補足
+       - 汚れ度が不明 → dirty（汚れあり）で計算し「汚れ度によって±20〜30%変動します」と補足
+    ③ 必要情報が揃ったら（または仮値で計算可能な状態になったら）:
+       「では現場情報をもとに概算します」と宣言し、
+       全サービス分の estimate_visit_price を同時に（並列で）呼び出す。
+       ※ サービスが3種類なら3つの estimate_visit_price を一度のレスポンスで呼び出すこと
+    ④ 全サービスの結果が揃ったら、以下の形式で回答する:
+       ・各サービスの概算（min〜max）を箇条書きで列挙
+       ・最後に「合計概算: ○○円〜○○円」を明記
+       ・お客様名がある場合は「記録しますか？」と案内（save_estimate=true + customer_name）
+
     回答は日本語で、データは箇条書きで見やすく整理してください。`;
 }
  
+// 会話の流れから次のアクション候補を 3 件生成する（失敗しても空配列を返す）
+async function generateSuggestions(
+    messages: ChatCompletionMessageParam[],
+    availableServices: string[] = [],
+): Promise<string[]> {
+    const serviceHint = availableServices.length > 0
+        ? `\n【対応サービス一覧】${availableServices.join("、")}\n` +
+          "見積もり・概算・営業トーク関連の会話の場合、まだ触れていない他のサービスの概算や営業トークを積極的に提案に含めること。"
+        : "";
+
+    try {
+        const res = await openai.chat.completions.create({
+            model:       "gpt-4o-mini",
+            messages: [
+                ...messages.slice(-8), // 直近 8 件のみ渡してトークンを節約
+                {
+                    role:    "user",
+                    content: "この会話の流れを踏まえ、ユーザーが次に聞きたいこと・やりたいことを3つ予測して短いボタンラベルで提案してください。" +
+                             serviceHint +
+                             "必ず以下のJSON形式のみで返してください（他のテキスト不要）: {\"suggestions\":[\"提案1\",\"提案2\",\"提案3\"]}。各提案は20文字以内の日本語。",
+                },
+            ],
+            temperature:     0.6,
+            max_tokens:      150,
+            response_format: { type: "json_object" },
+        });
+        const text   = res.choices[0]?.message?.content ?? "{}";
+        const parsed = JSON.parse(text) as { suggestions?: unknown };
+        if (Array.isArray(parsed.suggestions)) {
+            return (parsed.suggestions as unknown[])
+                .filter((s): s is string => typeof s === "string")
+                .slice(0, 3);
+        }
+        return [];
+    } catch {
+        return [];
+    }
+}
+
 export async function chat(
     conn: Connection,
     userMessage: string,
     history: ChatCompletionMessageParam[],
     ctx: UserContext,
     onChunk: (delta: string) => void,
-): Promise<{ reply: string; history: ChatCompletionMessageParam[]; assignmentRequested: boolean }> {
+): Promise<{ reply: string; history: ChatCompletionMessageParam[]; assignmentRequested: boolean; suggestions: string[] }> {
 
     const messages: ChatCompletionMessageParam[] = [
         { role: "system", content: buildSystemPrompt(ctx) },
@@ -96,7 +159,8 @@ export async function chat(
     ];
 
     let assignmentRequested = false;
-    const MAX_TOOL_ROUNDS = 3;
+    let salesToolUsed = false; // estimate_visit_price / get_sales_talk_tips が呼ばれたら true
+    const MAX_TOOL_ROUNDS = 5; // 訪問見積もりフローで複数サービスを並列処理できるよう拡張
 
     // ツール呼び出しループ（チェーン呼び出し対応）
     for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
@@ -146,7 +210,9 @@ export async function chat(
             if (round === 0) {
                 // ツール不要の直接回答（for await 内で既にストリーミング済み）
                 messages.push({ role: "assistant", content: fullContent });
-                return { reply: fullContent, history: messages.slice(1), assignmentRequested: false };
+                const availableServices = salesToolUsed ? await getAvailableServices(conn) : [];
+                const suggestions = await generateSuggestions(messages, availableServices);
+                return { reply: fullContent, history: messages.slice(1), assignmentRequested: false, suggestions };
             }
             // ツール実行後に追加ツール不要 → Step3で最終回答生成
             break;
@@ -164,6 +230,10 @@ export async function chat(
             console.log(`[Tool][${ctx.name}][round${round + 1}] ${name}(${JSON.stringify(args)})`);
 
             const result = await dispatchTool(conn, name, args, ctx);
+
+            if (name === "estimate_visit_price" || name === "get_sales_talk_tips") {
+                salesToolUsed = true;
+            }
 
             if (name === "request_staff_assignment") {
                 try {
@@ -198,5 +268,7 @@ export async function chat(
     }
 
     messages.push({ role: "assistant", content: finalContent } as ChatCompletionMessageParam);
-    return { reply: finalContent, history: messages.slice(1), assignmentRequested };
+    const availableServices = salesToolUsed ? await getAvailableServices(conn) : [];
+    const suggestions = await generateSuggestions(messages, availableServices);
+    return { reply: finalContent, history: messages.slice(1), assignmentRequested, suggestions };
 }
