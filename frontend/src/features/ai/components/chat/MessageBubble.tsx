@@ -3,9 +3,10 @@ import type { Message } from "../../types/chatTypes";
 
 interface Props {
     message: Message;
+    onDocumentClick?: (path: string) => void;
 }
 
-export function MessageBubble({ message }: Props) {
+export function MessageBubble({ message, onDocumentClick }: Props) {
     const isUser = message.role === "user";
 
     const time = message.timestamp.toLocaleTimeString("ja-JP", {
@@ -35,16 +36,29 @@ export function MessageBubble({ message }: Props) {
                         // AIメッセージはMarkdownとしてレンダリング（リンクも有効化）
                         <ReactMarkdown
                             components={{
-                                a: ({ href, children }) => (
-                                    <a
-                                        href={href}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="underline text-blue-600 hover:text-blue-800 break-all"
-                                    >
-                                        {children}
-                                    </a>
-                                ),
+                                a: ({ href, children }) => {
+                                    // 書類リンクはモーダルプレビューで開く
+                                    if (href?.startsWith("/api/documents/") && onDocumentClick) {
+                                        return (
+                                            <button
+                                                onClick={() => onDocumentClick(href)}
+                                                className="inline-flex items-center gap-1 px-2.5 py-1 mt-1 rounded-lg bg-red-50 border border-red-200 text-red-600 text-xs font-medium hover:bg-red-100 transition-colors"
+                                            >
+                                                📄 {children}
+                                            </button>
+                                        );
+                                    }
+                                    return (
+                                        <a
+                                            href={href}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="underline text-blue-600 hover:text-blue-800 break-all"
+                                        >
+                                            {children}
+                                        </a>
+                                    );
+                                },
                                 p:  ({ children }) => <p className="mb-1 last:mb-0">{children}</p>,
                                 ul: ({ children }) => <ul className="list-disc pl-4 mb-1 space-y-0.5">{children}</ul>,
                                 ol: ({ children }) => <ol className="list-decimal pl-4 mb-1 space-y-0.5">{children}</ol>,
