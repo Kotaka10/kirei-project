@@ -60,13 +60,22 @@ export const documentDefs: ChatCompletionTool[] = [
             description:
                 "案件完了後に作業報告書（PDF印刷対応）を作成してデータベースに保存する。" +
                 "「作業報告書を作成して」「完了報告書を出して」「仕事が終わったので報告書を作りたい」" +
-                "「案件完了の書類を作成して」「お客様に作業完了の報告書を渡したい」などに使用する。",
+                "「案件完了の書類を作成して」「お客様に作業完了の報告書を渡したい」などに使用する。" +
+                "booking_id が不明でも service_type（例: エアコン清掃）を渡せばログインスタッフの今日のジョブを自動検索して作成できる。",
             parameters: {
                 type: "object",
                 properties: {
                     booking_id: {
                         type: "number",
-                        description: "完了したジョブのID（必須）。get_schedule などで booking_id が分かっている場合は必ず渡す",
+                        description: "完了したジョブのID。分かっている場合は必ず渡す。不明な場合は service_type で代替可能",
+                    },
+                    service_type: {
+                        type: "string",
+                        description: "サービス種別（例: エアコン清掃）。booking_id が不明なときに今日のジョブを絞り込むために使用",
+                    },
+                    work_date: {
+                        type: "string",
+                        description: "作業実施日（YYYY-MM-DD）。省略時は今日。booking_id が不明なときのジョブ検索に使用",
                     },
                     work_summary: {
                         type: "string",
@@ -85,7 +94,7 @@ export const documentDefs: ChatCompletionTool[] = [
                         description: "次回訪問の推奨日（任意、例: 2026年9月頃）",
                     },
                 },
-                required: ["booking_id", "work_summary"],
+                required: ["work_summary"],
             },
         },
     },
