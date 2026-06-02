@@ -3,10 +3,144 @@ import type { UserContext } from "../../types/auth.js";
 import { formatDate, saveDocument, buildDocumentNo } from "./documentShared.js";
 import { buildDocumentHtml } from "./documentHtmlTemplate.js";
 
+type ResolveResult =
+    | { bookingId: number }
+    | { error: string; availableJobs?: object[] }
+    | { candidates: object[] };
+
+// =============================================
+// booking_id が未指定のとき日付・種別・権限でDB自動検索
+// supervisor → 全ジョブ対象 / その他 → 自分のアサインのみ
+// =============================================
+async function resolveBookingId(
+    conn: Connection,
+    ctx: UserContext,
+    serviceType?: string,
+    workDate?: string,
+): Promise<ResolveResult> {
+    const date         = workDate ?? new Date().toISOString().slice(0, 10);
+    const isSupervisor = ctx.role === "supervisor";
+
+    const baseConditions: string[] = [
+        "DATE(b.scheduled_at) = ?",
+        "b.status != 'cancelled'",
+    ];
+    const baseParams: unknown[] = [date];
+
+    // supervisor 以外は自分のアサインのみ
+    if (!isSupervisor) {
+        baseConditions.push("sc.staff_id = ?");
+        baseParams.push(ctx.staffId);
+    }
+
+    if (serviceType) {
+        baseConditions.push("b.service_type LIKE ?");
+        baseParams.push(`%${serviceType}%`);
+    }
+
+    const [rows] = await conn.query<RowDataPacket[]>(
+        `SELECT b.id AS booking_id, b.service_type, b.scheduled_at, c.name AS customer_name
+         FROM bookings b
+         JOIN schedules sc ON sc.booking_id = b.id
+         JOIN customers c  ON b.customer_id = c.id
+         WHERE ${baseConditions.join(" AND ")}
+         GROUP BY b.id
+         ORDER BY b.scheduled_at`,
+        baseParams,
+    );
+
+    if (rows.length === 0) {
+        // サービス種別フィルタを外して候補一覧を返す（補足情報として）
+        const fallbackConditions: string[] = [
+            "DATE(b.scheduled_at) = ?",
+            "b.status != 'cancelled'",
+        ];
+        const fallbackParams: unknown[] = [date];
+        if (!isSupervisor) {
+            fallbackConditions.push("sc.staff_id = ?");
+            fallbackParams.push(ctx.staffId);
+        }
+
+        const [all] = await conn.query<RowDataPacket[]>(
+            `SELECT b.id AS booking_id, b.service_type, b.scheduled_at, c.name AS customer_name
+             FROM bookings b
+             JOIN schedules sc ON sc.booking_id = b.id
+             JOIN customers c  ON b.customer_id = c.id
+             WHERE ${fallbackConditions.join(" AND ")}
+             GROUP BY b.id
+             ORDER BY b.scheduled_at`,
+            fallbackParams,
+        );
+
+        if (all.length > 0 && serviceType) {
+            return {
+                error: `${date} の「${serviceType}」ジョブが見つかりませんでした。`,
+                availableJobs: all.map(b => ({
+                    booking_id:    b.booking_id,
+                    service_type:  b.service_type,
+                    customer_name: b.customer_name,
+                    scheduled_at:  b.scheduled_at,
+                })),
+            };
+        }
+
+        const who = isSupervisor ? "" : "（あなたがアサインされた）";
+        return { error: `${date} に${who}ジョブが見つかりませんでした。` };
+    }
+
+    if (rows.length > 1) {
+        return {
+            candidates: rows.map(b => ({
+                booking_id:    b.booking_id,
+                service_type:  b.service_type,
+                customer_name: b.customer_name,
+                scheduled_at:  b.scheduled_at,
+            })),
+        };
+    }
+
+    return { bookingId: rows[0]!.booking_id as number };
+}
+
+// =============================================
+// booking_id を直接指定した場合の権限チェック
+// supervisor → 制限なし / その他 → 担当確認
+// =============================================
+async function checkAuthorization(
+    conn: Connection,
+    bookingId: number,
+    ctx: UserContext,
+): Promise<{ authorized: true } | { authorized: false; error: string }> {
+    if (ctx.role === "supervisor") {
+        return { authorized: true };
+    }
+
+    const [rows] = await conn.query<RowDataPacket[]>(
+        `SELECT id FROM schedules
+         WHERE booking_id = ? AND staff_id = ? AND status = 'booked'
+         LIMIT 1`,
+        [bookingId, ctx.staffId],
+    );
+
+    if (rows.length === 0) {
+        return {
+            authorized: false,
+            error: `booking_id: ${bookingId} はあなたのアサインジョブではないため、報告書を作成できません。`,
+        };
+    }
+
+    return { authorized: true };
+}
+
+// =============================================
+// 作業報告書生成（全ロール利用可・権限スコープ付き）
+// =============================================
 export async function generateWorkReport(
     conn: Connection,
     args: {
-        booking_id:       number;
+        booking_id?:      number;
+        service_type?:    string;
+        work_date?:       string;
         work_summary:     string;
         issues_found?:    string;
         recommendations?: string;
@@ -14,16 +148,45 @@ export async function generateWorkReport(
     },
     ctx: UserContext
 ): Promise<object> {
+    let bookingId = args.booking_id;
+
+    if (bookingId) {
+        // booking_id 直接指定の場合は権限チェック
+        const auth = await checkAuthorization(conn, bookingId, ctx);
+        if (!auth.authorized) {
+            return { error: auth.error };
+        }
+    } else {
+        // 未指定の場合は日付・種別・権限で自動解決
+        const resolved = await resolveBookingId(conn, ctx, args.service_type, args.work_date);
+
+        if ("error" in resolved) {
+            return {
+                error:          resolved.error,
+                available_jobs: resolved.availableJobs ?? [],
+                hint:           "上記のジョブから booking_id を指定して再度お試しください。",
+            };
+        }
+        if ("candidates" in resolved) {
+            return {
+                message:    "該当するジョブが複数あります。どのジョブの報告書を作成しますか？",
+                candidates: resolved.candidates,
+            };
+        }
+        bookingId = resolved.bookingId;
+    }
+
+    // 予約情報取得
     const [bookingRows] = await conn.query<RowDataPacket[]>(
         `SELECT b.id, b.service_type, b.scheduled_at, b.price, b.status,
                 c.name AS customer_name
          FROM bookings b
          JOIN customers c ON b.customer_id = c.id
          WHERE b.id = ?`,
-        [args.booking_id]
+        [bookingId]
     );
     if (bookingRows.length === 0) {
-        return { error: `booking_id: ${args.booking_id} のジョブが見つかりませんでした` };
+        return { error: `booking_id: ${bookingId} のジョブが見つかりませんでした` };
     }
     const booking = bookingRows[0]!;
 
@@ -32,7 +195,7 @@ export async function generateWorkReport(
          FROM schedules sc
          JOIN staffs s ON sc.staff_id = s.id
          WHERE sc.booking_id = ? AND sc.status = 'booked'`,
-        [args.booking_id]
+        [bookingId]
     );
     const staffList = staffRows.map(s => `${s.name}（${s.role}）`).join("、") || ctx.name;
 
@@ -41,7 +204,7 @@ export async function generateWorkReport(
          FROM booking_materials
          WHERE booking_id = ?
          ORDER BY recorded_at`,
-        [args.booking_id]
+        [bookingId]
     );
 
     const issueDate     = formatDate(new Date());
@@ -87,7 +250,7 @@ export async function generateWorkReport(
         no:           tempNo,
         title:        `作業報告書 - ${booking.customer_name} / ${booking.service_type}`,
         customerName: String(booking.customer_name),
-        bookingId:    args.booking_id,
+        bookingId:    bookingId,
         html,
         issuedBy:     ctx.staffId,
     });
