@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useChat } from "../../hooks/useChat";
 import { MessageBubble } from "./MessageBubble";
 import { TypingIndicator } from "./TypingIndicator";
 import { ChatInput } from "./ChatInput";
 import { SuggestedQuestions } from "./SuggestedQuestions";
+import { DocumentPreviewModal } from "./DocumentPreviewModal";
 
 interface Props {
     onClose: () => void;
@@ -11,9 +12,12 @@ interface Props {
 
 export function ChatWindow({ onClose }: Props) {
     const { messages, isLoading, error, sendMessage, clearHistory } = useChat();
-    const bottomRef          = useRef<HTMLDivElement>(null);
-    const scrollContainerRef = useRef<HTMLDivElement>(null);
-    const shouldAutoScrollRef = useRef(true); // ユーザーが上にスクロールしたら false になる
+    const bottomRef           = useRef<HTMLDivElement>(null);
+    const scrollContainerRef  = useRef<HTMLDivElement>(null);
+    const shouldAutoScrollRef = useRef(true);
+
+    // 書類プレビューモーダルの表示パス（null のとき非表示）
+    const [previewPath, setPreviewPath] = useState<string | null>(null);
 
     // スクロール位置を監視してフラグを更新
     const handleScroll = () => {
@@ -113,7 +117,10 @@ export function ChatWindow({ onClose }: Props) {
                     messages.map((msg, idx) =>
                         msg.content ? (
                             <div key={msg.id}>
-                                <MessageBubble message={msg} />
+                                <MessageBubble
+                                    message={msg}
+                                    onDocumentClick={setPreviewPath}
+                                />
                                 {msg.role === "assistant" &&
                                  idx === lastAssistantIdx &&
                                  !isLoading &&
@@ -157,6 +164,14 @@ export function ChatWindow({ onClose }: Props) {
 
             {/* 入力フォーム */}
             <ChatInput onSend={handleSend} isLoading={isLoading} />
+
+            {/* 書類プレビューモーダル */}
+            {previewPath && (
+                <DocumentPreviewModal
+                    documentPath={previewPath}
+                    onClose={() => setPreviewPath(null)}
+                />
+            )}
         </div>
     )
 }
