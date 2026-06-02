@@ -12,6 +12,7 @@ import { Server } from "socket.io";
 import { createMessageRouter } from "./routes/messageRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
 import authRoutes from "./routes/auth.router.js";
+import documentRoutes from "./routes/documentRoutes.js";
 import skillRoutes from "./routes/skillRoutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
 import assignmentRoutes from "./routes/assignmentRoutes.js";
@@ -52,6 +53,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/skills",      skillRoutes);
 app.use("/api/jobs",        jobRoutes);
 app.use("/api/assignments", assignmentRoutes);
+app.use("/api/documents",  documentRoutes);
 
 const io = new Server(httpServer, { //Socket.IOサーバーを作っている
     cors: {
@@ -66,6 +68,6 @@ const io = new Server(httpServer, { //Socket.IOサーバーを作っている
 
 registerChatSocket(io); //このサーバーでどう通信するかを設定している
 
-httpServer.listen(PORT, () => { //httpServer.listen(PORT)　指定したポート番号でHTTPリクエストを受け付ける
+httpServer.listen(PORT, () => {
     console.log(`server running on http://localhost:${PORT}`);
 });
