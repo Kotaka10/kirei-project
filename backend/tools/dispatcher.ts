@@ -17,6 +17,9 @@ import {
   saveKnowhow,
   markKnowhowHelpful,
   getPurchaseLinks,
+  generateEstimateDocument,
+  generateWorkReport,
+  generateInvoice,
 } from "./handlers.js";
 import type { UserContext } from "../types/auth.js";
 
@@ -122,6 +125,49 @@ export async function dispatchTool(
                 result = getPurchaseLinks(
                     conn,
                     args as { material_name: string; quantity?: number },
+                    ctx
+                );
+                break;
+            case "generate_estimate_document":
+                result = await generateEstimateDocument(
+                    conn,
+                    args as {
+                        customer_name:    string;
+                        customer_address?: string;
+                        estimate_id?:     number;
+                        service_details?: { service_type: string; description: string; amount: number }[];
+                        valid_days?:      number;
+                        notes?:           string;
+                    },
+                    ctx
+                );
+                break;
+            case "generate_work_report":
+                result = await generateWorkReport(
+                    conn,
+                    args as {
+                        booking_id:       number;
+                        work_summary:     string;
+                        issues_found?:    string;
+                        recommendations?: string;
+                        next_visit_date?: string;
+                    },
+                    ctx
+                );
+                break;
+            case "generate_invoice":
+                result = await generateInvoice(
+                    conn,
+                    args as {
+                        customer_name:     string;
+                        customer_address?: string;
+                        booking_id?:       number;
+                        estimate_id?:      number;
+                        line_items?:       { description: string; amount: number }[];
+                        payment_due_days?: number;
+                        bank_info?:        string;
+                        notes?:            string;
+                    },
                     ctx
                 );
                 break;
