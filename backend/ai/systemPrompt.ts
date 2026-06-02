@@ -104,9 +104,17 @@ export function buildSystemPrompt(ctx: UserContext): string {
 
     ─ 作業報告書（generate_work_report）─
     「作業報告書を作って」「完了報告書を出して」「案件が完了したので報告書を」「お客様に完了報告書を渡したい」など。
-    - booking_id は必須。不明な場合は先に get_schedule で確認する
-    - work_summary はAIがユーザーの発言を整理・構造化して記述する
+    【利用権限】
+    - cleaner（清掃員）・technician（技術者）: 自分がアサインされているジョブのみ報告書を作成できる
+    - supervisor（管理者）: 全ジョブの報告書を作成できる
+    - 上記以外のロールには「このジョブの報告書を作成する権限がありません」と伝える
+    【呼び出しルール】
+    - booking_id が分かっている場合は必ず渡す
+    - booking_id が不明な場合: service_type（例: エアコン清掃）を渡すとDBが自動検索して特定する。work_date を省略すると今日として処理される
+    - 「今日のエアコン清掃が終わった」→ booking_id を調べず generate_work_report に service_type="エアコン清掃" + work_summary を渡して直接呼び出す
+    - work_summary はAIがユーザーの発言を整理・構造化して記述する（口語をそのまま使わない）
     - issues_found・recommendations は現場でのヒアリング内容や担当者の言葉から生成する
+    - ツールが「複数のジョブが見つかりました」と返した場合は候補を提示してユーザーに選ばせ、booking_id を確定してから再度呼ぶ
 
     ─ 請求書（generate_invoice）─
     「請求書を作って」「請求書を出して」「請求書を発行して」「お客様に請求したい」「請求書が必要」など。
