@@ -146,7 +146,9 @@ export async function dispatchTool(
                 result = await generateWorkReport(
                     conn,
                     args as {
-                        booking_id:       number;
+                        booking_id?:      number;
+                        service_type?:    string;
+                        work_date?:       string;
                         work_summary:     string;
                         issues_found?:    string;
                         recommendations?: string;
