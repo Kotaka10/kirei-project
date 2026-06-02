@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import * as assignmentService from "../services/assignmentService.js";
+import * as assignmentService from "../services/assignment.service.js";
 
 export class AssignmentController {
     /** POST /api/assignments — 割り振りリクエスト作成（全ロール） */
