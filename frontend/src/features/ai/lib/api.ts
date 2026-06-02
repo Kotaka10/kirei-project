@@ -7,6 +7,7 @@ export async function sendChatMessage(
     sessionId?: string,
     token?: string,
     onChunk?: (delta: string) => void,
+    signal?: AbortSignal,
 ): Promise<ChatResponse> {
     const parsed = ChatRequestSchema.safeParse({ message, session_id: sessionId });
     if (!parsed.success) {
@@ -20,6 +21,7 @@ export async function sendChatMessage(
         method: "POST",
         headers,
         body: JSON.stringify(parsed.data),
+        signal,
     });
 
     if (!res.ok) {

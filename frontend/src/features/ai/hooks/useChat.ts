@@ -11,8 +11,9 @@ export function useChat() {
 
     const { token } = useAuth();
 
-    // 再レンダリングせず値保持　useRefは再レンダリングしても値が消えない
-    const sessionIdRef = useRef<string | undefined>(undefined);
+    const sessionIdRef      = useRef<string | undefined>(undefined);
+    // 進行中リクエストを中断するためのコントローラー
+    const abortControllerRef = useRef<AbortController | null>(null);
 
     const sendMessage = useCallback(async (content: string) => {
         setError(null);
@@ -21,6 +22,11 @@ export function useChat() {
             setError("ログインが必要です");
             return;
         }
+
+        // 前のリクエストが残っていれば中断してから新規送信
+        abortControllerRef.current?.abort();
+        const controller = new AbortController();
+        abortControllerRef.current = controller;
 
         const userMsg: Message = {
             id:        crypto.randomUUID(),
@@ -50,6 +56,7 @@ export function useChat() {
                         prev.map((m) => m.id === aiMsgId ? { ...m, content: m.content + delta } : m)
                     );
                 },
+                controller.signal,
             );
 
             sessionIdRef.current = res.session_id;
@@ -64,17 +71,28 @@ export function useChat() {
                 window.dispatchEvent(new Event("approvals:updated"));
             }
         } catch (err: unknown) {
+            // ユーザー操作による中断はエラー扱いしない
+            if (err instanceof DOMException && err.name === "AbortError") return;
             const message = err instanceof Error ? err.message : "エラーが発生しました";
             setError(message);
             setMessages((prev) => prev.filter((m) => m.id !== userMsg.id && m.id !== aiMsgId));
         } finally {
-            setIsLoading(false);
+            // このコントローラーがまだ現役のときだけローディングを解除
+            if (abortControllerRef.current === controller) {
+                setIsLoading(false);
+            }
         }
     }, [token]);
 
     const clearHistory = useCallback(() => {
+        // 進行中のSSEストリームを即座に中断
+        abortControllerRef.current?.abort();
+        abortControllerRef.current = null;
+
         setMessages([]);
+        setIsLoading(false);
         setError(null);
+
         if (token && sessionIdRef.current) {
             resetChatSession(sessionIdRef.current, token).catch(() => {});
         }
