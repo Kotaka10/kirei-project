@@ -12,6 +12,7 @@ import {
   getJobMaterials,
   recordJobMaterials,
   estimateVisitPrice,
+  saveVisitEstimate,
   getSalesTalkTips,
   searchKnowhow,
   saveKnowhow,
@@ -89,6 +90,22 @@ export async function dispatchTool(
                         dirty_level?: "normal" | "dirty" | "very_dirty";
                         customer_name?: string;
                         save_estimate?: boolean;
+                    },
+                    ctx
+                );
+                break;
+            case "save_visit_estimate":
+                result = await saveVisitEstimate(
+                    conn,
+                    args as {
+                        service_type:   string;
+                        customer_name:  string;
+                        estimated_min:  number;
+                        estimated_max:  number;
+                        location_type?: string;
+                        area_sqm?:      number;
+                        unit_count?:    number;
+                        dirty_level?:   "normal" | "dirty" | "very_dirty";
                     },
                     ctx
                 );
