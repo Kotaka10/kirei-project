@@ -111,6 +111,58 @@ export const materialsSalesDefs: ChatCompletionTool[] = [
         },
     },
 
+    // 訪問見積もり保存
+    {
+        type: "function",
+        function: {
+            name: "save_visit_estimate",
+            description:
+                "estimate_visit_price で算出した概算金額をDBの訪問見積もり履歴として保存する。" +
+                "「保存して」「記録して」「残しておいて」などの発言があり、直前に estimate_visit_price の結果がある場合に使用する。" +
+                "estimated_min / estimated_max は estimate_visit_price の返り値をそのまま渡すこと。",
+            parameters: {
+                type: "object",
+                properties: {
+                    service_type: {
+                        type: "string",
+                        description: "サービス種別（estimate_visit_price の返り値 service_type）",
+                    },
+                    customer_name: {
+                        type: "string",
+                        description: "顧客名。未取得の場合はユーザーに確認してから呼び出すこと",
+                    },
+                    estimated_min: {
+                        type: "number",
+                        description: "概算下限金額（estimate_visit_price の返り値 estimated_min）",
+                    },
+                    estimated_max: {
+                        type: "number",
+                        description: "概算上限金額（estimate_visit_price の返り値 estimated_max）",
+                    },
+                    location_type: {
+                        type: "string",
+                        enum: ["戸建て", "マンション", "オフィス", "店舗"],
+                        description: "現場の種別（任意）",
+                    },
+                    area_sqm: {
+                        type: "number",
+                        description: "面積（平米）（任意）",
+                    },
+                    unit_count: {
+                        type: "number",
+                        description: "台数・箇所数（任意）",
+                    },
+                    dirty_level: {
+                        type: "string",
+                        enum: ["normal", "dirty", "very_dirty"],
+                        description: "汚れ度（任意）",
+                    },
+                },
+                required: ["service_type", "customer_name", "estimated_min", "estimated_max"],
+            },
+        },
+    },
+
     // 営業トーク提案
     {
         type: "function",
