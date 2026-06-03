@@ -12,29 +12,33 @@ export async function checkStaffAvailability(
         [args.date]
     );
 
-    const params: any[] = [args.date];
-    const conditions: string[] = ["sc.date = ?", "s.is_active = true"];
+    // staffs を起点に LEFT JOIN することで、その日のスケジュールが
+    // 未登録のスタッフも「空き（unscheduled）」として結果に含める
+    const joinParams: any[]      = [args.date];
+    const whereConditions: string[] = ["s.is_active = true"];
+    const whereParams: any[]     = [];
 
     if (args.staff_name) {
-        conditions.push(`${stripSpacesExpr("s.name")} LIKE ?`);
-        params.push(`%${normalizeNameForSearch(args.staff_name)}%`);
+        whereConditions.push(`${stripSpacesExpr("s.name")} LIKE ?`);
+        whereParams.push(`%${normalizeNameForSearch(args.staff_name)}%`);
     }
 
     const [slots] = await conn.query<RowDataPacket[]>(
         `SELECT
-        s.name       AS staff_name,
-        s.role,
-        sc.start_time,
-        sc.end_time,
-        sc.status
-        FROM schedules sc
-        JOIN staffs s ON sc.staff_id = s.id
-        WHERE ${conditions.join(" AND ")}
+            s.name                             AS staff_name,
+            s.role,
+            sc.start_time,
+            sc.end_time,
+            COALESCE(sc.status, 'unscheduled') AS status
+        FROM staffs s
+        LEFT JOIN schedules sc ON sc.staff_id = s.id AND sc.date = ?
+        WHERE ${whereConditions.join(" AND ")}
         ORDER BY s.name, sc.start_time`,
-        params
+        [...joinParams, ...whereParams]
     );
 
-    const available = slots.filter((r) => r.status === "available");
+    // available: 明示的に空き登録済み / unscheduled: スケジュール未登録（空き扱い）
+    const available = slots.filter((r) => r.status === "available" || r.status === "unscheduled");
     const booked    = slots.filter((r) => r.status === "booked");
 
     return {
