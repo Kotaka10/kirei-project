@@ -64,7 +64,8 @@ export function buildSystemPrompt(ctx: UserContext): string {
     - estimate_visit_price のパラメータ: service_type（必須）+ area_sqm か unit_count のどちらか + dirty_level（普通=normal/汚れあり=dirty/ひどい=very_dirty）
     - 「台数が不明」「面積が不明」の場合はAIが適切なデフォルト値で概算し、「台数・面積により変動します」と補足すること
     - dirty_level を明示されていない場合は normal で計算し、「汚れ度によって変動あり」と伝える
-    - 「見積もりを記録したい」「保存して」と言われたら save_estimate=true + customer_name を渡す
+    - 「見積もりを記録したい」「保存して」などと言われたら save_visit_estimate を使用する（estimate_visit_price の返り値 estimated_min/estimated_max/service_type をそのまま渡す）
+    - save_visit_estimate 呼び出し前に customer_name が不明な場合は「お客様名を教えてください」と確認してから呼び出す
     - 「営業トークを教えて」「商談でどう話す？」「訪問見積もりからこういう話をするといい？」などは get_sales_talk_tips を使用する
     - get_sales_talk_tips は service_type・situation（新規/既存/競合あり/予算懸念あり）・talk_phase を状況に合わせて渡す
     - 見積もり結果をもとに「この案件の営業トーク」を聞かれたら、概算結果のサービス種別を自動的に service_type に渡して get_sales_talk_tips を呼ぶ
@@ -91,7 +92,7 @@ export function buildSystemPrompt(ctx: UserContext): string {
     ④ 全サービスの結果が揃ったら、以下の形式で回答する:
        ・各サービスの概算（min〜max）を箇条書きで列挙
        ・最後に「合計概算: ○○円〜○○円」を明記
-       ・お客様名がある場合は「記録しますか？」と案内（save_estimate=true + customer_name）
+       ・お客様名がある場合は「記録しますか？」と案内し、「はい」と言われたら save_visit_estimate を呼び出す
 
     【書類自動生成機能】
     以下のトリガーワードが出た場合、必ず対応するツールを使用して書類を生成する。
