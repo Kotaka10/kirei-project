@@ -7,10 +7,12 @@ import { SuggestedQuestions } from "./SuggestedQuestions";
 import { DocumentPreviewModal } from "./DocumentPreviewModal";
 
 interface Props {
-    onClose: () => void;
+    onClose:             () => void;
+    isFullscreen:        boolean;
+    onToggleFullscreen:  () => void;
 }
 
-export function ChatWindow({ onClose }: Props) {
+export function ChatWindow({ onClose, isFullscreen, onToggleFullscreen }: Props) {
     const { messages, isLoading, error, sendMessage, clearHistory } = useChat();
     const bottomRef           = useRef<HTMLDivElement>(null);
     const scrollContainerRef  = useRef<HTMLDivElement>(null);
@@ -50,13 +52,14 @@ export function ChatWindow({ onClose }: Props) {
         -1,
     );
 
+    const windowClass = isFullscreen
+        ? "flex flex-col w-full h-full bg-gray-50 shadow-2xl border border-gray-200 overflow-hidden"
+        : "flex flex-col w-[520px] h-[700px] bg-gray-50 rounded-2xl shadow-2xl border border-gray-200 overflow-hidden";
+
     return (
-        <div className="
-            flex flex-col w-[360px] h-[560px] bg-gray-50 rounded-2xl shadow-2xl
-            border border-gray-200 overflow-hidden
-        ">{/* overflow-hidden = はみ出し隠す */}
+        <div className={windowClass}>
             {/* ヘッダー */}
-            <div className="flex items-center justify-between px-4 py-3 bg-red-600 text-white flex-shrink-0">{/* flex-shrink-0 = flexレイアウトで、この要素を縮ませない */}
+            <div className="flex items-center justify-between px-4 py-3 bg-red-600 text-white flex-shrink-0">
                 <div className="flex items-center gap-2.5">
                     <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                         {/* svg = ベクター画像, viewBox = 左上 (0, 0) 幅 24 高さ 24, fill = 塗りつぶし色,　currentColor = 親要素の色に追従 */}
@@ -88,6 +91,24 @@ export function ChatWindow({ onClose }: Props) {
                             </svg>
                         </button>
                     )}
+                    {/* 全画面トグルボタン */}
+                    <button
+                        onClick={onToggleFullscreen}
+                        title={isFullscreen ? "ウィンドウに戻す" : "全画面表示"}
+                        className="p-1.5 rounded-lg hover:bg-white/20 transition-colors"
+                    >
+                        {isFullscreen ? (
+                            /* 縮小アイコン */
+                            <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+                            </svg>
+                        ) : (
+                            /* 拡大アイコン */
+                            <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                            </svg>
+                        )}
+                    </button>
                     <button
                         onClick={onClose}
                         className="p-1.5 rounded-lg hover:bg-white/20 transition-colors"
