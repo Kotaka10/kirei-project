@@ -141,7 +141,7 @@ export async function getSalesTalkTips(
         situation?:    string;
         talk_phase?:   string;
     },
-    _ctx: UserContext
+    _ctx: UserContext // アンダーバー：この引数を受け取るけど、この関数内では使わないという意思表示
 ): Promise<object> {
     const conditions: string[] = [];
     const params: any[] = [];
