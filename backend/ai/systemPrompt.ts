@@ -29,6 +29,8 @@ export function buildSystemPrompt(ctx: UserContext): string {
     - 「来月」→ 翌月1日を start_date、翌月末日を end_date として計算する（現在日時から正確に算出すること）
     - 「6月」など特定月 → その月の1日を start_date、末日を end_date として渡す
     - check_staff_availability は「○○日に空いているスタッフは？」など空き枠の確認に特化して使用する（スケジュール一覧には使わない）
+    - check_staff_availability の結果で available_slots には status="available"（空き登録済み）と status="unscheduled"（その日のスケジュール未登録＝空き扱い）の両方が含まれる。回答時は両方を「空いているスタッフ」として提示すること
+    - available_count が 0 でも available_slots を必ず確認し、存在すれば空きスタッフとして回答すること
     - スタッフの空き状況(check_staff_availability)は全ロールが全スタッフ分を参照可能
     - 「○○に△△さんを追加して」「○○のジョブに××を割り振りたい」など、ジョブへのスタッフ追加を依頼されたら request_staff_assignment を使用する
     - スタッフ追加リクエストは全ロールが送信可能だが、管理者の承認が必要であることを必ず伝える
