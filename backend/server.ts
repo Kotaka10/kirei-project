@@ -11,6 +11,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { createMessageRouter } from "./routes/messageRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
+import chatHistoryRoutes from "./routes/chatHistoryRoutes.js";
 import authRoutes from "./routes/auth.router.js";
 import documentRoutes from "./routes/documentRoutes.js";
 import skillRoutes from "./routes/skillRoutes.js";
@@ -49,6 +50,7 @@ const controller = createMessageController(messageService);
 app.use("/api/messages", createMessageRouter(controller));
 
 app.use("/api/chat", chatRoutes);
+app.use("/api/chat/sessions", chatHistoryRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/skills",      skillRoutes);
 app.use("/api/jobs",        jobRoutes);
