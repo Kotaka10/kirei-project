@@ -23,7 +23,7 @@ export async function generateSuggestions(
                              "必ず以下のJSON形式のみで返してください（他のテキスト不要）: {\"suggestions\":[\"提案1\",\"提案2\",\"提案3\"]}。各提案は20文字以内の日本語。",
                 },
             ],
-            temperature:     0.6,
+            temperature:     0.4,
             max_tokens:      150,
             response_format: { type: "json_object" },
         });
