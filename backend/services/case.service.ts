@@ -1,0 +1,134 @@
+import OpenAI from "openai";
+import dotenv from "dotenv";
+import { CaseRepository } from "../repositories/caseRepository.js";
+import { sendPushToUser } from "./notificationService.js";
+import type { CaseRecord, CaseNotificationRecord, NotifiedStaff } from "../types/case.js";
+dotenv.config();
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+export class CaseService {
+    private readonly repo = new CaseRepository();
+
+    async createCase(
+        summary: string,
+        createdBy: number,
+    ): Promise<{ case: CaseRecord; notifiedStaff: NotifiedStaff[] }> {
+        // AIが案件タイトル・書類・適切なロールを生成
+        const aiResult = await this.generateCaseDocument(summary);
+
+        const caseId = await this.repo.create(
+            aiResult.title,
+            summary,
+            aiResult.document,
+            aiResult.requiredRoles,
+            createdBy,
+        );
+
+        // 適切なスタッフを特定して通知
+        let staffList: NotifiedStaff[];
+        if (aiResult.requiredRoles.length > 0) {
+            staffList = await this.repo.findStaffByRoles(aiResult.requiredRoles);
+        } else {
+            staffList = await this.repo.findAllActiveStaff();
+        }
+
+        // DB通知レコード作成
+        await this.repo.createNotifications(caseId, staffList.map(s => s.staff_id));
+
+        // プッシュ通知送信（エラーでも続行）
+        await Promise.allSettled(
+            staffList.map(staff =>
+                sendPushToUser({
+                    externalId: `user-${staff.staff_id}`,
+                    title: "新しい案件が登録されました",
+                    body: aiResult.title,
+                }),
+            ),
+        );
+
+        const created = await this.repo.findById(caseId);
+        return { case: created!, notifiedStaff: staffList };
+    }
+
+    private async generateCaseDocument(summary: string): Promise<{
+        title: string;
+        document: string;
+        requiredRoles: string[];
+    }> {
+        const completion = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            response_format: { type: "json_object" },
+            messages: [
+                {
+                    role: "system",
+                    content: `あなたはクリーニング・清掃サービス会社の案件管理アシスタントです。
+案件の概要を受け取り、以下のJSON形式で詳細な案件書類を作成してください。
+
+{
+  "title": "案件タイトル（30文字以内）",
+  "document": "案件詳細書類（Markdown形式で作成。概要・目的・作業内容・注意事項・スケジュール目安を含む）",
+  "requiredRoles": ["cleaner", "technician", "supervisor"] の中から必要なロールのみを配列で返す
+}
+
+- title: 案件の内容を端的に表すタイトル
+- document: 800〜1500文字程度の詳細な案件書類（見出しを使った構造化された内容）
+- requiredRoles: 案件に必要なスタッフのロール。cleaner（清掃員）・technician（技術者）・supervisor（監督者）から選択。
+  複雑な案件は複数可。全員に通知したい場合は空配列 []`,
+                },
+                {
+                    role: "user",
+                    content: `以下の概要から案件書類を作成してください:\n\n${summary}`,
+                },
+            ],
+        });
+
+        const raw = completion.choices[0]?.message?.content ?? "{}";
+        try {
+            const parsed = JSON.parse(raw);
+            return {
+                title: parsed.title ?? summary.slice(0, 30),
+                document: parsed.document ?? summary,
+                requiredRoles: Array.isArray(parsed.requiredRoles)
+                    ? parsed.requiredRoles.filter((r: string) =>
+                          ["cleaner", "technician", "supervisor"].includes(r),
+                      )
+                    : [],
+            };
+        } catch {
+            return {
+                title: summary.slice(0, 30),
+                document: summary,
+                requiredRoles: [],
+            };
+        }
+    }
+
+    async getCases(): Promise<CaseRecord[]> {
+        return this.repo.findAll();
+    }
+
+    async getCaseById(id: number): Promise<CaseRecord | null> {
+        return this.repo.findById(id);
+    }
+
+    async updateStatus(id: number, status: "open" | "in_progress" | "closed"): Promise<void> {
+        await this.repo.updateStatus(id, status);
+    }
+
+    async getNotifications(staffId: number): Promise<CaseNotificationRecord[]> {
+        return this.repo.findNotificationsByStaff(staffId);
+    }
+
+    async markRead(notificationId: number, staffId: number): Promise<void> {
+        await this.repo.markRead(notificationId, staffId);
+    }
+
+    async markAllRead(staffId: number): Promise<void> {
+        await this.repo.markAllRead(staffId);
+    }
+
+    async getUnreadCount(staffId: number): Promise<number> {
+        return this.repo.countUnread(staffId);
+    }
+}
