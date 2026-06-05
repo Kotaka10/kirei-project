@@ -18,6 +18,7 @@ import skillRoutes from "./routes/skillRoutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
 import assignmentRoutes from "./routes/assignmentRoutes.js";
 import caseRoutes from "./routes/caseRoutes.js";
+import aiQuestionRoutes from "./routes/aiQuestionRoutes.js";
 import { registerChatSocket } from "./sockets/chatSocket.js";
 import { messageService } from "./services/messageService.js";
 import { createMessageController } from "./controllers/messageController.js";
@@ -58,6 +59,7 @@ app.use("/api/jobs",        jobRoutes);
 app.use("/api/assignments", assignmentRoutes);
 app.use("/api/documents",  documentRoutes);
 app.use("/api/cases",      caseRoutes);
+app.use("/api/ai/questions", aiQuestionRoutes);
 
 const io = new Server(httpServer, { //Socket.IOサーバーを作っている
     cors: {
