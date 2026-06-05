@@ -1,32 +1,63 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import type { Message } from "../types/chatTypes";
 import { sendChatMessage } from "../lib/api";
-import { resetChatSession } from "../../auth/lib/api";
+import { fetchSessionMessages } from "../lib/sessionApi";
 import { useAuth } from "../../auth/context/AuthContext";
 
-export function useChat() {
+interface UseChatOptions {
+    activeSessionId:  number | null;
+    onSessionCreated: (sessionId: number) => void;
+}
+
+export function useChat({ activeSessionId, onSessionCreated }: UseChatOptions) {
     const [messages,  setMessages]  = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error,     setError]     = useState<string | null>(null);
 
     const { token } = useAuth();
+    const abortControllerRef = useRef<AbortController | null>(null); // AbortControllerはWeb標準API
 
-    const sessionIdRef      = useRef<string | undefined>(undefined);
-    // 進行中リクエストを中断するためのコントローラー
-    const abortControllerRef = useRef<AbortController | null>(null);
-
-    const sendMessage = useCallback(async (content: string) => {
+    // セッション切り替え時: DBからメッセージを復元
+    useEffect(() => {
+        abortControllerRef.current?.abort();
+        abortControllerRef.current = null;
         setError(null);
 
-        if (!token) {
-            setError("ログインが必要です");
+        if (activeSessionId === null) {
+            setMessages([]);
+            setIsLoading(false);
             return;
         }
 
-        // 前のリクエストが残っていれば中断してから新規送信
+        if (!token) return;
+
+        setIsLoading(true);
+        fetchSessionMessages(activeSessionId, token)
+            .then(msgs => {
+                setMessages(msgs
+                    .filter(m => m.content) // contentが空のメッセージを除外する
+                    .map(m => ({
+                        id:          String(m.id),
+                        role:        m.role,
+                        content:     m.content,
+                        timestamp:   new Date(m.created_at),
+                        suggestions: m.suggestions,
+                    }))
+                );
+            })
+            .catch(() => setError("履歴の読み込みに失敗しました"))
+            .finally(() => setIsLoading(false));
+    }, [activeSessionId, token]);
+
+    const sendMessage = useCallback(async (content: string) => {
+        setError(null);
+        if (!token) { setError("ログインが必要です"); return; }
+
         abortControllerRef.current?.abort();
         const controller = new AbortController();
         abortControllerRef.current = controller;
+
+        const isNewSession = activeSessionId === null;
 
         const userMsg: Message = {
             id:        crypto.randomUUID(),
@@ -34,7 +65,6 @@ export function useChat() {
             content,
             timestamp: new Date(),
         };
-
         const aiMsgId = crypto.randomUUID();
         const placeholderMsg: Message = {
             id:        aiMsgId,
@@ -43,27 +73,30 @@ export function useChat() {
             timestamp: new Date(),
         };
 
-        setMessages((prev) => [...prev, userMsg, placeholderMsg]);
+        setMessages(prev => [...prev, userMsg, placeholderMsg]);
         setIsLoading(true);
 
         try {
             const res = await sendChatMessage(
                 content,
-                sessionIdRef.current,
+                activeSessionId !== null ? String(activeSessionId) : undefined,
                 token,
-                (delta) => {
-                    setMessages((prev) =>
-                        prev.map((m) => m.id === aiMsgId ? { ...m, content: m.content + delta } : m)
+                delta => {
+                    setMessages(prev =>
+                        prev.map(m => m.id === aiMsgId ? { ...m, content: m.content + delta } : m)
                     );
                 },
                 controller.signal,
             );
 
-            sessionIdRef.current = res.session_id;
+            // 新規セッションの場合は親に通知
+            if (isNewSession && res.session_id) {
+                onSessionCreated(parseInt(res.session_id, 10));
+            }
 
             if (res.suggestions && res.suggestions.length > 0) {
-                setMessages((prev) =>
-                    prev.map((m) => m.id === aiMsgId ? { ...m, suggestions: res.suggestions } : m)
+                setMessages(prev =>
+                    prev.map(m => m.id === aiMsgId ? { ...m, suggestions: res.suggestions } : m)
                 );
             }
 
@@ -71,33 +104,14 @@ export function useChat() {
                 window.dispatchEvent(new Event("approvals:updated"));
             }
         } catch (err: unknown) {
-            // ユーザー操作による中断はエラー扱いしない
             if (err instanceof DOMException && err.name === "AbortError") return;
             const message = err instanceof Error ? err.message : "エラーが発生しました";
             setError(message);
-            setMessages((prev) => prev.filter((m) => m.id !== userMsg.id && m.id !== aiMsgId));
+            setMessages(prev => prev.filter(m => m.id !== userMsg.id && m.id !== aiMsgId));
         } finally {
-            // このコントローラーがまだ現役のときだけローディングを解除
-            if (abortControllerRef.current === controller) {
-                setIsLoading(false);
-            }
+            if (abortControllerRef.current === controller) setIsLoading(false);
         }
-    }, [token]);
+    }, [token, activeSessionId, onSessionCreated]);
 
-    const clearHistory = useCallback(() => {
-        // 進行中のSSEストリームを即座に中断
-        abortControllerRef.current?.abort();
-        abortControllerRef.current = null;
-
-        setMessages([]);
-        setIsLoading(false);
-        setError(null);
-
-        if (token && sessionIdRef.current) {
-            resetChatSession(sessionIdRef.current, token).catch(() => {});
-        }
-        sessionIdRef.current = undefined;
-    }, [token]);
-
-    return { messages, isLoading, error, sendMessage, clearHistory };
+    return { messages, isLoading, error, sendMessage };
 }
