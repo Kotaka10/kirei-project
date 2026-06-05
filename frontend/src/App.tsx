@@ -19,6 +19,11 @@ import { ChatWidget } from './features/ai/components/chat/ChatWidget';
 import StaffSkillPage from './features/staff-skills/components/StaffSkillPage';
 import JobListPage from './features/jobs/components/JobListPage';
 import ApprovalPage from './features/approvals/components/ApprovalPage';
+import CasesPage from './features/cases/pages/CasesPage';
+import CreateCasePage from './features/cases/pages/CreateCasePage';
+import CaseDetailPage from './features/cases/pages/CaseDetailPage';
+import NotificationsPage from './features/notifications/pages/NotificationsPage';
+import { NotificationProvider } from './features/notifications/context/NotificationContext';
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -29,7 +34,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
 
         <Route element={<ProtectedRoute />}>
-          <Route element={<DefaultLayout />}>
+          <Route element={<NotificationProvider><DefaultLayout /></NotificationProvider>}>
             <Route path="/register"          element={<RegisterForm />} />
             <Route path="/list"              element={<CompanyList />} />
             <Route path="/company/edit/:id"  element={<CompanyEdit />} />
@@ -44,6 +49,10 @@ function App() {
             <Route path="/staff-skills"      element={<StaffSkillPage />} />
             <Route path="/jobs"              element={<JobListPage />} />
             <Route path="/approvals"         element={<ApprovalPage />} />
+            <Route path="/cases"             element={<CasesPage />} />
+            <Route path="/cases/new"         element={<CreateCasePage />} />
+            <Route path="/cases/:id"         element={<CaseDetailPage />} />
+            <Route path="/notifications"     element={<NotificationsPage />} />
           </Route>
         </Route>
       </Routes>
