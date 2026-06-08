@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { StaffRepository } from "../repositories/staffRepository.js";
+import { runWithDbAuditContext } from "../audit/dbAudit.js";
 
 const JWT_SECRET  = process.env.JWT_SECRET ?? "change-this-secret";
 const JWT_EXPIRES = process.env.JWT_EXPIRES ?? "8h";
@@ -34,7 +35,16 @@ export class AuthService {
         }
         const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES as any }); // payload + secretの署名生成
 
-        this.staffRepo.updateLastLogin(staff.id).catch(console.error);
+        runWithDbAuditContext(
+            {
+                actorType: "human",
+                staffId:   staff.id,
+                actorName: staff.name,
+                userRole:  staff.role,
+                source:    "auth_login",
+            },
+            () => this.staffRepo.updateLastLogin(staff.id).catch(console.error),
+        );
 
         return {
             token,

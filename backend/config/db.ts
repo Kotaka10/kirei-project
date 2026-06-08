@@ -1,4 +1,5 @@
 import mysql from 'mysql2/promise';
+import { wrapPoolForAudit } from '../audit/dbAudit.js';
 
 const pool = mysql.createPool({ // プール：DBの接続管理をする箱
     host: "db",
@@ -9,4 +10,4 @@ const pool = mysql.createPool({ // プール：DBの接続管理をする箱
     charset: "utf8mb4",
 });
 
-export default pool;
+export default wrapPoolForAudit(pool);

@@ -22,8 +22,12 @@ import aiQuestionRoutes from "./routes/aiQuestionRoutes.js";
 import { registerChatSocket } from "./sockets/chatSocket.js";
 import { messageService } from "./services/messageService.js";
 import { createMessageController } from "./controllers/messageController.js";
+import { ensureDbAuditTable } from "./audit/dbAudit.js";
 
 dotenv.config(); // ローカル開発用: .envから環境変数を読み込む（Docker環境ではcompose.yamlが注入）
+ensureDbAuditTable().catch(error => {
+    console.warn(`[dbAudit] audit table initialization skipped: ${error instanceof Error ? error.message : String(error)}`);
+});
 
 const app = express(); //サーバーを作っている
 const PORT = 3000;
