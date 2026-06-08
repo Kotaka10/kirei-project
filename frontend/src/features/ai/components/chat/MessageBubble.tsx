@@ -27,7 +27,10 @@ export function MessageBubble({ message, onDocumentClick }: Props) {
                 {/* 吹き出し */}
                 <div className={`
                     px-4 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm
-                    ${isUser ? "bg-[#48bcb6] text-white rounded-br-sm" : "bg-white text-gray-800 border border-gray-100 rounded-bl-sm"}
+                    ${isUser
+                        ? "bg-[#48bcb6] text-white rounded-br-sm"
+                        : "bg-[#e8fbf8] text-gray-800 border border-[#b7e7e2] rounded-bl-sm"
+                    }
                 `}>
                     {isUser ? (
                         // ユーザーメッセージはそのまま表示
@@ -53,7 +56,7 @@ export function MessageBubble({ message, onDocumentClick }: Props) {
                                             href={href}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="underline text-blue-600 hover:text-blue-800 break-all"
+                                            className="underline text-[#2a9f99] hover:text-[#1f817c] break-all"
                                         >
                                             {children}
                                         </a>
@@ -65,7 +68,7 @@ export function MessageBubble({ message, onDocumentClick }: Props) {
                                 li: ({ children }) => <li>{children}</li>,
                                 strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
                                 code: ({ children }) => (
-                                    <code className="bg-gray-100 rounded px-1 text-xs font-mono">{children}</code>
+                                    <code className="bg-white/80 border border-[#b7e7e2] rounded px-1 text-xs font-mono text-[#1f817c]">{children}</code>
                                 ),
                             }}
                         >
