@@ -77,7 +77,7 @@ export function DocumentPreviewModal({ documentPath, onClose }: Props) {
             {/* モーダル本体 */}
             <div className="relative z-10 flex flex-col w-full max-w-4xl h-[90vh] bg-white rounded-2xl shadow-2xl overflow-hidden">
                 {/* ヘッダー */}
-                <div className="flex items-center justify-between px-5 py-3 bg-red-600 text-white flex-shrink-0">
+                <div className="flex items-center justify-between px-5 py-3 bg-[#48bcb6] text-white flex-shrink-0">
                     <span className="font-semibold text-sm">📄 書類プレビュー</span>
                     <div className="flex items-center gap-2">
                         {blobUrl && (
@@ -104,13 +104,13 @@ export function DocumentPreviewModal({ documentPath, onClose }: Props) {
                 <div className="flex-1 overflow-hidden">
                     {isLoading && (
                         <div className="flex flex-col items-center justify-center h-full gap-3 text-gray-500">
-                            <div className="w-8 h-8 border-4 border-red-200 border-t-red-600 rounded-full animate-spin" />
+                            <div className="w-8 h-8 border-4 border-[#e8fbf8] border-t-[#48bcb6] rounded-full animate-spin" />
                             <p className="text-sm">書類を読み込んでいます...</p>
                         </div>
                     )}
 
                     {fetchError && (
-                        <div className="flex flex-col items-center justify-center h-full gap-2 text-red-500">
+                        <div className="flex flex-col items-center justify-center h-full gap-2 text-[#48bcb6]">
                             <p className="text-sm font-medium">⚠️ {fetchError}</p>
                             <button
                                 onClick={onClose}

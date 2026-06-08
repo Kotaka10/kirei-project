@@ -1,7 +1,7 @@
 export function TypingIndicator() {
     return (
         <div className="flex items-end gap-2">
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-red-600 flex items-center justify-center shadow-sm">
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#48bcb6] flex items-center justify-center shadow-sm">
                 <span className="text-white text-xs font-bold">AI</span>
             </div>
             <div className="bg-white border border-gray-100 rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm">

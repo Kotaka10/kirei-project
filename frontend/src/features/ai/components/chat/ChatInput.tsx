@@ -49,12 +49,12 @@ export function ChatInput({ onSend, isLoading }: Props) {
     return (
         <div className="px-3 pb-3 pt-2 border-t border-gray-100 bg-white">
             {inputError && (
-                <p className="text-xs text-red-500 mb-1.5 px-1">{inputError}</p>
+                <p className="text-xs text-[#48bcb6] mb-1.5 px-1">{inputError}</p>
             )}
 
             <div className={`
                 flex items-end gap-2 rounded-xl border bg-gray-50 px-3 py-2 transition-colors duration-150
-                ${isOverLimit ? "border-red-300" : "border-gray-200 focus-within:border-red-400"}
+                ${isOverLimit ? "border-[#48bcb6]" : "border-gray-200 focus-within:border-[#48bcb6]"}
             `}>
                 {/* resize-none = 手動リサイズ禁止, leading-relaxed = 行間を少し広めにする */}
                 <textarea
@@ -73,7 +73,7 @@ export function ChatInput({ onSend, isLoading }: Props) {
                 />
 
                 {/* 文字カウンター */}
-                <span className={`text-[10px] self-end ph-0.5 ${isOverLimit ? "text-red-500" : "text-gray-300"}`}>
+                <span className={`text-[10px] self-end ph-0.5 ${isOverLimit ? "text-[#48bcb6]" : "text-gray-300"}`}>
                     {charCount}/500
                 </span>
 
@@ -86,8 +86,8 @@ export function ChatInput({ onSend, isLoading }: Props) {
                     onClick={handleSend}
                     disabled={isLoading || !value.trim() || isOverLimit}
                     className="
-                        flex-shrink-0 w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center self-end
-                        hover:bg-red-700 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 shadow-sm
+                        flex-shrink-0 w-8 h-8 rounded-lg bg-[#48bcb6] flex items-center justify-center self-end
+                        hover:opacity-90 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 shadow-sm
                     "
                 >
                     <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">

@@ -39,9 +39,9 @@ export function ChatWidget() {
                         onClick={() => setIsOpen((prev) => !prev)}
                         aria-label={isOpen ? "チャットを閉じる" : "AIアシスタントを開く"}
                         className="
-                            w-14 h-14 rounded-full bg-red-600 text-white shadow-lg
+                            w-14 h-14 rounded-full bg-[#48bcb6] text-white shadow-lg
                             flex items-center justify-center
-                            hover:bg-red-700 active:scale-95
+                            hover:opacity-90 active:scale-95
                             transition-all duration-200
                         "
                     >

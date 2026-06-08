@@ -18,7 +18,7 @@ export function MessageBubble({ message, onDocumentClick }: Props) {
         <div className={`flex items-end gap-2 ${isUser ? "flex-row-reverse" : "flex-row"}`}>
             {/* アバター */}
             {!isUser && (
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-red-600 flex items-center justify-center shadow-sm">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#48bcb6] flex items-center justify-center shadow-sm">
                     <span className="text-white text-xs font-bold">AI</span>
                 </div>
             )}
@@ -27,7 +27,7 @@ export function MessageBubble({ message, onDocumentClick }: Props) {
                 {/* 吹き出し */}
                 <div className={`
                     px-4 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm
-                    ${isUser ? "bg-red-600 text-white rounded-br-sm" : "bg-white text-gray-800 border border-gray-100 rounded-bl-sm"}
+                    ${isUser ? "bg-[#48bcb6] text-white rounded-br-sm" : "bg-white text-gray-800 border border-gray-100 rounded-bl-sm"}
                 `}>
                     {isUser ? (
                         // ユーザーメッセージはそのまま表示
@@ -42,7 +42,7 @@ export function MessageBubble({ message, onDocumentClick }: Props) {
                                         return (
                                             <button
                                                 onClick={() => onDocumentClick(href)}
-                                                className="inline-flex items-center gap-1 px-2.5 py-1 mt-1 rounded-lg bg-red-50 border border-red-200 text-red-600 text-xs font-medium hover:bg-red-100 transition-colors"
+                                                className="inline-flex items-center gap-1 px-2.5 py-1 mt-1 rounded-lg bg-[#e8fbf8] border border-[#48bcb6] text-[#48bcb6] text-xs font-medium hover:opacity-90 transition-opacity"
                                             >
                                                 📄 {children}
                                             </button>

@@ -76,7 +76,7 @@ export function ChatHistory({ sessions, isLoading, activeSessionId, onSelectSess
             <div className="px-3 py-3 border-b border-gray-200 flex-shrink-0">
                 <button
                     onClick={onNewChat}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-red-300 text-red-600 hover:bg-red-50 transition-colors text-sm font-medium"
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-[#48bcb6] text-[#48bcb6] hover:bg-[#e8fbf8] transition-colors text-sm font-medium"
                 >
                     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M19 13H13v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
@@ -89,7 +89,7 @@ export function ChatHistory({ sessions, isLoading, activeSessionId, onSelectSess
             <div className="flex-1 overflow-y-auto px-2 py-2">
                 {isLoading && (
                     <div className="flex justify-center py-8">
-                        <div className="w-5 h-5 border-2 border-red-300 border-t-red-600 rounded-full animate-spin" />
+                        <div className="w-5 h-5 border-2 border-[#e8fbf8] border-t-[#48bcb6] rounded-full animate-spin" />
                     </div>
                 )}
 
@@ -111,11 +111,11 @@ export function ChatHistory({ sessions, isLoading, activeSessionId, onSelectSess
                             <div key={session.id} className="relative group">
                                 {/* 削除確認オーバーレイ */}
                                 {deletingId === session.id && (
-                                    <div className="absolute inset-0 z-10 flex items-center justify-between bg-red-50 border border-red-200 rounded-lg px-2 py-1 gap-1">
-                                        <span className="text-[11px] text-red-700 flex-1 truncate">削除しますか？</span>
+                                    <div className="absolute inset-0 z-10 flex items-center justify-between bg-[#e8fbf8] border border-[#48bcb6] rounded-lg px-2 py-1 gap-1">
+                                        <span className="text-[11px] text-[#48bcb6] flex-1 truncate">削除しますか？</span>
                                         <button
                                             onClick={() => executeDelete(session.id)}
-                                            className="text-[11px] px-2 py-0.5 bg-red-600 text-white rounded hover:bg-red-700"
+                                            className="text-[11px] px-2 py-0.5 bg-[#48bcb6] text-white rounded hover:opacity-90"
                                         >
                                             削除
                                         </button>
@@ -134,7 +134,7 @@ export function ChatHistory({ sessions, isLoading, activeSessionId, onSelectSess
                                         w-full text-left px-2 py-2 rounded-lg text-sm transition-colors
                                         flex items-center gap-1
                                         ${session.id === activeSessionId
-                                            ? "bg-red-100 text-red-700"
+                                            ? "bg-[#e8fbf8] text-[#48bcb6]"
                                             : "hover:bg-gray-100 text-gray-700"}
                                     `}
                                 >
@@ -150,7 +150,7 @@ export function ChatHistory({ sessions, isLoading, activeSessionId, onSelectSess
                                             }}
                                             onClick={e => e.stopPropagation()}
                                             maxLength={100}
-                                            className="flex-1 min-w-0 bg-white border border-red-300 rounded px-1 text-sm outline-none"
+                                            className="flex-1 min-w-0 bg-white border border-[#48bcb6] rounded px-1 text-sm outline-none"
                                         />
                                     ) : (
                                         <span className="flex-1 truncate">{session.title}</span>
@@ -172,10 +172,10 @@ export function ChatHistory({ sessions, isLoading, activeSessionId, onSelectSess
                                             <span
                                                 role="button"
                                                 onClick={e => confirmDelete(session.id, e)}
-                                                className="p-0.5 rounded hover:bg-red-100"
+                                                className="p-0.5 rounded hover:bg-[#e8fbf8]"
                                                 title="削除"
                                             >
-                                                <svg className="w-3 h-3 text-gray-400 hover:text-red-500" viewBox="0 0 24 24" fill="currentColor">
+                                                <svg className="w-3 h-3 text-gray-400 hover:text-[#48bcb6]" viewBox="0 0 24 24" fill="currentColor">
                                                     <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
                                                 </svg>
                                             </span>
