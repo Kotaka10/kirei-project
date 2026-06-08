@@ -4,9 +4,10 @@ import { useChatSessions } from "../../hooks/useChatSessions";
 import { MessageBubble } from "./MessageBubble";
 import { TypingIndicator } from "./TypingIndicator";
 import { ChatInput } from "./ChatInput";
-import { SuggestedQuestions } from "./SuggestedQuestions";
+import { SuggestedQuestions } from "../suggestions/SuggestedQuestions";
 import { DocumentPreviewModal } from "./DocumentPreviewModal";
 import { ChatHistory } from "./ChatHistory";
+import { useSuggestedQuestions } from "../../hooks/useSuggestedQuestions";
 
 interface Props {
     onClose:            () => void;
@@ -77,6 +78,9 @@ export function ChatWindow({ onClose, isFullscreen, onToggleFullscreen }: Props)
     }, []);
 
     const isEmpty          = messages.length === 0;
+    const { questions: suggestedQuestions, isLoading: suggestionsLoading } = useSuggestedQuestions(
+        viewMode === "chat" && isEmpty,
+    );
     const lastMsg          = messages.at(-1);
     const showTyping       = isLoading && (!lastMsg || lastMsg.content === "");
     const lastAssistantIdx = messages.reduceRight(
@@ -91,7 +95,7 @@ export function ChatWindow({ onClose, isFullscreen, onToggleFullscreen }: Props)
     return (
         <div className={windowClass}>
             {/* ヘッダー */}
-            <div className="flex items-center justify-between px-4 py-3 bg-red-600 text-white flex-shrink-0">
+            <div className="flex items-center justify-between px-4 py-3 bg-[#48bcb6] text-white flex-shrink-0">
                 <div className="flex items-center gap-2.5">
                     {viewMode === "history" ? (
                         // 履歴表示中: 戻るボタン
@@ -115,7 +119,7 @@ export function ChatWindow({ onClose, isFullscreen, onToggleFullscreen }: Props)
                         <p className="text-sm font-semibold leading-tight">
                             {viewMode === "history" ? "チャット履歴" : "AIアシスタント"}
                         </p>
-                        <p className="text-[10px] text-red-100">
+                        <p className="text-[10px] text-white/80">
                             {viewMode === "history" ? "過去の会話を選択" : "スケジュール・売上げ・予約を確認"}
                         </p>
                     </div>
@@ -197,8 +201,8 @@ export function ChatWindow({ onClose, isFullscreen, onToggleFullscreen }: Props)
                     <div ref={scrollContainerRef} onScroll={handleScroll} className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
                         {isEmpty ? (
                             <div className="flex flex-col items-center justify-center h-full text-center gap-3">
-                                <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center">
-                                    <svg className="w-7 h-7 text-red-500" viewBox="0 0 24 24" fill="currentColor">
+                                <div className="w-14 h-14 rounded-full bg-[#e8fbf8] flex items-center justify-center">
+                                    <svg className="w-7 h-7 text-[#48bcb6]" viewBox="0 0 24 24" fill="currentColor">
                                         <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
                                     </svg>
                                 </div>
@@ -224,7 +228,7 @@ export function ChatWindow({ onClose, isFullscreen, onToggleFullscreen }: Props)
                                                     <button
                                                         key={s}
                                                         onClick={() => handleSend(s)}
-                                                        className="text-[11px] px-3 py-1.5 rounded-full border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 transition-colors duration-150 whitespace-nowrap"
+                                                        className="text-[11px] px-3 py-1.5 rounded-full border border-[#48bcb6] text-[#48bcb6] bg-[#e8fbf8] hover:opacity-90 transition-opacity duration-150 whitespace-nowrap"
                                                     >
                                                         {s}
                                                     </button>
@@ -240,7 +244,7 @@ export function ChatWindow({ onClose, isFullscreen, onToggleFullscreen }: Props)
 
                         {error && (
                             <div className="flex justify-center">
-                                <p className="text-xs text-red-500 bg-red-50 border border-red-100 rounded-lg px-3 py-1">
+                                <p className="text-xs text-[#48bcb6] bg-[#e8fbf8] border border-[#48bcb6] rounded-lg px-3 py-1">
                                     {error}
                                 </p>
                             </div>
@@ -249,7 +253,13 @@ export function ChatWindow({ onClose, isFullscreen, onToggleFullscreen }: Props)
                         <div ref={bottomRef} />
                     </div>
 
-                    {isEmpty && <SuggestedQuestions onSelect={handleSend} />}
+                    {isEmpty && (
+                        <SuggestedQuestions
+                            questions={suggestedQuestions}
+                            isLoading={suggestionsLoading}
+                            onSelect={handleSend}
+                        />
+                    )}
 
                     <ChatInput onSend={handleSend} isLoading={isLoading} />
                 </>
