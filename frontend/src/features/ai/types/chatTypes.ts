@@ -27,11 +27,3 @@ export const ChatResponseSchema = z.object({
     suggestions:          z.array(z.string()).optional(),
 });
 export type ChatResponse = z.infer<typeof ChatResponseSchema>;
-
-// よく使う質問（サジェスト）
-export const SUGGESTED_QUESTIONS = [
-    "今月のスケジュールを教えて",
-    "明日空いているスタッフは？",
-    "エアコン5台のオフィスで汚れありの概算は？",
-    "新規顧客への営業トークを教えて",
-] as const;
