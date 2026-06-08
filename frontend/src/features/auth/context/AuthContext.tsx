@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { AuthUser } from "../types/authTypes";
+import { clearOneSignalUser, setupOneSignalUser } from "../../../one-signal/lib/onesignal";
 
 const TOKEN_KEY = "auth_token";
 const USER_KEY  = "auth_user";
@@ -30,14 +31,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         localStorage.setItem(USER_KEY,  JSON.stringify(newUser));
         setToken(newToken);
         setUser(newUser);
+
+        void setupOneSignalUser(newUser.staff_id, { requestPermission: true }).catch(error => {
+            console.warn("[OneSignal] setup failed after login", error);
+        });
     };
 
     const logout = () => {
+        void clearOneSignalUser().catch(error => {
+            console.warn("[OneSignal] logout failed", error);
+        });
         localStorage.removeItem(TOKEN_KEY);
         localStorage.removeItem(USER_KEY);
         setToken(null);
         setUser(null);
     };
+
+    useEffect(() => {
+        if (!user?.staff_id) return;
+        // 初回ログイン時の許可リクエストは saveAuth 側が担当する。
+        // 許可前にここが走ると購読が無い状態で login() してしまい external_id が
+        // 購読に紐付かないため、すでに許可済みのとき（再訪問時）だけ紐付け直す。
+        if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
+
+        void setupOneSignalUser(user.staff_id).catch(error => {
+            console.warn("[OneSignal] setup failed", error);
+        });
+    }, [user?.staff_id]);
 
     return (
         <AuthContext.Provider value={{ token, user, isAuthenticated: !!token, saveAuth, logout }}>

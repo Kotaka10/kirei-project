@@ -1,18 +1,34 @@
 import type { PushPayload } from "../types/PushPayload.js";
 
+export interface OneSignalResponse {
+    id?: string;
+    recipients?: number;
+    external_id?: string;
+    errors?: unknown;
+}
+
 export const sendPushToUser = async ({
     externalId,
     title,
     body,
-}: PushPayload) => {
+    url,
+    data,
+}: PushPayload): Promise<OneSignalResponse> => {
+    const appId = process.env.ONESIGNAL_APP_ID;
+    const apiKey = process.env.ONESIGNAL_REST_API_KEY;
+
+    if (!appId || !apiKey) {
+        throw new Error("OneSignalの環境変数が設定されていません");
+    }
+
     const res = await fetch("https://api.onesignal.com/notifications", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Key ${process.env.ONESIGNAL_REST_API_KEY}`,
+            Authorization: `Key ${apiKey}`,
         },
         body: JSON.stringify({
-            app_id: process.env.ONESIGNAL_APP_ID, //自分のone signalアプリ
+            app_id: appId, //自分のone signalアプリ
             target_channel: "push", //プッシュ通知を使う
             include_aliases: {
                 external_id: [externalId], //誰に送るか指定
@@ -25,6 +41,8 @@ export const sendPushToUser = async ({
                 ja: body,
                 en: body,
             }, //通知本文
+            ...(url ? { url } : {}),
+            ...(data ? { data } : {}),
         }),
     });
 
@@ -34,5 +52,5 @@ export const sendPushToUser = async ({
         throw new Error(text);
     }
 
-    return JSON.parse(text);
+    return JSON.parse(text) as OneSignalResponse;
 }

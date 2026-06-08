@@ -49,6 +49,7 @@ export class AuthService {
         return {
             token,
             user: {
+                staff_id: staff.id,
                 name: staff.name,
                 role: staff.role,
                 email: staff.email,

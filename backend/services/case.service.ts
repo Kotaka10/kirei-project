@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import dotenv from "dotenv";
 import { CaseRepository } from "../repositories/caseRepository.js";
 import { sendPushToUser } from "./notificationService.js";
-import type { CaseRecord, CaseNotificationRecord, NotifiedStaff } from "../types/case.js";
+import type { CasePushSummary, CaseRecord, CaseNotificationRecord, NotifiedStaff } from "../types/case.js";
 dotenv.config();
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -13,7 +13,7 @@ export class CaseService {
     async createCase(
         summary: string,
         createdBy: number,
-    ): Promise<{ case: CaseRecord; notifiedStaff: NotifiedStaff[] }> {
+    ): Promise<{ case: CaseRecord; notifiedStaff: NotifiedStaff[]; push: CasePushSummary }> {
         // AIが案件タイトル・書類・適切なロールを生成
         const aiResult = await this.generateCaseDocument(summary);
 
@@ -36,19 +36,50 @@ export class CaseService {
         // DB通知レコード作成
         await this.repo.createNotifications(caseId, staffList.map(s => s.staff_id));
 
-        // プッシュ通知送信（エラーでも続行）
-        await Promise.allSettled( // 全員分の結果が出るまで待つメソッド Promise.all() → 即座に中断 Promise.allSettled() → 残りも続ける
+        const push = await this.sendCasePushNotifications(caseId, aiResult.title, staffList);
+
+        const created = await this.repo.findById(caseId);
+        return { case: created!, notifiedStaff: staffList, push };
+    }
+
+    private async sendCasePushNotifications(
+        caseId: number,
+        title:  string,
+        staffList: NotifiedStaff[],
+    ): Promise<CasePushSummary> {
+        const results = await Promise.allSettled( // 全員分の結果が出るまで待つメソッド Promise.all() → 即座に中断 Promise.allSettled() → 残りも続ける
             staffList.map(staff =>
                 sendPushToUser({
                     externalId: `user-${staff.staff_id}`,
                     title: "新しい案件が登録されました",
-                    body: aiResult.title,
+                    body: title,
+                    data: {
+                        type: "case_created",
+                        case_id: caseId,
+                    },
                 }),
             ),
         );
 
-        const created = await this.repo.findById(caseId);
-        return { case: created!, notifiedStaff: staffList };
+        const errors: CasePushSummary["errors"] = [];
+        results.forEach((result, index) => {
+            if (result.status === "fulfilled") return;
+            const staff = staffList[index];
+            if (!staff) return;
+            errors.push({
+                staff_id: staff.staff_id,
+                name: staff.name,
+                message: result.reason instanceof Error ? result.reason.message : String(result.reason),
+            });
+        });
+
+        return {
+            provider:  "onesignal",
+            attempted: staffList.length,
+            succeeded: results.filter(result => result.status === "fulfilled").length,
+            failed:    errors.length,
+            errors,
+        };
     }
 
     private async generateCaseDocument(summary: string): Promise<{

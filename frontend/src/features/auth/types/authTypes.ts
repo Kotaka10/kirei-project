@@ -7,9 +7,10 @@ export const LoginRequestSchema = z.object({
 export type LoginRequest = z.infer<typeof LoginRequestSchema>;
 
 export const AuthUserSchema = z.object({
-    name:  z.string(),
-    role:  z.enum(["cleaner", "technician", "supervisor"]),
-    email: z.string().email(),
+    staff_id: z.number(),
+    name:     z.string(),
+    role:     z.enum(["cleaner", "technician", "supervisor"]),
+    email:    z.string().email(),
 });
 export type AuthUser = z.infer<typeof AuthUserSchema>;
 

@@ -7,6 +7,7 @@ import {
     markAllNotificationsRead,
 } from "../../cases/lib/caseApi";
 import type { CaseNotification } from "../../cases/types/caseTypes";
+import { onCaseNotification } from "../../../one-signal/lib/onesignal";
 
 interface NotificationContextValue {
     notifications: CaseNotification[];
@@ -27,9 +28,9 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const reload = useCallback(async () => {
+    const refresh = useCallback(async (opts?: { silent?: boolean }) => {
         if (!token) return;
-        setLoading(true);
+        if (!opts?.silent) setLoading(true);
         setError(null);
         try {
             const [data, countData] = await Promise.all([
@@ -41,11 +42,24 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         } catch (e: any) {
             setError(e.message);
         } finally {
-            setLoading(false);
+            if (!opts?.silent) setLoading(false);
         }
     }, [token]);
 
+    const reload = useCallback(() => refresh(), [refresh]);
+
     useEffect(() => { reload(); }, [reload]);
+
+    // OneSignalのプッシュ通知を受信したら、フラグ（未読バッジ・未読リスト）を自動で更新する
+    useEffect(() => {
+        if (!token) return;
+        const unsubscribe = onCaseNotification((data) => {
+            if (data.type === "case_created") {
+                void refresh({ silent: true }); //スピナーを出さずに裏で再取得
+            }
+        });
+        return unsubscribe;
+    }, [token, refresh]);
 
     const markRead = useCallback(async (id: number) => {
         if (!token) return;

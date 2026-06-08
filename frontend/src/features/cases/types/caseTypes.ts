@@ -33,6 +33,13 @@ export interface NotifiedStaff {
 export interface CreateCaseResponse {
     case: CaseRecord;
     notifiedStaff: NotifiedStaff[];
+    push?: {
+        provider: "onesignal";
+        attempted: number;
+        succeeded: number;
+        failed: number;
+        errors: { staff_id: number; name: string; message: string }[];
+    };
 }
 
 export const STATUS_LABEL: Record<string, string> = {

@@ -39,3 +39,11 @@ export interface NotifiedStaff {
     name: string;
     role: string;
 }
+
+export interface CasePushSummary {
+    provider: "onesignal";
+    attempted: number;
+    succeeded: number;
+    failed: number;
+    errors: { staff_id: number; name: string; message: string }[];
+}

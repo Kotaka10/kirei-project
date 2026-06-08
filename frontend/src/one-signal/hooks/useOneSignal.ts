@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { initOneSignal, loginOneSignalUser, requestNotificationPermission } from '../lib/onesignal';
+import { setupOneSignalUser } from '../lib/onesignal';
 import OneSignal from 'react-onesignal';
 
 export default function useOneSignal() {
@@ -10,13 +10,7 @@ export default function useOneSignal() {
 
     try {
       setStatus("OneSignal初期化中...");
-      await initOneSignal();
-
-      await requestNotificationPermission();
-
-      await loginOneSignalUser(userId);
-
-      await OneSignal.User.PushSubscription.optIn(); //通知受信を有効化 subscription作成
+      await setupOneSignalUser(userId, { requestPermission: true });
 
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
@@ -37,4 +31,3 @@ export default function useOneSignal() {
     handleEnableNotifications
   }
 }
-

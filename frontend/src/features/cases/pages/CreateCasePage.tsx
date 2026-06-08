@@ -38,7 +38,7 @@ export default function CreateCasePage() {
                     <div className="w-14 h-14 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
                     <div className="text-center">
                         <p className="text-lg font-semibold text-gray-700">AIが案件書類を作成中...</p>
-                        <p className="text-sm text-gray-400 mt-1">適切なスタッフへの通知も自動で送信します</p>
+                        <p className="text-sm text-gray-400 mt-1">適切なスタッフへOneSignal通知も自動で送信します</p>
                     </div>
                 </div>
             </div>
@@ -54,8 +54,16 @@ export default function CreateCasePage() {
                         <p className="font-semibold text-green-800">案件を登録しました</p>
                     </div>
                     <p className="text-sm text-green-700">
-                        {result.notifiedStaff.length}名のスタッフにプッシュ通知を送信しました
+                        {result.push
+                            ? `OneSignalで${result.push.succeeded}/${result.push.attempted}名にプッシュ通知を送信しました`
+                            : `${result.notifiedStaff.length}名のスタッフにプッシュ通知を送信しました`
+                        }
                     </p>
+                    {result.push && result.push.failed > 0 && (
+                        <p className="text-xs text-amber-700 mt-2">
+                            {result.push.failed}名はOneSignal通知に失敗しました。通知許可またはOneSignal設定を確認してください。
+                        </p>
+                    )}
                 </div>
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 mb-4">
@@ -132,7 +140,7 @@ export default function CreateCasePage() {
             <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-6">
                 <p className="text-sm text-blue-700">
                     案件の概要を入力すると、AIが自動で詳細書類を作成し、
-                    適したスタッフへプッシュ通知を送信します。
+                    適したスタッフへOneSignalでプッシュ通知を送信します。
                 </p>
             </div>
 
