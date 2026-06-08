@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../auth/context/AuthContext";
 import { usePendingCount } from "../approvals/hooks/useApprovals";
+import { useNotificationContext } from "../notifications/context/NotificationContext";
 
 const navItem = ({ isActive }: { isActive: boolean }) =>
   `flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
@@ -12,6 +13,7 @@ const navItem = ({ isActive }: { isActive: boolean }) =>
 export default function DefaultLayout() {
   const { user, logout } = useAuth();
   const pendingCount = usePendingCount();
+  const { unreadCount } = useNotificationContext();
   const isSupervisor = user?.role === "supervisor";
 
   return (
@@ -27,6 +29,17 @@ export default function DefaultLayout() {
         <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
           <NavLink to="/jobs"         className={navItem}>ジョブ一覧</NavLink>
           <NavLink to="/staff-skills" className={navItem}>スキル管理</NavLink>
+
+          {/* 案件管理 */}
+          <NavLink to="/cases" className={navItem}>案件一覧</NavLink>
+          <NavLink to="/notifications" className={navItem}>
+            案件通知
+            {unreadCount > 0 && (
+              <span className="ml-auto min-w-[20px] h-5 bg-blue-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
+                {unreadCount > 99 ? "99+" : unreadCount}
+              </span>
+            )}
+          </NavLink>
 
           {isSupervisor && (
             <NavLink to="/approvals" className={navItem}>
