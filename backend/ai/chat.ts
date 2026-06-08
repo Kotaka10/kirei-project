@@ -6,6 +6,7 @@ import { dispatchTool } from "../tools/dispatcher.js";
 import { getAvailableServices } from "../tools/handlers/salesSupportHandlers.js";
 import { buildSystemPrompt } from "./systemPrompt.js";
 import { generateSuggestions } from "./suggestions.js";
+import { isAllowedAiQuestion, OUT_OF_SCOPE_REPLY } from "./scopeGuard.js";
 import type { UserContext } from "../types/auth.js";
 import dotenv from "dotenv";
 dotenv.config();
@@ -19,6 +20,21 @@ export async function chat(
     ctx: UserContext,
     onChunk: (delta: string) => void,
 ): Promise<{ reply: string; history: ChatCompletionMessageParam[]; assignmentRequested: boolean; suggestions: string[] }> {
+
+    const allowedQuestion = await isAllowedAiQuestion(openai, userMessage, history);
+    if (!allowedQuestion) {
+        onChunk(OUT_OF_SCOPE_REPLY);
+        return {
+            reply:               OUT_OF_SCOPE_REPLY,
+            history:             [
+                ...history,
+                { role: "user", content: userMessage },
+                { role: "assistant", content: OUT_OF_SCOPE_REPLY },
+            ],
+            assignmentRequested: false,
+            suggestions:         [],
+        };
+    }
 
     const messages: ChatCompletionMessageParam[] = [
         { role: "system", content: buildSystemPrompt(ctx) },
