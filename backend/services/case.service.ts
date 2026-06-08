@@ -37,7 +37,7 @@ export class CaseService {
         await this.repo.createNotifications(caseId, staffList.map(s => s.staff_id));
 
         // プッシュ通知送信（エラーでも続行）
-        await Promise.allSettled(
+        await Promise.allSettled( // 全員分の結果が出るまで待つメソッド Promise.all() → 即座に中断 Promise.allSettled() → 残りも続ける
             staffList.map(staff =>
                 sendPushToUser({
                     externalId: `user-${staff.staff_id}`,
