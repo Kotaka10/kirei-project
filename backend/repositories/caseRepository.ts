@@ -8,14 +8,15 @@ export class CaseRepository {
         summary: string,
         document: string,
         requiredRoles: string[],
+        requiredLevel: number,
         createdBy: number,
     ): Promise<number> {
         const conn = await getConnection();
         try {
             const [result] = await conn.query<ResultSetHeader>(
-                `INSERT INTO cases (title, summary, document, required_roles, created_by)
-                 VALUES (?, ?, ?, ?, ?)`,
-                [title, summary, document, JSON.stringify(requiredRoles), createdBy],
+                `INSERT INTO cases (title, summary, document, required_roles, required_level, created_by)
+                 VALUES (?, ?, ?, ?, ?, ?)`,
+                [title, summary, document, JSON.stringify(requiredRoles), requiredLevel, createdBy],
             );
             return result.insertId;
         } finally {
@@ -75,26 +76,28 @@ export class CaseRepository {
         }
     }
 
-    async findStaffByRoles(roles: string[]): Promise<NotifiedStaff[]> {
+    /**
+     * 案件のレベル感に「適した」スタッフを抽出する。
+     *   - スタッフのレベル = 保有スキルの最高レベル（staff_skills.level の最大値。未登録なら1扱い）
+     *   - 案件レベルとの差が ±1 以内（適正レベル帯）のスタッフを対象にする
+     *   - roles が指定されていれば、そのロールに絞り込む（空配列なら全ロール）
+     */
+    async findMatchingStaff(roles: string[], requiredLevel: number): Promise<NotifiedStaff[]> {
         const conn = await getConnection();
         try {
-            const placeholders = roles.map(() => "?").join(", ");
+            const roleFilter =
+                roles.length > 0
+                    ? `AND s.role IN (${roles.map(() => "?").join(", ")})`
+                    : "";
             const [rows] = await conn.query<RowDataPacket[]>(
-                `SELECT id AS staff_id, name, role FROM staffs
-                 WHERE role IN (${placeholders}) AND is_active = true`,
-                roles,
-            );
-            return rows as NotifiedStaff[];
-        } finally {
-            await conn.end();
-        }
-    }
-
-    async findAllActiveStaff(): Promise<NotifiedStaff[]> {
-        const conn = await getConnection();
-        try {
-            const [rows] = await conn.query<RowDataPacket[]>(
-                "SELECT id AS staff_id, name, role FROM staffs WHERE is_active = true",
+                `SELECT s.id AS staff_id, s.name, s.role,
+                        COALESCE(MAX(ss.level), 1) AS level
+                 FROM staffs s
+                 LEFT JOIN staff_skills ss ON ss.staff_id = s.id
+                 WHERE s.is_active = true ${roleFilter}
+                 GROUP BY s.id, s.name, s.role
+                 HAVING ABS(COALESCE(MAX(ss.level), 1) - ?) <= 1`,
+                [...roles, requiredLevel],
             );
             return rows as NotifiedStaff[];
         } finally {
@@ -122,6 +125,7 @@ export class CaseRepository {
                 `SELECT cn.id, cn.case_id, cn.staff_id, cn.is_read, cn.created_at,
                         c.title AS case_title, c.summary AS case_summary,
                         c.status AS case_status, c.document AS case_document,
+                        c.required_level AS case_required_level,
                         c.created_at AS case_created_at
                  FROM case_notifications cn
                  JOIN cases c ON c.id = cn.case_id

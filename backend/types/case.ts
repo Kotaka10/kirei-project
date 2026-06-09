@@ -15,6 +15,7 @@ export interface CaseRecord {
     document: string | null;
     status: "open" | "in_progress" | "closed";
     required_roles: string[] | null;
+    required_level: number | null; // 案件の難易度レベル 1〜5（AIが内容から自動判別）
     created_by: number;
     created_by_name?: string;
     created_at: string;
@@ -31,6 +32,7 @@ export interface CaseNotificationRecord {
     case_summary?: string;
     case_status?: string;
     case_document?: string | null;
+    case_required_level?: number | null;
     case_created_at?: string;
 }
 
@@ -38,6 +40,7 @@ export interface NotifiedStaff {
     staff_id: number;
     name: string;
     role: string;
+    level: number; // 保有スキルの最高レベル 1〜5（スキル未登録時は1扱い）
 }
 
 export interface CasePushSummary {

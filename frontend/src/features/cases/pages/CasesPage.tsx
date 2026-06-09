@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCases } from "../hooks/useCases";
-import { STATUS_LABEL, STATUS_COLOR, ROLE_LABEL } from "../types/caseTypes";
+import { STATUS_LABEL, STATUS_COLOR, ROLE_LABEL, LEVEL_COLOR, levelLabel } from "../types/caseTypes";
 
 export default function CasesPage() {
     const { cases, loading, error } = useCases();
@@ -82,9 +82,14 @@ export default function CasesPage() {
                                     <h2 className="font-semibold text-gray-800 truncate">{c.title}</h2>
                                 </div>
                                 <p className="text-sm text-gray-500 line-clamp-2">{c.summary}</p>
-                                {c.required_roles && c.required_roles.length > 0 && (
-                                    <div className="flex gap-1 mt-2">
-                                        {c.required_roles.map(r => (
+                                {((c.required_roles && c.required_roles.length > 0) || c.required_level != null) && (
+                                    <div className="flex flex-wrap gap-1 mt-2">
+                                        {c.required_level != null && (
+                                            <span className={`text-xs px-2 py-0.5 rounded font-medium ${LEVEL_COLOR[c.required_level] ?? "bg-gray-100 text-gray-600"}`}>
+                                                {levelLabel(c.required_level)}
+                                            </span>
+                                        )}
+                                        {c.required_roles?.map(r => (
                                             <span key={r} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
                                                 {ROLE_LABEL[r] ?? r}
                                             </span>

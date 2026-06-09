@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCases } from "../hooks/useCases";
-import { ROLE_LABEL } from "../types/caseTypes";
+import { ROLE_LABEL, LEVEL_COLOR, LEVEL_LABEL, levelLabel } from "../types/caseTypes";
 import type { CreateCaseResponse } from "../types/caseTypes";
 
 type Step = "input" | "generating" | "result";
@@ -55,8 +55,8 @@ export default function CreateCasePage() {
                     </div>
                     <p className="text-sm text-green-700">
                         {result.push
-                            ? `OneSignalで${result.push.succeeded}/${result.push.attempted}名にプッシュ通知を送信しました`
-                            : `${result.notifiedStaff.length}名のスタッフにプッシュ通知を送信しました`
+                            ? `レベル感に適した${result.push.attempted}名へOneSignalでプッシュ通知を送信しました（成功 ${result.push.succeeded}/${result.push.attempted}名）`
+                            : `レベル感に適した${result.notifiedStaff.length}名のスタッフにプッシュ通知を送信しました`
                         }
                     </p>
                     {result.push && result.push.failed > 0 && (
@@ -69,16 +69,26 @@ export default function CreateCasePage() {
                 <div className="bg-white border border-gray-200 rounded-xl p-6 mb-4">
                     <h2 className="text-xl font-bold text-gray-800 mb-4">{result.case.title}</h2>
 
-                    {result.case.required_roles && result.case.required_roles.length > 0 && (
-                        <div className="flex gap-2 mb-4">
-                            <span className="text-sm text-gray-500">必要ロール:</span>
-                            {result.case.required_roles.map(r => (
-                                <span key={r} className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-medium">
-                                    {ROLE_LABEL[r] ?? r}
+                    <div className="flex flex-wrap items-center gap-2 mb-4">
+                        {result.case.required_level != null && (
+                            <>
+                                <span className="text-sm text-gray-500">レベル感:</span>
+                                <span className={`text-xs px-2 py-0.5 rounded font-medium ${LEVEL_COLOR[result.case.required_level] ?? "bg-gray-100 text-gray-600"}`}>
+                                    {levelLabel(result.case.required_level)}
                                 </span>
-                            ))}
-                        </div>
-                    )}
+                            </>
+                        )}
+                        {result.case.required_roles && result.case.required_roles.length > 0 && (
+                            <>
+                                <span className="text-sm text-gray-500 ml-2">必要ロール:</span>
+                                {result.case.required_roles.map(r => (
+                                    <span key={r} className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-medium">
+                                        {ROLE_LABEL[r] ?? r}
+                                    </span>
+                                ))}
+                            </>
+                        )}
+                    </div>
 
                     <div className="prose prose-sm max-w-none">
                         <h3 className="text-sm font-semibold text-gray-600 mb-2">AI生成書類</h3>
@@ -88,9 +98,10 @@ export default function CreateCasePage() {
                     </div>
                 </div>
 
-                {result.notifiedStaff.length > 0 && (
+                {result.notifiedStaff.length > 0 ? (
                     <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
-                        <h3 className="text-sm font-semibold text-gray-700 mb-3">通知を送ったスタッフ</h3>
+                        <h3 className="text-sm font-semibold text-gray-700 mb-1">通知を送ったスタッフ</h3>
+                        <p className="text-xs text-gray-400 mb-3">案件のレベル感（{levelLabel(result.case.required_level)}）に合うスタッフを自動抽出しています</p>
                         <div className="flex flex-wrap gap-2">
                             {result.notifiedStaff.map(s => (
                                 <div key={s.staff_id} className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
@@ -99,11 +110,21 @@ export default function CreateCasePage() {
                                     </span>
                                     <div>
                                         <p className="text-xs font-medium text-gray-800">{s.name}</p>
-                                        <p className="text-[11px] text-gray-400">{ROLE_LABEL[s.role] ?? s.role}</p>
+                                        <p className="text-[11px] text-gray-400">
+                                            {ROLE_LABEL[s.role] ?? s.role}
+                                            <span className="ml-1 text-gray-300">/</span>
+                                            <span className="ml-1">Lv{s.level}・{LEVEL_LABEL[s.level] ?? "—"}</span>
+                                        </p>
                                     </div>
                                 </div>
                             ))}
                         </div>
+                    </div>
+                ) : (
+                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+                        <p className="text-sm text-amber-700">
+                            この案件のレベル感（{levelLabel(result.case.required_level)}）に適したスタッフが見つからなかったため、通知は送信されていません。
+                        </p>
                     </div>
                 )}
 

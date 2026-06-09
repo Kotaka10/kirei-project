@@ -14,7 +14,7 @@ export class CaseService {
         summary: string,
         createdBy: number,
     ): Promise<{ case: CaseRecord; notifiedStaff: NotifiedStaff[]; push: CasePushSummary }> {
-        // AIが案件タイトル・書類・適切なロールを生成
+        // AIが案件タイトル・書類・適切なロール・難易度レベルを生成
         const aiResult = await this.generateCaseDocument(summary);
 
         const caseId = await this.repo.create(
@@ -22,21 +22,26 @@ export class CaseService {
             summary,
             aiResult.document,
             aiResult.requiredRoles,
+            aiResult.requiredLevel,
             createdBy,
         );
 
-        // 適切なスタッフを特定して通知
-        let staffList: NotifiedStaff[];
-        if (aiResult.requiredRoles.length > 0) {
-            staffList = await this.repo.findStaffByRoles(aiResult.requiredRoles);
-        } else {
-            staffList = await this.repo.findAllActiveStaff();
-        }
+        // ロール（あれば）で絞り込みつつ、案件レベルの±1帯に収まる
+        // 「レベル感に適した」スタッフだけを特定して通知する
+        const staffList = await this.repo.findMatchingStaff(
+            aiResult.requiredRoles,
+            aiResult.requiredLevel,
+        );
 
         // DB通知レコード作成
         await this.repo.createNotifications(caseId, staffList.map(s => s.staff_id));
 
-        const push = await this.sendCasePushNotifications(caseId, aiResult.title, staffList);
+        const push = await this.sendCasePushNotifications(
+            caseId,
+            aiResult.title,
+            aiResult.requiredLevel,
+            staffList,
+        );
 
         const created = await this.repo.findById(caseId);
         return { case: created!, notifiedStaff: staffList, push };
@@ -45,17 +50,19 @@ export class CaseService {
     private async sendCasePushNotifications(
         caseId: number,
         title:  string,
+        requiredLevel: number,
         staffList: NotifiedStaff[],
     ): Promise<CasePushSummary> {
         const results = await Promise.allSettled( // 全員分の結果が出るまで待つメソッド Promise.all() → 即座に中断 Promise.allSettled() → 残りも続ける
             staffList.map(staff =>
                 sendPushToUser({
                     externalId: `user-${staff.staff_id}`,
-                    title: "新しい案件が登録されました",
+                    title: "あなたのレベルに合った新しい案件です",
                     body: title,
                     data: {
                         type: "case_created",
                         case_id: caseId,
+                        required_level: requiredLevel,
                     },
                 }),
             ),
@@ -86,6 +93,7 @@ export class CaseService {
         title: string;
         document: string;
         requiredRoles: string[];
+        requiredLevel: number;
     }> {
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini",
@@ -99,13 +107,20 @@ export class CaseService {
 {
   "title": "案件タイトル（30文字以内）",
   "document": "案件詳細書類（Markdown形式で作成。概要・目的・作業内容・注意事項・スケジュール目安を含む）",
-  "requiredRoles": ["cleaner", "technician", "supervisor"] の中から必要なロールのみを配列で返す
+  "requiredRoles": ["cleaner", "technician", "supervisor"] の中から必要なロールのみを配列で返す,
+  "requiredLevel": 1〜5の整数で、案件に求められるスタッフのレベル感（難易度）
 }
 
 - title: 案件の内容を端的に表すタイトル
 - document: 800〜1500文字程度の詳細な案件書類（見出しを使った構造化された内容）
 - requiredRoles: 案件に必要なスタッフのロール。cleaner（清掃員）・technician（技術者）・supervisor（監督者）から選択。
-  複雑な案件は複数可。全員に通知したい場合は空配列 []`,
+  複雑な案件は複数可。全員に通知したい場合は空配列 []
+- requiredLevel: 案件内容から判断した必要なスキルレベル（難易度）を以下の基準で1〜5の整数で返す。
+  1（見習い）: 単純・短時間の軽作業（一般的な拭き掃除、ゴミ回収など）
+  2（初級）  : 標準的な清掃作業（一般的なハウスクリーニングなど）
+  3（中級）  : 専門器具や一定の技術を要する作業（エアコン清掃、機械操作など）
+  4（上級）  : 高度な技術・分解洗浄・高所作業・規模の大きい現場対応
+  5（エキスパート）: 特殊清掃や高リスク作業、統括・顧客折衝を伴う大型/難案件`,
                 },
                 {
                     role: "user",
@@ -125,14 +140,23 @@ export class CaseService {
                           ["cleaner", "technician", "supervisor"].includes(r),
                       )
                     : [],
+                requiredLevel: this.normalizeLevel(parsed.requiredLevel),
             };
         } catch {
             return {
                 title: summary.slice(0, 30),
                 document: summary,
                 requiredRoles: [],
+                requiredLevel: 3, // 判定不能時は中級として中庸な帯に通知する
             };
         }
+    }
+
+    /** AIが返したレベルを 1〜5 の整数に丸める（不正値は中級=3） */
+    private normalizeLevel(value: unknown): number {
+        const n = Math.round(Number(value));
+        if (!Number.isFinite(n)) return 3;
+        return Math.min(5, Math.max(1, n));
     }
 
     async getCases(): Promise<CaseRecord[]> {

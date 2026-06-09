@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/context/AuthContext";
 import { fetchCaseById, updateCaseStatus } from "../lib/caseApi";
-import { STATUS_LABEL, STATUS_COLOR, ROLE_LABEL } from "../types/caseTypes";
+import { STATUS_LABEL, STATUS_COLOR, ROLE_LABEL, LEVEL_COLOR, levelLabel } from "../types/caseTypes";
 import type { CaseRecord } from "../types/caseTypes";
 
 export default function CaseDetailPage() {
@@ -78,16 +78,26 @@ export default function CaseDetailPage() {
                     <span>登録日: {new Date(c.created_at).toLocaleDateString("ja-JP")}</span>
                 </div>
 
-                {c.required_roles && c.required_roles.length > 0 && (
-                    <div className="flex items-center gap-2 mb-5">
-                        <span className="text-sm text-gray-500">必要ロール:</span>
-                        {c.required_roles.map(r => (
-                            <span key={r} className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-medium">
-                                {ROLE_LABEL[r] ?? r}
+                <div className="flex flex-wrap items-center gap-2 mb-5">
+                    {c.required_level != null && (
+                        <>
+                            <span className="text-sm text-gray-500">レベル感:</span>
+                            <span className={`text-xs px-2 py-0.5 rounded font-medium ${LEVEL_COLOR[c.required_level] ?? "bg-gray-100 text-gray-600"}`}>
+                                {levelLabel(c.required_level)}
                             </span>
-                        ))}
-                    </div>
-                )}
+                        </>
+                    )}
+                    {c.required_roles && c.required_roles.length > 0 && (
+                        <>
+                            <span className="text-sm text-gray-500 ml-2">必要ロール:</span>
+                            {c.required_roles.map(r => (
+                                <span key={r} className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-medium">
+                                    {ROLE_LABEL[r] ?? r}
+                                </span>
+                            ))}
+                        </>
+                    )}
+                </div>
 
                 <div className="mb-6">
                     <h3 className="text-sm font-semibold text-gray-600 mb-2">案件概要</h3>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotificationContext } from "../context/NotificationContext";
-import { STATUS_LABEL, STATUS_COLOR } from "../../cases/types/caseTypes";
+import { STATUS_LABEL, STATUS_COLOR, LEVEL_COLOR, levelLabel } from "../../cases/types/caseTypes";
 
 export default function NotificationsPage() {
     const navigate = useNavigate();
@@ -74,6 +74,11 @@ export default function NotificationsPage() {
                                                 {STATUS_LABEL[notif.case_status]}
                                             </span>
                                         )}
+                                        {notif.case_required_level != null && (
+                                            <span className={`text-[11px] px-1.5 py-0.5 rounded-full font-medium ${LEVEL_COLOR[notif.case_required_level] ?? "bg-gray-100 text-gray-600"}`}>
+                                                {levelLabel(notif.case_required_level)}
+                                            </span>
+                                        )}
                                         <p className={`text-sm truncate ${notif.is_read ? "text-gray-600" : "font-semibold text-gray-800"}`}>
                                             {notif.case_title ?? "案件"}
                                         </p>
@@ -92,10 +97,15 @@ export default function NotificationsPage() {
                 <div>
                     {n ? (
                         <div className="bg-white border border-gray-200 rounded-xl p-5 sticky top-6">
-                            <div className="flex items-center gap-2 mb-3">
+                            <div className="flex flex-wrap items-center gap-2 mb-3">
                                 {n.case_status && (
                                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLOR[n.case_status]}`}>
                                         {STATUS_LABEL[n.case_status]}
+                                    </span>
+                                )}
+                                {n.case_required_level != null && (
+                                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${LEVEL_COLOR[n.case_required_level] ?? "bg-gray-100 text-gray-600"}`}>
+                                        {levelLabel(n.case_required_level)}
                                     </span>
                                 )}
                                 <h2 className="font-semibold text-gray-800">{n.case_title}</h2>
