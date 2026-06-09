@@ -23,6 +23,16 @@ export function ChatWidget() {
                 </div>
             )}
 
+            {/* 外側クリック吸収レイヤー: チャット本体(z-50)の一段下(z-40)に透明オーバーレイを敷き、
+                画面外クリックを受け止めて「閉じるだけ」にする（下のリンク等へクリックを伝播させない） */}
+            {isOpen && !isFullscreen && (
+                <div
+                    className="fixed inset-0 z-40"
+                    onClick={handleClose}
+                    aria-hidden="true"
+                />
+            )}
+
             {/* 通常時: 右下固定のポップアップ */}
             <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
                 {isOpen && !isFullscreen && (
