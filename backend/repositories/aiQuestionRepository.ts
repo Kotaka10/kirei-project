@@ -14,7 +14,6 @@ export class AiQuestionRepository {
                 COUNT(*)         AS usage_count,
                 MAX(cm.created_at) AS last_used_at
              FROM chat_messages cm
-             JOIN chat_sessions cs ON cm.session_id = cs.id
              WHERE cm.role = 'user'
                AND CHAR_LENGTH(TRIM(cm.content)) BETWEEN 4 AND 60
              GROUP BY TRIM(cm.content)
