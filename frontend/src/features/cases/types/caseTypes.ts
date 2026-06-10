@@ -45,6 +45,15 @@ export interface CreateCaseResponse {
     };
 }
 
+export interface CaseClarificationResponse {
+    error: string;
+    code: "case_needs_clarification";
+    missingFields: string[];
+    questions: string[];
+}
+
+export type CaseClarification = Pick<CaseClarificationResponse, "missingFields" | "questions">;
+
 export const STATUS_LABEL: Record<string, string> = {
     open: "未対応",
     in_progress: "対応中",
