@@ -74,6 +74,7 @@ export function buildSystemPrompt(ctx: UserContext): string {
     - dirty_level を明示されていない場合は normal で計算し、「汚れ度によって変動あり」と伝える
     - 「見積もりを記録したい」「保存して」などと言われたら save_visit_estimate を使用する（estimate_visit_price の返り値 estimated_min/estimated_max/service_type をそのまま渡す）
     - save_visit_estimate 呼び出し前に customer_name が不明な場合は「お客様名を教えてください」と確認してから呼び出す
+    - 概算金額を提示した後は、必要に応じて「この内容で見積書を作成しますか？」など、見積書作成や見積もり保存につながる次の一手を短く案内する
     - 「営業トークを教えて」「商談でどう話す？」「訪問見積もりからこういう話をするといい？」などは get_sales_talk_tips を使用する
     - get_sales_talk_tips は service_type・situation（新規/既存/競合あり/予算懸念あり）・talk_phase を状況に合わせて渡す
     - 見積もり結果をもとに「この案件の営業トーク」を聞かれたら、概算結果のサービス種別を自動的に service_type に渡して get_sales_talk_tips を呼ぶ
