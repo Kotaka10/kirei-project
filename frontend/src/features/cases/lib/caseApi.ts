@@ -1,6 +1,18 @@
-import type { CaseRecord, CaseNotification, CreateCaseResponse } from "../types/caseTypes";
+import type { CaseRecord, CaseNotification, CreateCaseResponse, CaseClarificationResponse } from "../types/caseTypes";
 
 const API_BASE = import.meta.env.VITE_API_URL ?? "https://waviness-unsightly-freely.ngrok-free.dev";
+
+export class CaseClarificationError extends Error {
+    readonly missingFields: string[];
+    readonly questions: string[];
+
+    constructor(response: CaseClarificationResponse) {
+        super(response.error);
+        this.name = "CaseClarificationError";
+        this.missingFields = response.missingFields;
+        this.questions = response.questions;
+    }
+}
 
 async function authFetch<T>(path: string, token: string, options?: RequestInit): Promise<T> {
     const res = await fetch(`${API_BASE}${path}`, {
@@ -12,7 +24,10 @@ async function authFetch<T>(path: string, token: string, options?: RequestInit):
         },
     });
     if (!res.ok) {
-        const body = await res.json().catch(() => ({})) as { error?: string };
+        const body = await res.json().catch(() => ({})) as { error?: string; code?: string };
+        if (res.status === 422 && body.code === "case_needs_clarification") {
+            throw new CaseClarificationError(body as CaseClarificationResponse);
+        }
         throw new Error(body.error ?? `エラー（${res.status}）`);
     }
     return res.json() as Promise<T>;

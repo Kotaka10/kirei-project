@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { CaseService } from "../services/case.service.js";
+import { CaseClarificationNeededError } from "../services/caseAi.service.js";
 import { CreateCaseSchema, UpdateCaseStatusSchema } from "../types/case.js";
 
 export class CaseController {
@@ -18,6 +19,15 @@ export class CaseController {
             const result = await this.service.createCase(parsed.data.summary, user.staff_id);
             res.status(201).json(result);
         } catch (err: any) {
+            if (err instanceof CaseClarificationNeededError) {
+                res.status(422).json({
+                    error:         err.message,
+                    code:          "case_needs_clarification",
+                    missingFields: err.missingFields,
+                    questions:     err.questions,
+                });
+                return;
+            }
             console.error("[CaseController.createCase]", err);
             res.status(500).json({ error: err.message ?? "案件の作成に失敗しました" });
         }

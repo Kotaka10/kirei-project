@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCases } from "../hooks/useCases";
+import { CaseClarificationError } from "../lib/caseApi";
+import { CaseClarificationPanel } from "../components/CaseClarificationPanel";
+import { CaseGeneratingState } from "../components/CaseGeneratingState";
 import { ROLE_LABEL, LEVEL_COLOR, LEVEL_LABEL, levelLabel } from "../types/caseTypes";
-import type { CreateCaseResponse } from "../types/caseTypes";
+import type { CaseClarification, CreateCaseResponse } from "../types/caseTypes";
 
 type Step = "input" | "generating" | "result";
 
@@ -12,6 +15,7 @@ export default function CreateCasePage() {
     const [summary, setSummary] = useState("");
     const [step, setStep] = useState<Step>("input");
     const [result, setResult] = useState<CreateCaseResponse | null>(null);
+    const [clarification, setClarification] = useState<CaseClarification | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = async () => {
@@ -20,29 +24,26 @@ export default function CreateCasePage() {
             return;
         }
         setError(null);
+        setClarification(null);
         setStep("generating");
         try {
             const res = await create(summary.trim());
             setResult(res);
             setStep("result");
         } catch (e: any) {
+            if (e instanceof CaseClarificationError) {
+                setClarification({ missingFields: e.missingFields, questions: e.questions });
+                setError(null);
+                setStep("input");
+                return;
+            }
             setError(e.message);
             setStep("input");
         }
     };
 
     if (step === "generating") {
-        return (
-            <div className="p-6 max-w-2xl mx-auto">
-                <div className="flex flex-col items-center justify-center py-24 gap-6">
-                    <div className="w-14 h-14 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                    <div className="text-center">
-                        <p className="text-lg font-semibold text-gray-700">AIが案件書類を作成中...</p>
-                        <p className="text-sm text-gray-400 mt-1">適切なスタッフへOneSignal通知も自動で送信します</p>
-                    </div>
-                </div>
-            </div>
-        );
+        return <CaseGeneratingState />;
     }
 
     if (step === "result" && result) {
@@ -172,16 +173,18 @@ export default function CreateCasePage() {
                 </label>
                 <textarea
                     value={summary}
-                    onChange={e => setSummary(e.target.value)}
+                    onChange={e => {
+                        setSummary(e.target.value);
+                        setClarification(null);
+                    }}
                     placeholder="例：大型商業施設の定期清掃案件。延床面積5000㎡、週3回の清掃が必要。高所作業あり。専門技術者が必要な特殊清掃機器を使用予定。来月から開始予定。"
                     rows={8}
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 resize-none"
                 />
                 <p className="text-xs text-gray-400 mt-1 text-right">{summary.length} / 2000</p>
 
-                {error && (
-                    <p className="text-red-500 text-sm mt-2">{error}</p>
-                )}
+                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+                {clarification && <CaseClarificationPanel clarification={clarification} />}
 
                 <button
                     onClick={handleSubmit}
