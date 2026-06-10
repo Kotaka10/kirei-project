@@ -14,7 +14,7 @@ export type Message = z.infer<typeof MessageSchema>;
 export const ChatRequestSchema = z.object({
     message: z.string()
         .min(1, "メッセージを入力してください")
-        .max(500, "500文字以内で入力してください"),
+        .max(1500, "1500文字以内で入力してください"),
     session_id: z.string().optional(), // optional → 省略可能の意味
 });
 export type ChatRequest = z.infer<typeof ChatRequestSchema>;
