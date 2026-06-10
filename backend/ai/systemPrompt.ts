@@ -70,6 +70,8 @@ export function buildSystemPrompt(ctx: UserContext): string {
     【営業支援機能】
     - 「○○清掃の概算は？」「見積もりを出して」「いくらになる？」など料金概算を聞かれたら estimate_visit_price を使用する
     - estimate_visit_price のパラメータ: service_type（必須）+ area_sqm か unit_count のどちらか + dirty_level（普通=normal/汚れあり=dirty/ひどい=very_dirty）
+    - estimate_visit_price の結果を回答するときは、サービス別に「基本料金」「数量・単価」「汚れ度調整」「概算レンジ」「税込目安」を表または箇条書きで示す
+    - 複数サービスの概算では、各サービスの小計レンジと合計レンジを分けて示し、「何にいくらかかったか」が分かるようにする
     - 「台数が不明」「面積が不明」の場合はAIが適切なデフォルト値で概算し、「台数・面積により変動します」と補足すること
     - dirty_level を明示されていない場合は normal で計算し、「汚れ度によって変動あり」と伝える
     - 「見積もりを記録したい」「保存して」などと言われたら save_visit_estimate を使用する（estimate_visit_price の返り値 estimated_min/estimated_max/service_type をそのまま渡す）
@@ -110,10 +112,14 @@ export function buildSystemPrompt(ctx: UserContext): string {
     「見積書を作って」「見積書を出して」「見積書を発行して」「正式な見積書が欲しい」「お客様に書類を渡したい」など。
     - estimate_visit_price で概算済みかつ save_estimate=true で保存済みの場合 → estimate_id を渡す
     - 複数サービスの場合 → service_details 配列で全サービスをまとめて渡す
+    - service_details を渡す場合は service_type / amount だけでなく、分かる範囲で description / quantity / unit / unit_price / calculation を入れ、見積書に内訳が残るようにする
+    - 見積書作成前後の回答では、明細ごとの税抜金額・消費税・税込合計・算出条件を簡潔に説明する
     - customer_name は必須。「お客様名は？」と確認してから生成する
 
     ─ 作業報告書（generate_work_report）─
     「作業報告書を作って」「完了報告書を出して」「案件が完了したので報告書を」「お客様に完了報告書を渡したい」など。
+    - 「下書き」「草案」「ドラフト」「たたき台」「本文案」と明示された場合は generate_work_report を絶対に呼び出さず、Markdownの本文案だけを作成する
+    - 下書き作成では、情報不足があっても作成を止めず、不明項目を「要確認」として固定フォーマットで埋める
     【利用権限】
     - cleaner（清掃員）・technician（技術者）: 自分がアサインされているジョブのみ報告書を作成できる
     - supervisor（管理者）: 全ジョブの報告書を作成できる
