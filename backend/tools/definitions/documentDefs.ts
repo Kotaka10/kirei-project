@@ -32,8 +32,12 @@ export const documentDefs: ChatCompletionTool[] = [
                             type: "object",
                             properties: {
                                 service_type: { type: "string", description: "サービス種別（例: エアコン清掃）" },
-                                description:  { type: "string", description: "作業内容の詳細（任意）" },
+                                description:  { type: "string", description: "作業内容・対象範囲・算出根拠などの詳細（任意）" },
                                 amount:       { type: "number", description: "金額（税抜）" },
+                                quantity:     { type: "number", description: "数量（台数・面積・箇所数など）" },
+                                unit:         { type: "string", description: "単位（台、㎡、箇所、式など）" },
+                                unit_price:   { type: "number", description: "単価（税抜）" },
+                                calculation:  { type: "string", description: "算出式・内訳（例: 基本料金10,000円 + 3,000円 × 5台）" },
                             },
                             required: ["service_type", "amount"],
                         },
@@ -61,6 +65,7 @@ export const documentDefs: ChatCompletionTool[] = [
                 "案件完了後に作業報告書（PDF印刷対応）を作成してデータベースに保存する。" +
                 "「作業報告書を作成して」「完了報告書を出して」「仕事が終わったので報告書を作りたい」" +
                 "「案件完了の書類を作成して」「お客様に作業完了の報告書を渡したい」などに使用する。" +
+                "「下書き」「草案」「ドラフト」「たたき台」の場合はこのツールを使用しない。" +
                 "booking_id が不明でも service_type（例: エアコン清掃）を渡せばログインスタッフの今日のジョブを自動検索して作成できる。",
             parameters: {
                 type: "object",
