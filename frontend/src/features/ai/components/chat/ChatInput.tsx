@@ -1,6 +1,8 @@
 import  { useState, useRef, type KeyboardEvent } from "react";
 import { ChatRequestSchema } from "../../types/chatTypes";
 
+const MAX_CHAT_MESSAGE_LENGTH = 1500;
+
 interface Props {
     onSend:    (message: string) => void;
     isLoading: boolean;
@@ -44,7 +46,7 @@ export function ChatInput({ onSend, isLoading }: Props) {
     }
 
     const charCount   = value.length;
-    const isOverLimit = charCount > 500;
+    const isOverLimit = charCount > MAX_CHAT_MESSAGE_LENGTH;
 
     return (
         <div className="px-3 pb-3 pt-2 border-t border-gray-100 bg-white">
@@ -74,7 +76,7 @@ export function ChatInput({ onSend, isLoading }: Props) {
 
                 {/* 文字カウンター */}
                 <span className={`text-[10px] self-end ph-0.5 ${isOverLimit ? "text-[#48bcb6]" : "text-gray-300"}`}>
-                    {charCount}/500
+                    {charCount}/{MAX_CHAT_MESSAGE_LENGTH}
                 </span>
 
                 {/* 返信ボタン */}
