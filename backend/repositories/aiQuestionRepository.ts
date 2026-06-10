@@ -3,10 +3,10 @@ import type { UserContext } from "../types/auth.js";
 import type { FrequentQuestionRow, PopularServiceRow, RecentQuestionRow, UpcomingJobRow } from "../types/aiQuestion.js";
 
 export class AiQuestionRepository {
-    async findFrequentUserQuestions(
-        conn:    Connection,
-        staffId: number,
+    async findFrequentQuestions(
+        conn:          Connection,
         limit = 8,
+        minUsageCount = 2,
     ): Promise<FrequentQuestionRow[]> {
         const [rows] = await conn.query<RowDataPacket[]>(
             `SELECT
@@ -15,13 +15,13 @@ export class AiQuestionRepository {
                 MAX(cm.created_at) AS last_used_at
              FROM chat_messages cm
              JOIN chat_sessions cs ON cm.session_id = cs.id
-             WHERE cs.staff_id = ?
-               AND cm.role = 'user'
+             WHERE cm.role = 'user'
                AND CHAR_LENGTH(TRIM(cm.content)) BETWEEN 4 AND 60
              GROUP BY TRIM(cm.content)
+             HAVING usage_count >= ?
              ORDER BY usage_count DESC, last_used_at DESC
              LIMIT ?`,
-            [staffId, limit],
+            [minUsageCount, limit],
         );
         return rows as FrequentQuestionRow[];
     }

@@ -55,7 +55,7 @@ export class AiQuestionService {
             candidates.push({ question: normalized, source, score });
         };
 
-        const frequentQuestions = await this.repo.findFrequentUserQuestions(conn, ctx.staffId);
+        const frequentQuestions = await this.repo.findFrequentQuestions(conn);
         frequentQuestions.forEach((row, index) => {
             add(row.question, "history", 130 + Number(row.usage_count) * 8 - index);
         });
