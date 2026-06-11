@@ -1,9 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChatWindow } from "./Chatwindow";
+import { OPEN_AI_CHAT_EVENT, type OpenAiChatDetail } from "../../lib/chatWidgetEvents";
 
 export function ChatWidget() {
     const [isOpen,       setIsOpen]       = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
+    const [queuedMessage, setQueuedMessage] = useState<string | null>(null);
+
+    useEffect(() => {
+        const handleOpenChat = (event: Event) => {
+            const detail = (event as CustomEvent<OpenAiChatDetail>).detail;
+            setQueuedMessage(detail?.message?.trim() || null);
+            setIsOpen(true);
+        };
+
+        window.addEventListener(OPEN_AI_CHAT_EVENT, handleOpenChat);
+        return () => window.removeEventListener(OPEN_AI_CHAT_EVENT, handleOpenChat);
+    }, []);
 
     function handleClose() {
         setIsOpen(false);
@@ -19,6 +32,8 @@ export function ChatWidget() {
                         onClose={handleClose}
                         isFullscreen={isFullscreen}
                         onToggleFullscreen={() => setIsFullscreen(false)}
+                        queuedMessage={queuedMessage}
+                        onQueuedMessageConsumed={() => setQueuedMessage(null)}
                     />
                 </div>
             )}
@@ -40,6 +55,8 @@ export function ChatWidget() {
                         onClose={handleClose}
                         isFullscreen={isFullscreen}
                         onToggleFullscreen={() => setIsFullscreen(true)}
+                        queuedMessage={queuedMessage}
+                        onQueuedMessageConsumed={() => setQueuedMessage(null)}
                     />
                 )}
 

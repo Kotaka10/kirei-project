@@ -13,14 +13,17 @@ interface Props {
     onClose:            () => void;
     isFullscreen:       boolean;
     onToggleFullscreen: () => void;
+    queuedMessage?:     string | null;
+    onQueuedMessageConsumed?: () => void;
 }
 
 type ViewMode = "chat" | "history";
 
-export function ChatWindow({ onClose, isFullscreen, onToggleFullscreen }: Props) {
+export function ChatWindow({ onClose, isFullscreen, onToggleFullscreen, queuedMessage, onQueuedMessageConsumed }: Props) {
     const [viewMode,         setViewMode]         = useState<ViewMode>("chat");
     const [activeSessionId,  setActiveSessionId]  = useState<number | null>(null);
     const [previewPath,      setPreviewPath]       = useState<string | null>(null);
+    const [pendingMessage,   setPendingMessage]    = useState<string | null>(null);
 
     const bottomRef          = useRef<HTMLDivElement>(null);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -38,6 +41,23 @@ export function ChatWindow({ onClose, isFullscreen, onToggleFullscreen }: Props)
         activeSessionId,
         onSessionCreated: handleSessionCreated,
     });
+
+    useEffect(() => {
+        const message = queuedMessage?.trim();
+        if (!message || isLoading) return;
+
+        shouldAutoScrollRef.current = true;
+        setActiveSessionId(null);
+        setViewMode("chat");
+        setPendingMessage(message);
+        onQueuedMessageConsumed?.();
+    }, [queuedMessage, isLoading, onQueuedMessageConsumed]);
+
+    useEffect(() => {
+        if (!pendingMessage || activeSessionId !== null || isLoading) return;
+        sendMessage(pendingMessage);
+        setPendingMessage(null);
+    }, [activeSessionId, isLoading, pendingMessage, sendMessage]);
 
     // スクロール制御
     const handleScroll = () => {

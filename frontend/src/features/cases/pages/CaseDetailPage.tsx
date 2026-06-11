@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/context/AuthContext";
 import { fetchCaseById, updateCaseStatus } from "../lib/caseApi";
+import { CaseWorkflowActions } from "../components/CaseWorkflowActions";
 import { STATUS_LABEL, STATUS_COLOR, ROLE_LABEL, LEVEL_COLOR, levelLabel } from "../types/caseTypes";
 import type { CaseRecord } from "../types/caseTypes";
 
@@ -113,6 +114,8 @@ export default function CaseDetailPage() {
                     </div>
                 )}
             </div>
+
+            <CaseWorkflowActions caseRecord={c} />
 
             <div className="bg-white border border-gray-200 rounded-xl p-5">
                 <h3 className="text-sm font-semibold text-gray-700 mb-3">ステータス変更</h3>
