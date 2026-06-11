@@ -3,10 +3,11 @@ import { Connection } from "mysql2/promise";
 import type { ChatCompletionMessageParam } from "openai/resources";
 import { tools } from "../tools/definitions.js";
 import { dispatchTool } from "../tools/dispatcher.js";
-import { getAvailableServices } from "../tools/handlers/salesSupportHandlers.js";
+import { getAvailableServices } from "../tools/handlers/salesEstimateHandlers.js";
 import { buildSystemPrompt } from "./systemPrompt.js";
 import { generateSuggestions } from "./suggestions.js";
 import { isAllowedAiQuestion, OUT_OF_SCOPE_REPLY } from "./scopeGuard.js";
+import { buildWorkReportDraftPrompt, isWorkReportDraftRequest } from "./workReportDraft.js";
 import type { UserContext } from "../types/auth.js";
 import dotenv from "dotenv";
 dotenv.config();
@@ -26,7 +27,7 @@ export async function chat(
         onChunk(OUT_OF_SCOPE_REPLY);
         return {
             reply:               OUT_OF_SCOPE_REPLY,
-            history:             [
+            history:             [  
                 ...history,
                 { role: "user", content: userMessage },
                 { role: "assistant", content: OUT_OF_SCOPE_REPLY },
@@ -34,6 +35,34 @@ export async function chat(
             assignmentRequested: false,
             suggestions:         [],
         };
+    }
+
+    if (isWorkReportDraftRequest(userMessage)) {
+        const messages: ChatCompletionMessageParam[] = [
+            { role: "system", content: buildSystemPrompt(ctx) },
+            { role: "system", content: buildWorkReportDraftPrompt(ctx) },
+            ...history,
+            { role: "user", content: userMessage },
+        ];
+        const stream = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages,
+            temperature: 0.4,
+            stream: true,
+        });
+
+        let fullContent = "";
+        for await (const chunk of stream) {
+            const delta = chunk.choices[0]?.delta?.content ?? "";
+            if (delta) {
+                fullContent += delta;
+                onChunk(delta);
+            }
+        }
+
+        messages.push({ role: "assistant", content: fullContent });
+        const suggestions = await generateSuggestions(openai, messages, []);
+        return { reply: fullContent, history: messages.slice(1), assignmentRequested: false, suggestions };
     }
 
     const messages: ChatCompletionMessageParam[] = [
