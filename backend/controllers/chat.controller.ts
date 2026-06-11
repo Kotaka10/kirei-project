@@ -3,7 +3,7 @@ import { ChatService } from "../services/chat.service.js";
 import { z } from "zod";
 
 const SendMessageSchema = z.object({
-    message:    z.string().min(1, "メッセージを入力してください").max(500, "500文字以内で入力してください"),
+    message:    z.string().min(1, "メッセージを入力してください").max(1500, "1500文字以内で入力してください"),
     session_id: z.string().optional(),
 })
 
